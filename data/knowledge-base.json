@@ -1,0 +1,17 @@
+{
+  "intents": [
+    {
+      "id": "greeting",
+      "patterns": ["hello", "hi", "hey", "good morning", "good afternoon"],
+      "responses": [
+        "Hello! How can I help you today?",
+        "Hi there! What can I do for you?",
+        "Hey! How may I assist you?"
+      ],
+      "metadata": {
+        "category": "greeting",
+        "confidence_threshold": 0.8
+      }
+    }
+  ]
+}
