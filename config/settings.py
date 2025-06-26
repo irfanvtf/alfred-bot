@@ -1,4 +1,3 @@
-# config/settings.py - Simplified version without pydantic-settings
 import os
 from typing import Optional
 from dotenv import load_dotenv
@@ -14,7 +13,8 @@ class Settings:
     pinecone_index_name: str = os.getenv("PINECONE_INDEX_NAME", "chatbot-knowledge")
 
     # spaCy Configuration
-    spacy_model: str = os.getenv("SPACY_MODEL", "en_core_web_md")
+    spacy_model_md: str = os.getenv("SPACY_MODEL_MD", "en_core_web_md")
+    spacy_model_sm: str = os.getenv("SPACY_MODEL_SM", "en_core_web_sm")
 
     # API Configuration
     api_title: str = os.getenv("API_TITLE", "")
