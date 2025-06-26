@@ -110,7 +110,7 @@ def test_environment_file():
 
 
 if __name__ == "__main__":
-    print("Knowledge-Based Chatbot - Setup Test")
+    print("Alfred bot - Setup Test")
     print("=" * 50)
 
     success = test_imports()
