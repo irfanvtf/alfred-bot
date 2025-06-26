@@ -1,16 +1,134 @@
 {
+  "version": "1.0.0",
+  "metadata": {
+    "created_at": "2024-01-01T00:00:00",
+    "description": "Alfred Bot Knowledge Base",
+    "language": "en"
+  },
   "intents": [
     {
       "id": "greeting",
-      "patterns": ["hello", "hi", "hey", "good morning", "good afternoon"],
+      "patterns": [
+        "hello",
+        "hi there",
+        "hey",
+        "good morning",
+        "good afternoon",
+        "good evening",
+        "greetings",
+        "what's up",
+        "howdy"
+      ],
       "responses": [
         "Hello! How can I help you today?",
         "Hi there! What can I do for you?",
-        "Hey! How may I assist you?"
+        "Hey! How may I assist you?",
+        "Greetings! What would you like to know?"
       ],
       "metadata": {
         "category": "greeting",
-        "confidence_threshold": 0.8
+        "confidence_threshold": 0.8,
+        "priority": 1,
+        "tags": ["greeting", "conversation_starter"]
+      }
+    },
+    {
+      "id": "goodbye",
+      "patterns": [
+        "bye",
+        "goodbye",
+        "see you later",
+        "farewell",
+        "take care",
+        "catch you later",
+        "until next time",
+        "see ya",
+        "talk to you later"
+      ],
+      "responses": [
+        "Goodbye! Have a great day!",
+        "See you later! Take care!",
+        "Farewell! It was nice talking with you.",
+        "Until next time! Have a wonderful day!"
+      ],
+      "metadata": {
+        "category": "farewell",
+        "confidence_threshold": 0.8,
+        "priority": 1,
+        "tags": ["goodbye", "conversation_ender"]
+      }
+    },
+    {
+      "id": "help",
+      "patterns": [
+        "help",
+        "what can you do",
+        "how can you help",
+        "what are your capabilities",
+        "what can you help me with",
+        "show me what you can do",
+        "help me",
+        "I need assistance"
+      ],
+      "responses": [
+        "I'm Alfred, your AI assistant! I can help answer questions, provide information, and assist with various tasks. What would you like to know?",
+        "I'm here to help! I can assist you with questions, provide information, and help with different topics. Just ask me anything!",
+        "I can help you with various topics and questions. Feel free to ask me anything you'd like to know!"
+      ],
+      "metadata": {
+        "category": "help",
+        "confidence_threshold": 0.7,
+        "priority": 2,
+        "tags": ["help", "capabilities", "assistance"]
+      }
+    },
+    {
+      "id": "thanks",
+      "patterns": [
+        "thank you",
+        "thanks",
+        "thank you so much",
+        "thanks a lot",
+        "I appreciate it",
+        "much appreciated",
+        "thanks for your help",
+        "thank you for helping"
+      ],
+      "responses": [
+        "You're welcome! Happy to help!",
+        "No problem! Glad I could assist you.",
+        "You're very welcome! Anything else I can help with?",
+        "My pleasure! Let me know if you need anything else."
+      ],
+      "metadata": {
+        "category": "gratitude",
+        "confidence_threshold": 0.8,
+        "priority": 2,
+        "tags": ["thanks", "gratitude", "politeness"]
+      }
+    },
+    {
+      "id": "weather",
+      "patterns": [
+        "what's the weather like",
+        "how's the weather",
+        "weather forecast",
+        "is it raining",
+        "will it rain today",
+        "temperature today",
+        "weather today",
+        "climate"
+      ],
+      "responses": [
+        "I don't have access to real-time weather data, but I'd recommend checking a weather app or website like Weather.com for current conditions.",
+        "For accurate weather information, please check your local weather service or a reliable weather app.",
+        "I can't provide current weather data, but you can get up-to-date forecasts from weather services like AccuWeather or Weather.com."
+      ],
+      "metadata": {
+        "category": "information",
+        "confidence_threshold": 0.7,
+        "priority": 3,
+        "tags": ["weather", "information", "external_service"]
       }
     }
   ]

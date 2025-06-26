@@ -1,4 +1,3 @@
-# config/settings.py - Simplified version without pydantic-settings
 import os
 from typing import Optional
 from dotenv import load_dotenv
