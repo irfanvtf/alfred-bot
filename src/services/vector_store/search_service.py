@@ -3,7 +3,9 @@ import json
 import random
 from typing import List, Dict, Any, Optional
 from datetime import datetime
+import logging
 
+from src.utils.exceptions import ConfigurationError
 from .chroma_store import ChromaVectorStore
 from .pinecone_store import PineconeVectorStore
 from src.services.text_processor import TextProcessor
@@ -117,7 +119,10 @@ class VectorSearchService:
             return filtered_results
 
         except Exception as e:
-            print(f"Error in search_intents: {e}")
+            logging.error(f"Error in search_intents: {e}", exc_info=True)
+            # Consider re-raising configuration errors
+            if isinstance(e, ConfigurationError):
+                raise
             return []
 
     def _enhance_query_with_context(

@@ -1,5 +1,5 @@
 # src/models/schemas.py
-from pydantic import BaseModel, Field, field_validator, validator
+from pydantic import BaseModel, Field, field_validator
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 

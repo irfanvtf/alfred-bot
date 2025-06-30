@@ -1,7 +1,6 @@
 # tests/test_vector_search.py
 import pytest
 import sys
-import os
 import tempfile
 import shutil
 from pathlib import Path
@@ -11,11 +10,8 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 from src.services.vector_store import (
     VectorSearchService,
-    ChromaVectorStore,
-    PineconeVectorStore,
 )
 from src.services.knowledge_manager import KnowledgeManager
-from src.utils.exceptions import ConfigurationError
 
 
 class TestVectorSearch:
@@ -47,7 +43,9 @@ class TestVectorSearch:
             service.initialize()
             return service
         except Exception as e:
-            pytest.skip(f"Could not initialize vector service: {e}")
+            # Log the error and return None, or re-raise
+            print(f"Warning: Could not initialize vector service: {e}")
+            return None
 
     @pytest.fixture
     def sample_knowledge_base(self, knowledge_manager):
@@ -114,7 +112,7 @@ class TestVectorSearch:
         # Convert to dict format that the service expects
         kb_dict = (
             sample_knowledge_base.model_dump()
-            if hasattr(sample_knowledge_base, "dict")
+            if hasattr(sample_knowledge_base, "model_dump")
             else {
                 "intents": [
                     intent.model_dump() if hasattr(intent, "dict") else intent.__dict__

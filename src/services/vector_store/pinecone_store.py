@@ -6,7 +6,7 @@ from config.settings import settings
 
 # Import for Pinecone (already in your requirements.txt)
 try:
-    import pinecone
+    from pinecone import Pinecone
 
     PINECONE_AVAILABLE = True
 except ImportError:
@@ -26,15 +26,15 @@ class PineconeVectorStore(VectorStore):
             raise ConfigurationError("pinecone-client not installed")
 
         try:
-            # Initialize Pinecone
-            pinecone.init(
+            # Instantiate the Pinecone client
+            self.pc = Pinecone(
                 api_key=settings.pinecone_api_key,
                 environment=settings.pinecone_environment,
             )
 
             # Check if index exists, create if not
-            if self.index_name not in pinecone.list_indexes():
-                pinecone.create_index(
+            if self.index_name not in self.pc.list_indexes():
+                self.pc.create_index(
                     name=self.index_name,
                     dimension=300,  # spaCy medium model dimension
                     metric="cosine",
@@ -42,11 +42,11 @@ class PineconeVectorStore(VectorStore):
                 print(f"✅ Created Pinecone index: {self.index_name}")
 
             # Connect to index
-            self.index = pinecone.Index(self.index_name)
+            self.index = self.pc.Index(self.index_name)
             print(f"✅ Connected to Pinecone index: {self.index_name}")
 
         except Exception as e:
-            raise ConfigurationError(f"Failed to initialize Pinecone: {e}")
+            raise ConfigurationError(f"Failed to initialize Pinecone: {e}") from e
 
     def add_vectors(self, vectors: List[Dict[str, Any]]) -> None:
         """Add vectors to Pinecone index"""
@@ -70,7 +70,7 @@ class PineconeVectorStore(VectorStore):
             print(f"✅ Added {len(vectors)} vectors to Pinecone")
 
         except Exception as e:
-            raise ConfigurationError(f"Failed to add vectors to Pinecone: {e}")
+            raise ConfigurationError(f"Failed to add vectors to Pinecone: {e}") from e
 
     def search(
         self,
@@ -102,7 +102,7 @@ class PineconeVectorStore(VectorStore):
             return formatted_results
 
         except Exception as e:
-            raise ConfigurationError(f"Failed to search Pinecone: {e}")
+            raise ConfigurationError(f"Failed to search Pinecone: {e}") from e
 
     def delete_vectors(self, ids: List[str]) -> None:
         """Delete vectors from Pinecone"""
@@ -114,7 +114,9 @@ class PineconeVectorStore(VectorStore):
             print(f"✅ Deleted {len(ids)} vectors from Pinecone")
 
         except Exception as e:
-            raise ConfigurationError(f"Failed to delete vectors from Pinecone: {e}")
+            raise ConfigurationError(
+                f"Failed to delete vectors from Pinecone: {e}"
+            ) from e
 
     def get_stats(self) -> Dict[str, Any]:
         """Get Pinecone index statistics"""

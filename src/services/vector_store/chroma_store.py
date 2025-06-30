@@ -16,8 +16,13 @@ except ImportError:
 class ChromaVectorStore(VectorStore):
     """Chroma implementation for development/prototyping"""
 
-    def __init__(self, collection_name: str = "alfred_knowledge"):
+    def __init__(
+        self,
+        collection_name: str = "alfred_knowledge",
+        persist_path: str = "./data/chroma_db",
+    ):
         self.collection_name = collection_name
+        self.persist_path = persist_path
         self.client = None
         self.collection = None
 
@@ -43,7 +48,7 @@ class ChromaVectorStore(VectorStore):
             print(f"✅ Chroma initialized with collection: {self.collection_name}")
 
         except Exception as e:
-            raise ConfigurationError(f"Failed to initialize Chroma: {e}")
+            raise ConfigurationError(f"Failed to initialize Chroma: {e}") from e
 
     def add_vectors(self, vectors: List[Dict[str, Any]]) -> None:
         """Add vectors to Chroma collection"""
@@ -63,7 +68,7 @@ class ChromaVectorStore(VectorStore):
             print(f"✅ Added {len(vectors)} vectors to Chroma")
 
         except Exception as e:
-            raise ConfigurationError(f"Failed to add vectors to Chroma: {e}")
+            raise ConfigurationError(f"Failed to add vectors to Chroma: {e}") from e
 
     def search(
         self,
@@ -110,7 +115,7 @@ class ChromaVectorStore(VectorStore):
             return formatted_results
 
         except Exception as e:
-            raise ConfigurationError(f"Failed to search Chroma: {e}")
+            raise ConfigurationError(f"Failed to search Chroma: {e}") from e
 
     def delete_vectors(self, ids: List[str]) -> None:
         """Delete vectors from Chroma"""
@@ -122,7 +127,9 @@ class ChromaVectorStore(VectorStore):
             print(f"✅ Deleted {len(ids)} vectors from Chroma")
 
         except Exception as e:
-            raise ConfigurationError(f"Failed to delete vectors from Chroma: {e}")
+            raise ConfigurationError(
+                f"Failed to delete vectors from Chroma: {e}"
+            ) from e
 
     def get_stats(self) -> Dict[str, Any]:
         """Get Chroma collection statistics"""
