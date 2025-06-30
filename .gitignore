@@ -48,3 +48,20 @@ htmlcov/
 # OS
 .DS_Store
 Thumbs.db
+
+# Chroma / Vector DB
+data/chroma_db/
+
+# Cache / temp
+__pypackages__/
+*.tmp
+*.bak
+*.cache
+
+# Jupyter (just in case)
+.ipynb_checkpoints/
+
+# Compiled models or data
+*.pkl
+*.joblib
+*.npy
