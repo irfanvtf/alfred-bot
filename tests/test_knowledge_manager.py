@@ -6,7 +6,7 @@ import tempfile
 from datetime import datetime
 from unittest.mock import patch, mock_open
 from src.services.knowledge_manager import KnowledgeManager
-from src.models.schema import KnowledgeBase, Intent, IntentMetadata
+from src.models.intent import KnowledgeBase, Intent, IntentMetadata
 from src.utils.exceptions import ConfigurationError
 
 
