@@ -3,7 +3,7 @@ import json
 import os
 from typing import List, Dict, Any, Optional
 from datetime import datetime
-from src.models.schema import KnowledgeBase, Intent, IntentMetadata
+from src.models.intent import KnowledgeBase, Intent, IntentMetadata
 from src.utils.exceptions import ConfigurationError
 
 
@@ -167,3 +167,6 @@ class KnowledgeManager:
             "categories": categories,
             "version": self.knowledge_base.version,
         }
+
+
+# knowledge_manager = KnowledgeManager()
