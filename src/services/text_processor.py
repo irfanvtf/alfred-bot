@@ -156,3 +156,6 @@ class TextProcessor:
             "n_vectors": len(self.nlp.vocab.vectors),
             "pipeline_components": self.nlp.pipe_names,
         }
+
+
+text_processor = TextProcessor()

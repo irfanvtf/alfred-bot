@@ -68,26 +68,36 @@ def test_context_variable_update():
     assert updated.context_variables["order_id"] == "1234"
 
 
-def get_conversation_context(self, session_id: str, last_n_messages: int = 5) -> str:
-    """Get recent conversation context as formatted string"""
-    session = self.get_session(session_id)
+def test_get_conversation_context():
+    """Test conversation context string generation"""
+    session = session_manager.create_session(SessionCreate())
+    print("Session ID:", session.session_id)
+    print(
+        "Session exists:", session_manager.get_session(session.session_id) is not None
+    )
 
-    if not session:
-        return ""
+    session_manager.add_message(
+        session.session_id,
+        create_user_message("Hi there!"),
+    )
+    session_manager.add_message(
+        session.session_id,
+        create_bot_message("Hello! How can I help?"),
+    )
+    session_manager.add_message(
+        session.session_id,
+        create_user_message("I'd like to cancel an order."),
+    )
 
-    recent_messages = session.conversation_history[-last_n_messages:]
-    context_parts = []
+    context = session_manager.get_conversation_context(
+        session.session_id, last_n_messages=3
+    )
 
-    for msg in recent_messages:
-        if isinstance(msg, dict):
-            msg = ConversationMessage(**msg)  # parse dict into model
+    print(f"\nContext:\n{context}")
 
-        # Always handle the message if it's a ConversationMessage
-        if isinstance(msg, ConversationMessage):
-            role_prefix = "User" if msg.role == "user" else "Alfred"
-            context_parts.append(f"{role_prefix}: {msg.message}")
-
-    return "\n".join(context_parts)
+    assert "User: Hi there!" in context
+    assert "Alfred: Hello! How can I help?" in context
+    assert "User: I'd like to cancel an order." in context
 
 
 def test_extend_ttl():

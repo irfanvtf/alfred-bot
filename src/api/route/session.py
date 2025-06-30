@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, Depends
 from typing import Dict, Any
-from app.services.session_manager import session_manager
-from app.models.session import SessionCreate, SessionData
-from app.utils.session_utils import get_session_summary
+from src.services.session_manager import session_manager
+from src.models.session import SessionCreate, SessionData
+from src.utils.session_utils import get_session_summary
 
 router = APIRouter(prefix="/session", tags=["session"])
 

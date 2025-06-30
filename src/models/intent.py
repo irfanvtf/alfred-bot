@@ -1,5 +1,5 @@
 # src/models/schemas.py
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator, validator
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 
@@ -31,14 +31,16 @@ class Intent(BaseModel):
     )
     metadata: IntentMetadata = Field(..., description="Intent metadata")
 
-    @validator("id")
+    @field_validator("id")
+    @classmethod
     def validate_id(cls, v):
         if not v.strip():
             raise ValueError("Intent ID cannot be empty")
         # Replace spaces with underscores, convert to lowercase
         return v.strip().lower().replace(" ", "_")
 
-    @validator("patterns")
+    @field_validator("patterns")
+    @classmethod
     def validate_patterns(cls, v):
         # Remove empty patterns and strip whitespace
         patterns = [p.strip() for p in v if p.strip()]
@@ -46,7 +48,8 @@ class Intent(BaseModel):
             raise ValueError("At least one non-empty pattern is required")
         return patterns
 
-    @validator("responses")
+    @field_validator("responses")
+    @classmethod
     def validate_responses(cls, v):
         # Remove empty responses and strip whitespace
         responses = [r.strip() for r in v if r.strip()]
@@ -64,7 +67,8 @@ class KnowledgeBase(BaseModel):
     )
     version: str = Field("1.0.0", description="Knowledge base version")
 
-    @validator("intents")
+    @field_validator("intents")
+    @classmethod
     def validate_unique_ids(cls, v):
         ids = [intent.id for intent in v]
         if len(ids) != len(set(ids)):

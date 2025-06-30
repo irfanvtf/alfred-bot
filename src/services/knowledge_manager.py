@@ -58,7 +58,11 @@ class KnowledgeManager:
 
             with open(self.knowledge_file, "w", encoding="utf-8") as f:
                 json.dump(
-                    knowledge_base.dict(), f, indent=2, ensure_ascii=False, default=str
+                    knowledge_base.model_dump(),
+                    f,
+                    indent=2,
+                    ensure_ascii=False,
+                    default=str,
                 )
 
             self.knowledge_base = knowledge_base
