@@ -134,13 +134,13 @@ class SessionManager:
         for msg in recent_messages:
             if isinstance(msg, dict):
                 msg = ConversationMessage(**msg)  # parse dict into model
+            
+            # Always handle the message if it's a ConversationMessage
+            if isinstance(msg, ConversationMessage):
+                role_prefix = "User" if msg.role == "user" else "Alfred"
+                context_parts.append(f"{role_prefix}: {msg.message}")
 
-                # Always handle the message if it's a ConversationMessage
-                if isinstance(msg, ConversationMessage):
-                    role_prefix = "User" if msg.role == "user" else "Alfred"
-                    context_parts.append(f"{role_prefix}: {msg.message}")
-
-                    return "\n".join(context_parts)
+        return "\n".join(context_parts)
 
     def extend_session_ttl(self, session_id: str) -> bool:
         """Extend session TTL"""

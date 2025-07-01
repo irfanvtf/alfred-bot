@@ -99,16 +99,21 @@ class ChromaVectorStore(VectorStore):
             formatted_results = []
             if results["ids"] and len(results["ids"][0]) > 0:
                 for i in range(len(results["ids"][0])):
+                    distance = results["distances"][0][i]
+                    # For very high distances, use inverse relationship
+                    # Temporarily use a more lenient scoring for testing
+                    similarity = 1.0 / (1.0 + distance / 5.0)  # This will give values between 0-1
+                    
+                    # Debug: print to see actual values
+                    print(f"DEBUG ChromaDB: distance={distance:.3f}, similarity={similarity:.3f}")
+                    
                     formatted_results.append(
                         {
                             "id": results["ids"][0][i],
                             "text": results["documents"][0][i],
                             "metadata": results["metadatas"][0][i],
-                            "score": 1
-                            - results["distances"][0][
-                                i
-                            ],  # Convert distance to similarity
-                            "distance": results["distances"][0][i],
+                            "score": similarity,
+                            "distance": distance,
                         }
                     )
 
