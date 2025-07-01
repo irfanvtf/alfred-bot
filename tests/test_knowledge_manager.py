@@ -1,14 +1,18 @@
-# test_knowledge_manager.py
+# tests/test_knowledge_manager.py
 import pytest
 import json
-import os
 import tempfile
+import os
 from datetime import datetime
 from unittest.mock import patch, mock_open
-from src.services.knowledge_manager import KnowledgeManager
-from src.models.intent import KnowledgeBase, Intent, IntentMetadata
-from src.utils.exceptions import ConfigurationError
+import sys
 
+# Add the project root to Python path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from src.services.knowledge_manager import KnowledgeManager
+from src.models.intent import Intent, IntentMetadata, KnowledgeBase
+from src.utils.exceptions import ConfigurationError
 
 # Simple test as requested
 def simple_test():

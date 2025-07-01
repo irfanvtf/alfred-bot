@@ -2,6 +2,12 @@
 import pytest
 import numpy as np
 from unittest.mock import patch, MagicMock
+import sys
+import os
+
+# Add the project root to Python path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from src.services.text_processor import TextProcessor
 from src.utils.exceptions import TextProcessingError
 
