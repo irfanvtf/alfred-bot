@@ -1,14 +1,35 @@
-# main.py - Simplified version for Phase 1
+# main.py - Phase 6: FastAPI Integration Complete
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import os
 from dotenv import load_dotenv
 from config.settings import settings
 
+# Import API routes
+from src.api.route.chat import router as chat_router
+from src.api.route.session import router as session_router
+from src.api.route.health import router as health_router
+
+# Import middleware and error handling
+from src.api.middleware import (
+    ErrorHandlingMiddleware,
+    LoggingMiddleware,
+    setup_exception_handlers
+)
+
+# Import logging configuration
+from src.utils.logging_config import setup_logging
+
 # Load environment variables
 load_dotenv()
 
+# Setup logging
+log_level = os.getenv("LOG_LEVEL", "INFO")
+log_to_file = os.getenv("LOG_TO_FILE", "true").lower() == "true"
+setup_logging(log_level=log_level, log_to_file=log_to_file)
+
 # Get configuration from environment variables
-API_TITLE = os.getenv("API_TITLE", "Knowledge-Based Chatbot")
+API_TITLE = os.getenv("API_TITLE", "Alfred Chatbot API")
 API_VERSION = os.getenv("API_VERSION", "1.0.0")
 API_HOST = os.getenv("API_HOST", "0.0.0.0")
 API_PORT = int(os.getenv("API_PORT", "8000"))
@@ -17,16 +38,55 @@ API_PORT = int(os.getenv("API_PORT", "8000"))
 app = FastAPI(
     title=settings.api_title,
     version=settings.api_version,
-    description="A knowledge-based chatbot using spaCy and Pinecone",
+    description="A session-aware knowledge-based chatbot using spaCy and ChromaDB",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json"
 )
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Configure appropriately for production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Add custom middleware
+app.add_middleware(ErrorHandlingMiddleware)
+app.add_middleware(LoggingMiddleware)
+
+# Setup exception handlers
+setup_exception_handlers(app)
+
+# Include API routers
+app.include_router(chat_router, prefix="/api/v1")
+app.include_router(session_router, prefix="/api/v1")
+app.include_router(health_router, prefix="/api/v1")
 
 
 @app.get("/")
 async def root():
     return {
-        "message": "Alfred Chatbot",
-        "status": "Phase 1 - Basic Setup Complete",
+        "message": "Alfred Chatbot API",
+        "status": "Phase 6 - FastAPI Integration Complete",
         "version": settings.api_version,
+        "features": [
+            "Session-aware chat endpoints",
+            "Vector-based intent matching",
+            "Redis session management",
+            "ChromaDB vector storage",
+            "Structured logging",
+            "Health monitoring",
+            "Error handling middleware"
+        ],
+        "endpoints": {
+            "chat": "/api/v1/chat",
+            "sessions": "/api/v1/session",
+            "health": "/api/v1/health",
+            "docs": "/docs"
+        }
     }
 
 
