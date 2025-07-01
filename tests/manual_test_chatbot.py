@@ -4,7 +4,8 @@ import sys
 import os
 
 # Add the project root to Python path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, project_root)
 
 from src.services.chatbot_engine import chatbot_engine
 
