@@ -1,5 +1,4 @@
-chromadb==0.3.22
-
+chromadb==1.0.13
 annotated-types==0.7.0
 anyio==3.7.1
 black==23.11.0
