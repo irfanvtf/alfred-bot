@@ -38,7 +38,7 @@ async def chat(request: ChatRequest, session_id: Optional[str] = None):
         logger.error(f"Error in chat endpoint: {e}", exc_info=True)
         raise HTTPException(
             status_code=500, detail=f"Failed to process chat message: {str(e)}"
-        )
+        ) from e
 
 
 @router.post("/session/{session_id}", response_model=ChatResponse)

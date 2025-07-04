@@ -35,7 +35,9 @@ async def health_check():
 
     except Exception as e:
         logger.error(f"Health check failed: {e}", exc_info=True)
-        raise HTTPException(status_code=503, detail=f"Health check failed: {str(e)}")
+        raise HTTPException(
+            status_code=503, detail=f"Health check failed: {str(e)}"
+        ) from e
 
 
 @router.get("/redis")
