@@ -18,10 +18,8 @@ services:
       - REDIS_PORT=6379
       - CHROMA_PERSIST_DIRECTORY=/app/data/chroma_db
     volumes:
-      - ../:/app  # Mount the entire project directory
       - alfred_logs:/app/logs
       - alfred_chroma_db:/app/data/chroma_db
-    command: ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 
   redis:
     image: "redis:7.2-alpine"

@@ -12,7 +12,7 @@ router = APIRouter(prefix="/chat", tags=["chat"])
 
 
 @router.post("/", response_model=ChatResponse)
-async def chat(request: ChatRequest):
+async def chat(request: ChatRequest, session_id: Optional[str] = None):
     """
     Main chat endpoint with embedded session handling
 
@@ -28,7 +28,7 @@ async def chat(request: ChatRequest):
 
         # Process message through chatbot engine (handles session internally)
         response = chatbot_engine.process_message(
-            message=request.message, session_id=request.session_id, user_id=request.user_id
+            message=request.message, session_id=session_id, user_id=request.user_id
         )
 
         logger.info(f"Chat response generated: {response.intent_id or 'fallback'}")
@@ -39,7 +39,45 @@ async def chat(request: ChatRequest):
         raise HTTPException(
             status_code=500, detail=f"Failed to process chat message: {str(e)}"
         ) from e
-        
+
+
+@router.post("/session/{session_id}", response_model=ChatResponse)
+async def chat_with_session(session_id: str, request: ChatRequest):
+    """
+    Chat endpoint with explicit session ID
+
+    Args:
+        session_id: Explicit session ID to use
+        request: Chat request containing message and optional context
+
+    Returns:
+        ChatResponse with bot response and metadata
+    """
+    try:
+        # Verify session exists
+        session = session_manager.get_session(session_id)
+        if not session:
+            raise HTTPException(status_code=404, detail="Session not found")
+
+        logger.info(f"Processing chat request for session {session_id}")
+
+        # Process message with specific session
+        response = chatbot_engine.process_message(
+            message=request.message, session_id=session_id, user_id=request.user_id
+        )
+
+        logger.info(f"Chat response generated for session {session_id}")
+        return response
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error in chat with session endpoint: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=500, detail=f"Failed to process chat message: {str(e)}"
+        )
+
+
 @router.get("/stats")
 async def get_chat_stats():
     """
