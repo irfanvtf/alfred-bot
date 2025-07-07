@@ -17,7 +17,7 @@ class VectorSearchService:
     def __init__(self, use_chroma: bool = True):
         self.text_processor = TextProcessor()
         self.vector_store = ChromaVectorStore() if use_chroma else PineconeVectorStore()
-        self.confidence_threshold = 0.7
+        self.confidence_threshold = 0.25
 
     def initialize(self) -> None:
         """Initialize the vector search service"""
@@ -107,7 +107,6 @@ class VectorSearchService:
                 )
 
                 if score >= threshold:
-                    # if True:  # Accept all results temporarily
                     # Add context-aware scoring
                     context_score = self._calculate_context_score(
                         result, session_context
@@ -132,30 +131,9 @@ class VectorSearchService:
         self, query: str, context: Optional[Dict[str, Any]]
     ) -> str:
         """Enhance query with conversation context"""
-        if not context:
-            return query
-
-        enhanced_query = query
-
-        # Add recent conversation context
-        history = context.get("conversation_history", [])
-        if history:
-            # Get last few user messages for context
-            recent_messages = [
-                msg["message"] for msg in history[-3:] if msg.get("role") == "user"
-            ]
-            if recent_messages:
-                context_text = " ".join(recent_messages[-2:])  # Last 2 user messages
-                enhanced_query = f"{context_text} {query}"
-
-        # Add context variables as keywords
-        context_vars = context.get("context_variables", {})
-        if context_vars:
-            for key, value in context_vars.items():
-                if isinstance(value, str) and len(value) < 50:
-                    enhanced_query = f"{enhanced_query} {value}"
-
-        return enhanced_query
+        # For initial intent classification, we only use the current query.
+        # Contextual boosting happens in _calculate_context_score.
+        return query
 
     def _build_context_filters(
         self, context: Optional[Dict[str, Any]]

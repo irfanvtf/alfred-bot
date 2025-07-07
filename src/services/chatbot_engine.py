@@ -65,6 +65,9 @@ class ChatbotEngine:
         Process a user message and generate a response
         """
         try:
+            # Normalize message to lowercase
+            message = message.lower()
+
             # Get or create session
             session = self._get_or_create_session(session_id, user_id)
             session_id = session.session_id
@@ -188,6 +191,25 @@ class ChatbotEngine:
 
         return context
 
+    def _find_exact_match(self, message: str) -> Optional[Dict[str, Any]]:
+        """Check for an exact, case-insensitive match in the knowledge base."""
+        all_intents = self.knowledge_manager.get_all_intents()
+        normalized_message = message.strip().lower()
+
+        for intent in all_intents:
+            for pattern in intent.patterns:
+                if pattern.lower() == normalized_message:
+                    return {
+                        "intent_id": intent.id,
+                        "confidence": 1.0,  # Exact match has 100% confidence
+                        "matched_pattern": pattern,
+                        "responses": [res for res in intent.responses],
+                        "category": intent.metadata.category,
+                        "metadata": intent.metadata.model_dump(),
+                        "type": "exact_match",
+                    }
+        return None
+
     def _classify_intent(
         self, message: str, session_context: Dict[str, Any]
     ) -> List[Dict[str, Any]]:
@@ -272,7 +294,11 @@ class ChatbotEngine:
     ) -> Dict[str, Any]:
         """Prepare response from intent match"""
         try:
-            responses = json.loads(intent_match["responses"])
+            # Responses from vector search are JSON strings, from exact match are lists
+            if isinstance(intent_match["responses"], str):
+                responses = json.loads(intent_match["responses"])
+            else:
+                responses = intent_match["responses"]
         except (json.JSONDecodeError, TypeError, KeyError) as e:
             logger.warning(f"Failed to parse intent responses: {e}")
             responses = ["I understand, but I'm having trouble with my response."]

@@ -80,7 +80,8 @@ class KnowledgeBase(BaseModel):
 class ChatRequest(BaseModel):
     """Chat request from user"""
 
-    message: str = Field(..., min_length=1, description="User message")
+    message: str = Field(..., description="User message")
+    session_id: Optional[str] = Field(None, description="Optional session ID for continuing a conversation")
     user_id: Optional[str] = Field(None, description="Optional user identifier")
     context: Dict[str, Any] = Field(
         default_factory=dict, description="Additional context"
