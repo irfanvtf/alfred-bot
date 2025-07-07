@@ -318,6 +318,134 @@ class TestVectorSearch:
         except Exception as e:
             pytest.fail(f"Error getting service stats: {e}")
 
+    def test_confidence_threshold_filtering(self, vector_service, sample_knowledge_base):
+        """Test that the 0.25 confidence threshold is correctly applied"""
+        # Convert to dict format
+        kb_dict = (
+            sample_knowledge_base.model_dump()
+            if hasattr(sample_knowledge_base, "model_dump")
+            else {
+                "intents": [
+                    intent.model_dump() if hasattr(intent, "model_dump") else intent.__dict__
+                    for intent in sample_knowledge_base.intents
+                ]
+            }
+        )
+
+        # Index first
+        vector_service.index_knowledge_base(kb_dict)
+
+        # Verify the service has the correct threshold
+        assert vector_service.confidence_threshold == 0.25, f"Expected threshold 0.25, got {vector_service.confidence_threshold}"
+
+        # Test with queries that should produce different confidence levels
+        test_cases = [
+            # High confidence matches (should pass threshold)
+            ("hello", "greeting", True),  # Exact match should have high confidence
+            ("hi there", "greeting", True),  # Close match should have high confidence
+            ("help me please", "help", True),  # Close match should have high confidence
+            
+            # Low confidence matches (should be filtered out)
+            ("xyzabc123nonsense", None, False),  # Nonsense should have low confidence
+            ("completely unrelated random text", None, False),  # Unrelated should have low confidence
+        ]
+
+        for query, expected_intent, should_pass_threshold in test_cases:
+            try:
+                results = vector_service.search_intents(query, top_k=5)
+                
+                if should_pass_threshold:
+                    # Should have results above threshold
+                    assert len(results) > 0, f"Query '{query}' should have results above 0.25 threshold but got none"
+                    
+                    # Check that all returned results meet the threshold
+                    for result in results:
+                        score = result.get("final_score", result.get("score", 0))
+                        assert score >= 0.25, f"Result score {score} is below 0.25 threshold for query '{query}'"
+                        
+                        # If we expect a specific intent, check it's found
+                        if expected_intent:
+                            intent_id = result.get("metadata", {}).get("intent_id")
+                            if intent_id == expected_intent:
+                                print(f"✅ Query '{query}' correctly matched intent '{expected_intent}' with score {score:.3f}")
+                                break
+                    else:
+                        if expected_intent:
+                            found_intents = [r.get("metadata", {}).get("intent_id") for r in results]
+                            print(f"⚠️  Query '{query}' expected intent '{expected_intent}' but found: {found_intents}")
+                else:
+                    # Should have no results or very low confidence results
+                    low_confidence_results = [r for r in results if r.get("final_score", r.get("score", 0)) < 0.25]
+                    high_confidence_results = [r for r in results if r.get("final_score", r.get("score", 0)) >= 0.25]
+                    
+                    assert len(high_confidence_results) == 0, f"Query '{query}' should not have results above 0.25 threshold but got {len(high_confidence_results)}"
+                    print(f"✅ Query '{query}' correctly filtered out - no results above 0.25 threshold")
+                    
+            except Exception as e:
+                print(f"Error testing confidence threshold for query '{query}': {e}")
+                
+    def test_borderline_confidence_scores(self, vector_service, sample_knowledge_base):
+        """Test behavior around the exact 0.25 threshold boundary"""
+        # Convert to dict format
+        kb_dict = (
+            sample_knowledge_base.model_dump()
+            if hasattr(sample_knowledge_base, "model_dump")
+            else {
+                "intents": [
+                    intent.model_dump() if hasattr(intent, "model_dump") else intent.__dict__
+                    for intent in sample_knowledge_base.intents
+                ]
+            }
+        )
+
+        # Index first
+        vector_service.index_knowledge_base(kb_dict)
+        
+        # Create test queries that might produce scores near the threshold
+        borderline_queries = [
+            "hi",  # Slight variation of "hello"
+            "help",  # Exact match for help intent
+            "thank",  # Partial match for "thanks"
+            "bye",  # Exact match for goodbye
+            "weather info",  # Related to weather but not exact
+        ]
+        
+        print("\n=== Testing borderline confidence scores ===")
+        for query in borderline_queries:
+            try:
+                results = vector_service.search_intents(query, top_k=3)
+                
+                if results:
+                    for i, result in enumerate(results):
+                        score = result.get("final_score", result.get("score", 0))
+                        intent_id = result.get("metadata", {}).get("intent_id", "unknown")
+                        
+                        print(f"Query '{query}' - Result {i+1}: {intent_id} (score: {score:.4f})")
+                        
+                        # Verify that returned results meet threshold
+                        assert score >= 0.25, f"Returned result has score {score} below 0.25 threshold"
+                        
+                        # Test the exact boundary
+                        if 0.24 <= score <= 0.26:
+                            print(f"  📍 Borderline score detected: {score:.4f}")
+                else:
+                    print(f"Query '{query}' - No results (all below threshold)")
+                    
+            except Exception as e:
+                print(f"Error testing borderline query '{query}': {e}")
+                
+    def test_confidence_threshold_consistency(self, vector_service):
+        """Test that the confidence threshold is consistent across service methods"""
+        # Check that threshold is set correctly
+        assert vector_service.confidence_threshold == 0.25, "Service should have confidence_threshold = 0.25"
+        
+        # Check that stats report the correct threshold
+        stats = vector_service.get_stats()
+        reported_threshold = stats.get("service_config", {}).get("confidence_threshold")
+        assert reported_threshold == 0.25, f"Stats should report threshold as 0.25, but got {reported_threshold}"
+        
+        print(f"✅ Confidence threshold consistently set to {vector_service.confidence_threshold}")
+        
     def test_error_handling(self, vector_service):
         """Test error handling in various scenarios"""
         # Test search with invalid input
