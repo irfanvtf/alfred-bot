@@ -30,6 +30,7 @@ class ChatbotEngine:
     def __init__(self):
         self.vector_service = VectorSearchService(use_chroma=True)
         self.knowledge_manager = KnowledgeManager("data/knowledge-base.json")
+        self.fallback_knowledge_manager = KnowledgeManager("data/fallback-responses.json")
         self.confidence_threshold = 0.25  # Very low for testing
         self.fallback_threshold = 0.1
 
@@ -65,6 +66,9 @@ class ChatbotEngine:
         Process a user message and generate a response
         """
         try:
+            # Normalize message to lowercase
+            message = message.lower()
+
             # Get or create session
             session = self._get_or_create_session(session_id, user_id)
             session_id = session.session_id
@@ -188,6 +192,25 @@ class ChatbotEngine:
 
         return context
 
+    def _find_exact_match(self, message: str) -> Optional[Dict[str, Any]]:
+        """Check for an exact, case-insensitive match in the knowledge base."""
+        all_intents = self.knowledge_manager.get_all_intents()
+        normalized_message = message.strip().lower()
+
+        for intent in all_intents:
+            for pattern in intent.patterns:
+                if pattern.lower() == normalized_message:
+                    return {
+                        "intent_id": intent.id,
+                        "confidence": 1.0,  # Exact match has 100% confidence
+                        "matched_pattern": pattern,
+                        "responses": [res for res in intent.responses],
+                        "category": intent.metadata.category,
+                        "metadata": intent.metadata.model_dump(),
+                        "type": "exact_match",
+                    }
+        return None
+
     def _classify_intent(
         self, message: str, session_context: Dict[str, Any]
     ) -> List[Dict[str, Any]]:
@@ -272,7 +295,11 @@ class ChatbotEngine:
     ) -> Dict[str, Any]:
         """Prepare response from intent match"""
         try:
-            responses = json.loads(intent_match["responses"])
+            # Responses from vector search are JSON strings, from exact match are lists
+            if isinstance(intent_match["responses"], str):
+                responses = json.loads(intent_match["responses"])
+            else:
+                responses = intent_match["responses"]
         except (json.JSONDecodeError, TypeError, KeyError) as e:
             logger.warning(f"Failed to parse intent responses: {e}")
             responses = ["I understand, but I'm having trouble with my response."]
@@ -366,31 +393,9 @@ class ChatbotEngine:
         self, message: str, session_context: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Generate fallback response with context awareness"""
-
-        conversation_state = session_context.get(
-            "conversation_state", ConversationState.ONGOING
-        )
-        message_count = session_context.get("message_count", 0)
-
-        # Context-aware fallback responses
-        if conversation_state == ConversationState.GREETING and message_count <= 1:
-            responses = [
-                "Hello! I'm Alfred, your AI assistant. How can I help you today?",
-                "Hi there! I'm here to help. What would you like to know?",
-                "Welcome! I'm Alfred. What can I assist you with?",
-            ]
-        elif "thank" in message.lower() or "thanks" in message.lower():
-            responses = [
-                "You're welcome! Is there anything else I can help you with?",
-                "My pleasure! Let me know if you need anything else.",
-                "Happy to help! What else can I do for you?",
-            ]
-        elif "bye" in message.lower() or "goodbye" in message.lower():
-            responses = [
-                "Goodbye! Have a great day!",
-                "Take care! Feel free to come back anytime.",
-                "See you later! Have a wonderful day!",
-            ]
+        fallback_intent = self.fallback_knowledge_manager.get_intent("fallback")
+        if fallback_intent and fallback_intent.responses:
+            responses = fallback_intent.responses
         else:
             responses = [
                 "I'm not sure I understand that completely. Could you rephrase it?",

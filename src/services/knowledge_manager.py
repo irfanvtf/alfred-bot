@@ -72,8 +72,7 @@ class KnowledgeManager:
 
     def add_intent(self, intent: Intent):
         """Add a new intent to the knowledge base"""
-        if not self.knowledge_base:
-            self.load_knowledge_base()
+        self.load_knowledge_base()
 
         # Check for duplicate IDs
         existing_ids = [i.id for i in self.knowledge_base.intents]
@@ -88,8 +87,7 @@ class KnowledgeManager:
 
     def update_intent(self, intent_id: str, updated_intent: Intent):
         """Update an existing intent"""
-        if not self.knowledge_base:
-            self.load_knowledge_base()
+        self.load_knowledge_base()
 
         for i, intent in enumerate(self.knowledge_base.intents):
             if intent.id == intent_id:
@@ -106,8 +104,7 @@ class KnowledgeManager:
 
     def delete_intent(self, intent_id: str):
         """Delete an intent from the knowledge base"""
-        if not self.knowledge_base:
-            self.load_knowledge_base()
+        self.load_knowledge_base()
 
         original_length = len(self.knowledge_base.intents)
         self.knowledge_base.intents = [
@@ -121,8 +118,7 @@ class KnowledgeManager:
 
     def get_intent(self, intent_id: str) -> Optional[Intent]:
         """Get a specific intent by ID"""
-        if not self.knowledge_base:
-            self.load_knowledge_base()
+        self.load_knowledge_base()
 
         for intent in self.knowledge_base.intents:
             if intent.id == intent_id:
@@ -131,14 +127,12 @@ class KnowledgeManager:
 
     def get_all_intents(self) -> List[Intent]:
         """Get all intents"""
-        if not self.knowledge_base:
-            self.load_knowledge_base()
+        self.load_knowledge_base()
         return self.knowledge_base.intents
 
     def get_intents_by_category(self, category: str) -> List[Intent]:
         """Get intents by category"""
-        if not self.knowledge_base:
-            self.load_knowledge_base()
+        self.load_knowledge_base()
 
         return [
             intent
