@@ -37,5 +37,5 @@ until nc -z "$host" "$port"; do
 done
 >&2 echo "Port $port on $host is open."
 
->&2 echo "Redis is up - executing command"
+>&2 echo "Service is up - executing command"
 exec "$@" # Execute the remaining arguments as the command and its arguments

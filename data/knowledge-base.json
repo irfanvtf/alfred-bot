@@ -4,7 +4,11 @@
     "created_at": "2024-01-01T00:00:00",
     "updated_at": "2025-07-07T00:00:00",
     "description": "Alfred Bot Knowledge Base - Restructured with one answer per question",
-    "language": "en"
+    "language": "en",
+    "search_config": {
+      "default_confidence_threshold": 0.25,
+      "note": "The vector search service uses a default confidence threshold of 0.25. Individual intents can override this with their own confidence_threshold value. Queries scoring below the threshold are filtered out."
+    }
   },
   "intents": [
     {
@@ -32,8 +36,7 @@
         "category": "greeting",
         "confidence_threshold": 0.7,
         "priority": 1,
-        "tags": ["greeting", "conversation_starter"],
-        "keywords": ["hello", "hi", "hey", "greetings"]
+        "tags": ["greeting", "conversation_starter"]
       }
     },
     {

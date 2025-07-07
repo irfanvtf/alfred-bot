@@ -8,20 +8,45 @@ from src.utils.exceptions import ConfigurationError
 
 
 class KnowledgeManager:
-    """Manages knowledge base operations"""
+    """Manages knowledge base operations with caching"""
 
     def __init__(self, knowledge_file: str = "data/knowledge_base.json"):
         self.knowledge_file = knowledge_file
         self.knowledge_base: Optional[KnowledgeBase] = None
+        self._last_modified_time: Optional[float] = None
 
+    def _is_cache_valid(self) -> bool:
+        """Check if the cached knowledge base is still valid"""
+        if self.knowledge_base is None or self._last_modified_time is None:
+            return False
+        
+        try:
+            current_modified_time = os.path.getmtime(self.knowledge_file)
+            return current_modified_time <= self._last_modified_time
+        except OSError:
+            # File might have been deleted or moved
+            return False
+    
+    def invalidate_cache(self) -> None:
+        """Explicitly invalidate the cache by setting cached knowledge base to None"""
+        self.knowledge_base = None
+        self._last_modified_time = None
+    
     def load_knowledge_base(self) -> KnowledgeBase:
-        """Load knowledge base from JSON file"""
+        """Load knowledge base from JSON file with caching"""
+        # Return cached version if it's valid
+        if self._is_cache_valid():
+            return self.knowledge_base
+        
         if not os.path.exists(self.knowledge_file):
             raise ConfigurationError(
                 f"Knowledge base file not found: {self.knowledge_file}"
             )
 
         try:
+            # Get file modification time before reading
+            current_modified_time = os.path.getmtime(self.knowledge_file)
+            
             with open(self.knowledge_file, "r", encoding="utf-8") as f:
                 data = json.load(f)
 
@@ -39,6 +64,7 @@ class KnowledgeManager:
                     metadata["updated_at"] = datetime.now().isoformat()
 
             self.knowledge_base = KnowledgeBase(**data)
+            self._last_modified_time = current_modified_time
             return self.knowledge_base
 
         except json.JSONDecodeError as e:
@@ -47,7 +73,7 @@ class KnowledgeManager:
             raise ConfigurationError(f"Error loading knowledge base: {e}")
 
     def save_knowledge_base(self, knowledge_base: KnowledgeBase):
-        """Save knowledge base to JSON file"""
+        """Save knowledge base to JSON file and update cache"""
         try:
             # Update timestamps
             for intent in knowledge_base.intents:
@@ -65,7 +91,9 @@ class KnowledgeManager:
                     default=str,
                 )
 
+            # Update cache with saved knowledge base and new modification time
             self.knowledge_base = knowledge_base
+            self._last_modified_time = os.path.getmtime(self.knowledge_file)
 
         except Exception as e:
             raise ConfigurationError(f"Error saving knowledge base: {e}")
@@ -140,6 +168,30 @@ class KnowledgeManager:
             if intent.metadata.category.lower() == category.lower()
         ]
 
+    def get_cache_status(self) -> Dict[str, Any]:
+        """Get cache status information for debugging and monitoring"""
+        file_exists = os.path.exists(self.knowledge_file)
+        current_file_time = None
+        
+        if file_exists:
+            try:
+                current_file_time = os.path.getmtime(self.knowledge_file)
+            except OSError:
+                current_file_time = None
+        
+        return {
+            "is_cached": self.knowledge_base is not None,
+            "cache_valid": self._is_cache_valid(),
+            "file_exists": file_exists,
+            "cached_file_time": self._last_modified_time,
+            "current_file_time": current_file_time,
+            "cache_outdated": (
+                current_file_time is not None and 
+                self._last_modified_time is not None and 
+                current_file_time > self._last_modified_time
+            ),
+        }
+    
     def get_stats(self) -> Dict[str, Any]:
         """Get knowledge base statistics"""
         if not self.knowledge_base:
@@ -164,6 +216,7 @@ class KnowledgeManager:
             "total_responses": total_responses,
             "categories": categories,
             "version": self.knowledge_base.version,
+            "cache_status": self.get_cache_status(),
         }
 
 

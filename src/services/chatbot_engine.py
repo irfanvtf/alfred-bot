@@ -192,24 +192,6 @@ class ChatbotEngine:
 
         return context
 
-    def _find_exact_match(self, message: str) -> Optional[Dict[str, Any]]:
-        """Check for an exact, case-insensitive match in the knowledge base."""
-        all_intents = self.knowledge_manager.get_all_intents()
-        normalized_message = message.strip().lower()
-
-        for intent in all_intents:
-            for pattern in intent.patterns:
-                if pattern.lower() == normalized_message:
-                    return {
-                        "intent_id": intent.id,
-                        "confidence": 1.0,  # Exact match has 100% confidence
-                        "matched_pattern": pattern,
-                        "responses": [res for res in intent.responses],
-                        "category": intent.metadata.category,
-                        "metadata": intent.metadata.model_dump(),
-                        "type": "exact_match",
-                    }
-        return None
 
     def _classify_intent(
         self, message: str, session_context: Dict[str, Any]
