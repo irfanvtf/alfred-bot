@@ -8,8 +8,7 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      redis:
-        condition: service_healthy
+      - redis
     restart: unless-stopped
     environment:
       - LOG_LEVEL=DEBUG
@@ -19,13 +18,13 @@ services:
       - REDIS_PORT=6379
       - CHROMA_PERSIST_DIRECTORY=/app/data/chroma_db
     volumes:
-      - ../logs:/app/logs
-      - ../data/chroma_db:/app/data/chroma_db
+      - alfred_logs:/app/logs
+      - alfred_chroma_db:/app/data/chroma_db
 
   redis:
     image: "redis:7.2-alpine"
     volumes:
-      - ../data/redis:/data
+      - alfred_redis_data:/data
     command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"]
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
@@ -33,3 +32,8 @@ services:
       timeout: 10s
       retries: 3
     restart: unless-stopped
+
+volumes:
+  alfred_logs:
+  alfred_chroma_db:
+  alfred_redis_data:

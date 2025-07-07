@@ -42,11 +42,7 @@ LABEL description="Alfred Bot - Local Assistant Bot"
 LABEL version="1.0.0"
 
 # Install runtime system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
+RUN apt-get update && apt-get install -y --no-install-recommends     curl     ca-certificates     netcat-traditional     && rm -rf /var/lib/apt/lists/*     && apt-get clean
 
 # Create non-root user for security
 RUN groupadd -r alfred && useradd -r -g alfred alfred
@@ -60,6 +56,8 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 # Copy application code
 COPY --chown=alfred:alfred . .
+COPY --chown=alfred:alfred docker/wait-for-it.sh /usr/local/bin/wait-for-it.sh
+RUN chmod +x /usr/local/bin/wait-for-it.sh
 
 # Create necessary directories with proper permissions
 RUN mkdir -p logs data/chroma_db config \
@@ -120,4 +118,4 @@ USER alfred
 EXPOSE 8000
 
 # Start command
-CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
+CMD ["wait-for-it.sh", "redis:6379", "--", "python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
