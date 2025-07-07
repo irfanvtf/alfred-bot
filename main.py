@@ -29,6 +29,8 @@ log_to_file = os.getenv("LOG_TO_FILE", "true").lower() == "true"
 setup_logging(log_level=log_level, log_to_file=log_to_file)
 
 # Get configuration from environment variables
+# TODO: update versioning to use pyproject.toml (dynamic)
+# TODO: add app version as well
 API_TITLE = os.getenv("API_TITLE", "Alfred Chatbot API")
 API_VERSION = os.getenv("API_VERSION", "1.0.0")
 API_HOST = os.getenv("API_HOST", "0.0.0.0")
@@ -70,7 +72,7 @@ app.include_router(health_router, prefix="/api/v1")
 async def root():
     return {
         "message": "Alfred Chatbot API",
-        "status": "Phase 6 - FastAPI Integration Complete",
+        "status": "healthy",
         "version": settings.api_version,
         "features": [
             "Session-aware chat endpoints",

@@ -37,7 +37,7 @@ RUN python -m spacy download en_core_web_md
 FROM python:3.11-slim AS production
 
 # Set metadata
-LABEL maintainer="Your Name <your.email@example.com>"
+LABEL maintainer="Irfan Murad <irfanfmurad@gmail.com>"
 LABEL description="Alfred Bot - Local Assistant Bot"
 LABEL version="1.0.0"
 
@@ -73,7 +73,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 
 # Application configuration
 ENV API_TITLE="Alfred Chatbot API"
-ENV API_VERSION="1.0.0"
+ENV API_VERSION="v1"
 ENV API_HOST=0.0.0.0
 ENV API_PORT=8000
 
