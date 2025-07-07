@@ -6,15 +6,15 @@ from dotenv import load_dotenv
 from config.settings import settings
 
 # Import API routes
-from src.api.route.chat import router as chat_router
-from src.api.route.session import router as session_router
-from src.api.route.health import router as health_router
+from src.api.routes.chat import router as chat_router
+from src.api.routes.session import router as session_router
+from src.api.routes.health import router as health_router
 
 # Import middleware and error handling
 from src.api.middleware import (
     ErrorHandlingMiddleware,
     LoggingMiddleware,
-    setup_exception_handlers
+    setup_exception_handlers,
 )
 
 # Import logging configuration
@@ -41,7 +41,7 @@ app = FastAPI(
     description="A session-aware knowledge-based chatbot using spaCy and ChromaDB",
     docs_url="/docs",
     redoc_url="/redoc",
-    openapi_url="/openapi.json"
+    openapi_url="/openapi.json",
 )
 
 # Add CORS middleware
@@ -79,14 +79,14 @@ async def root():
             "ChromaDB vector storage",
             "Structured logging",
             "Health monitoring",
-            "Error handling middleware"
+            "Error handling middleware",
         ],
         "endpoints": {
             "chat": "/api/v1/chat",
             "sessions": "/api/v1/session",
             "health": "/api/v1/health",
-            "docs": "/docs"
-        }
+            "docs": "/docs",
+        },
     }
 
 

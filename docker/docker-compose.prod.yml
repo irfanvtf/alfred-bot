@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+    restart: always
+    environment:
+      - LOG_LEVEL=INFO
+    volumes:
+      - alfred_logs:/app/logs
+      - alfred_chroma_db:/app/data/chroma_db
+
+  redis:
+    image: "redis:7.2-alpine"
+    volumes:
+      - alfred_redis_data:/data
+    command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+volumes:
+  alfred_logs:
+  alfred_chroma_db:
+  alfred_redis_data:
