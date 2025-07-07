@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2024-07-06
+
+### Added
+
+- Enhanced Knowledge Base: Comprehensive science-focused intents covering time and black holes, with content tailored for both kids and adults
+- Session Continuity: Optional session ID field in chat requests for persistent conversation context
+- Centralized Fallback System: Dedicated fallback knowledge base for more dynamic and consistent chatbot responses
+- Performance Optimization: Knowledge base caching with status reporting for improved response times
+
+### Changed
+
+- Input Validation: Strengthened validation to reject empty or whitespace-only messages
+- Message Processing: User messages now normalized to lowercase for consistency
+- Service Reliability: Improved argument parsing and DNS resolution handling in startup scripts
+
+### Fixed
+
+- Service readiness checks now more reliable with better error handling
+
+### Tests
+
+- Model Testing: Extensive unit tests for chat and intent data models with robust input validation
+- Vector Search Testing: New tests for confidence threshold filtering and vector search consistency
+- Boundary Testing: Comprehensive coverage of edge cases and fallback scenarios
+
+### Documentation
+
+- Added detailed documentation for confidence threshold test coverage and manual verification procedures
+
 ## [0.6.0] - 2024-07-06
 
 ### Added
