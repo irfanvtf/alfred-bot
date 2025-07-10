@@ -1,0 +1,28 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "created_at": "2025-07-07T00:00:00",
+    "updated_at": "2025-07-07T00:00:00",
+    "description": "Alfred Bot Fallback Responses",
+    "language": "en"
+  },
+  "intents": [
+    {
+      "id": "fallback",
+      "patterns": ["*"],
+      "responses": [
+        "I'm not sure I understand that completely. Could you rephrase it?",
+        "I don't have specific information about that. Can you ask me something else?",
+        "That's not something I'm familiar with yet. How else can I help you?",
+        "I'm still learning about that topic. Is there something else I can assist with?"
+      ],
+      "metadata": {
+        "category": "fallback",
+        "confidence_threshold": 0.0,
+        "priority": 10,
+        "tags": ["fallback", "unknown"],
+        "keywords": []
+      }
+    }
+  ]
+}

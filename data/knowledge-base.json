@@ -6,7 +6,7 @@
     "description": "Alfred Bot Knowledge Base - Restructured with one answer per question",
     "language": "en",
     "search_config": {
-      "default_confidence_threshold": 0.25,
+      "default_confidence_threshold": 0.7,
       "note": "The vector search service uses a default confidence threshold of 0.25. Individual intents can override this with their own confidence_threshold value. Queries scoring below the threshold are filtered out."
     }
   },
