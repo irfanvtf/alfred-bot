@@ -118,4 +118,4 @@ USER alfred
 EXPOSE 8000
 
 # Start command
-CMD ["wait-for-it.sh", "redis:6379", "--", "python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
+CMD ["wait-for-it.sh", "redis", "6379", "--", "python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

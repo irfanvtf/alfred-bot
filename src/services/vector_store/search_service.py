@@ -90,11 +90,11 @@ class VectorSearchService:
             # Build filters based on session context
             filters = self._build_context_filters(session_context)
 
-            # Search vector store (temporarily disable filters)
+            # Search vector store
             results = self.vector_store.search(
                 query_vector=query_vector,
                 top_k=top_k,
-                filters=None,  # Temporarily disable filters
+                filters=filters,
             )
 
             # Filter by confidence threshold and add context scoring
@@ -107,8 +107,8 @@ class VectorSearchService:
                 )
 
                 if score >= threshold:
-                    # if True:  # Accept all results temporarily
-                    # Add context-aware scoring
+                    
+                    # TODO: Add context-aware scoring
                     context_score = self._calculate_context_score(
                         result, session_context
                     )
