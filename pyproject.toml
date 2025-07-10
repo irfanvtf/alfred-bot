@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "alfred-bot"
-version = "0.7.0"
+version = "0.8.0"
 description = "Alfred Bot - A local assistant chatbot with vector search and session management"
 authors = [
     { name = "Irfan Murad", email = "irfanfmurad@gmail.com" }
