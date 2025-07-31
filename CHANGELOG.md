@@ -141,7 +141,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- spaCy integration for text preprocessing before vector embedding
+
 - Text cleaning functionality including lemmatization and stop-word removal
 - Knowledge base manager for interacting with JSON-stored intents and responses
 - Initial project structure and core functionality

@@ -36,7 +36,7 @@ class PineconeVectorStore(VectorStore):
             if self.index_name not in self.pc.list_indexes():
                 self.pc.create_index(
                     name=self.index_name,
-                    dimension=300,  # spaCy medium model dimension
+                    dimension=384,  # sentence-transformers model dimension
                     metric="cosine",
                 )
                 print(f"✅ Created Pinecone index: {self.index_name}")

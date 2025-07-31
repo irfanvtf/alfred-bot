@@ -80,11 +80,7 @@ If you prefer to run the application locally without Docker, you will need to ha
         pip install -r requirements.txt
         ```
 
-    4.  **Download the spaCy model:**
-
-        ```bash
-        python -m spacy download en_core_web_md
-        ```
+    
 
     5.  **Set up the environment variables:**
 
