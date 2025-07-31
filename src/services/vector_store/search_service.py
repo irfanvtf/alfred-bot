@@ -6,7 +6,6 @@ from datetime import datetime
 import logging
 from src.utils.exceptions import ConfigurationError
 from .chroma_store import ChromaVectorStore
-from .pinecone_store import PineconeVectorStore
 from src.services.text_processor import TextProcessor
 
 logger = logging.getLogger(__name__)
@@ -15,9 +14,9 @@ logger = logging.getLogger(__name__)
 class VectorSearchService:
     """Service for managing vector operations with session context"""
 
-    def __init__(self, use_chroma: bool = True):
+    def __init__(self):
         self.text_processor = TextProcessor()
-        self.vector_store = ChromaVectorStore() if use_chroma else PineconeVectorStore()
+        self.vector_store = ChromaVectorStore()
         self.confidence_threshold = 0.5
 
     def initialize(self) -> None:
@@ -85,12 +84,8 @@ class VectorSearchService:
             # Enhance query with session context
             enhanced_query = self._enhance_query_with_context(query, session_context)
 
-            # logger.debug(f"Enhanced query: {enhanced_query}")
-
             # Get query vector
             query_vector = self.text_processor.get_text_vector(enhanced_query)
-
-            # logger.debug(f"Query vector: {query_vector}")
 
             # Build filters based on session context
             filters = self._build_context_filters(session_context)

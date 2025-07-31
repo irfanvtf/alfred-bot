@@ -114,7 +114,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Vector search system with support for Chroma and Pinecone backends
+- Vector search system with support for Chroma backend
 - Advanced intent matching and context-aware search capabilities
 - Factory pattern for creating vector store instances
 - Service layer for context-enhanced intent search

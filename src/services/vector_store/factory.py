@@ -4,7 +4,6 @@
 from typing import Optional
 from .base import VectorStore
 from .chroma_store import ChromaVectorStore
-from .pinecone_store import PineconeVectorStore
 from src.utils.exceptions import ConfigurationError
 
 
@@ -16,7 +15,7 @@ class VectorStoreFactory:
         """Create a vector store instance based on type
 
         Args:
-            store_type: Type of vector store ('chroma' or 'pinecone')
+            store_type: Type of vector store ('chroma')
             **kwargs: Additional arguments for store initialization
 
         Returns:
@@ -31,17 +30,13 @@ class VectorStoreFactory:
             collection_name = kwargs.get("collection_name", "alfred_knowledge")
             return ChromaVectorStore(collection_name=collection_name)
 
-        elif store_type == "pinecone":
-            index_name = kwargs.get("index_name", "alfred-knowledge")
-            return PineconeVectorStore(index_name=index_name)
-
         else:
             raise ConfigurationError(
                 f"Unsupported vector store type: {store_type}. "
-                f"Supported types: chroma, pinecone"
+                f"Supported types: chroma"
             )
 
     @staticmethod
     def get_available_stores() -> list:
         """Get list of available vector store types"""
-        return ["chroma", "pinecone"]
+        return ["chroma"]

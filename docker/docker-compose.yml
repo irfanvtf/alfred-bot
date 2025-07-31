@@ -3,7 +3,7 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    command: ["wait-for-it.sh", "redis", "6379", "--", "python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+    command: ["wait-for-it.sh", "redis", "6379", "--", "python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
     ports:
       - "8000:8000"
     depends_on:
@@ -12,6 +12,7 @@ services:
     environment:
       - LOG_LEVEL=INFO
     volumes:
+      - ..:/app
       - alfred_logs:/app/logs
       - alfred_chroma_db:/app/data/chroma_db
 

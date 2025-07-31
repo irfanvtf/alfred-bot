@@ -102,11 +102,10 @@ class ChromaVectorStore(VectorStore):
                     distance = results["distances"][0][i]
                     # For very high distances, use inverse relationship
                     # Temporarily use a more lenient scoring for testing
-                    similarity = 1.0 / (1.0 + distance / 5.0)  # This will give values between 0-1
-                    
-                    # Debug: print to see actual values
-                    print(f"DEBUG ChromaDB: distance={distance:.3f}, similarity={similarity:.3f}")
-                    
+                    similarity = 1.0 / (
+                        1.0 + distance / 5.0
+                    )  # This will give values between 0-1
+
                     formatted_results.append(
                         {
                             "id": results["ids"][0][i],
