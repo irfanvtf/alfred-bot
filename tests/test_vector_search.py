@@ -8,7 +8,7 @@ from pathlib import Path
 # Add src to path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from src.services.vector_store import (
+from src.services.vector_search import (
     VectorSearchService,
 )
 from src.services.knowledge_manager import KnowledgeManager
@@ -36,10 +36,10 @@ class TestVectorSearch:
         # Temporarily change the data path for testing
         original_path = None
         try:
-            service = VectorSearchService(use_chroma=True)
+            service = VectorSearchService()
             # Override the data path for testing
-            if hasattr(service.vector_store, "client"):
-                service.vector_store.client = None  # Reset client to use new path
+            if hasattr(service, "client"):
+                service.client = None  # Reset client to use new path
             service.initialize()
             return service
         except Exception as e:
@@ -471,7 +471,7 @@ def run_manual_test():
 
     try:
         # Initialize service
-        service = VectorSearchService(use_chroma=True)
+        service = VectorSearchService()
         service.initialize()
         print("✅ Service initialized")
 

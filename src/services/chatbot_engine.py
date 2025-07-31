@@ -5,7 +5,7 @@ from typing import Dict, Any, Optional, List
 from datetime import datetime
 from enum import Enum
 import json
-from src.services.vector_store.search_service import VectorSearchService
+from src.services.vector_search import VectorSearchService
 from src.services.session_manager import session_manager
 from src.services.knowledge_manager import KnowledgeManager
 from src.models.session import SessionUpdate
