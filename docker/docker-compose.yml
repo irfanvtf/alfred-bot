@@ -1,39 +1,19 @@
-version: "3.8"
-
 services:
   api:
     build:
       context: ..
       dockerfile: docker/Dockerfile
+    command: ["wait-for-it.sh", "redis", "6379", "--", "python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
     ports:
       - "8000:8000"
     depends_on:
       - redis
-    restart: unless-stopped
+    restart: always
     environment:
-      - LOG_LEVEL=DEBUG
-      - API_HOST=0.0.0.0
-      - API_PORT=8000
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - CHROMA_PERSIST_DIRECTORY=/app/data/chroma_db
+      - LOG_LEVEL=INFO
     volumes:
-      - ../:/app
       - alfred_logs:/app/logs
       - alfred_chroma_db:/app/data/chroma_db
-
-    command:
-      [
-        "python",
-        "-m",
-        "uvicorn",
-        "main:app",
-        "--host",
-        "0.0.0.0",
-        "--port",
-        "8000",
-        "--reload",
-      ]
 
   redis:
     image: "redis:7.2-alpine"
