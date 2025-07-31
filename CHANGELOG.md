@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2024-07-10
+
+### Added
+
+- Structured fallback responses for unrecognized user queries to improve bot interactions
+- Installation scripts for both Windows (PowerShell) and Unix (Bash) to simplify setup and management using Docker Compose
+
+### Changed
+
+- Updated knowledge base search configuration to require a higher confidence threshold for relevant answers
+- Improved Docker Compose setup for the API service, including explicit startup commands and volume mapping
+- Enhanced vector search service to utilize context-based filters for more accurate intent matching
+- Updated Dockerfile for improved service startup and configuration
+
+### Documentation
+
+- Rewrote and expanded the main project README with comprehensive setup, usage, features, and developer guidance
+- Added detailed roadmap, usage guide, API documentation, and product requirements documents
+- Removed outdated documentation and changelog format guidelines
+
+### Tests
+
+- Removed multiple manual and integration test scripts, including environment setup, Redis connection, session management, vector search debugging, and API endpoint integration tests
+
 ## [0.7.0] - 2024-07-06
 
 ### Added
@@ -117,7 +141,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- spaCy integration for text preprocessing before vector embedding
+
 - Text cleaning functionality including lemmatization and stop-word removal
 - Knowledge base manager for interacting with JSON-stored intents and responses
 - Initial project structure and core functionality

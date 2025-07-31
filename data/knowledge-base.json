@@ -1,12 +1,12 @@
 {
-  "version": "1.1.0",
+  "version": "0.2.0",
   "metadata": {
     "created_at": "2024-01-01T00:00:00",
     "updated_at": "2025-07-07T00:00:00",
     "description": "Alfred Bot Knowledge Base - Restructured with one answer per question",
     "language": "en",
     "search_config": {
-      "default_confidence_threshold": 0.7,
+      "default_confidence_threshold": 0.6,
       "note": "The vector search service uses a default confidence threshold of 0.25. Individual intents can override this with their own confidence_threshold value. Queries scoring below the threshold are filtered out."
     }
   },
@@ -15,6 +15,7 @@
       "id": "greeting",
       "patterns": [
         "hello",
+        "hi",
         "hi there",
         "hey",
         "good morning",
@@ -27,14 +28,26 @@
         "sup"
       ],
       "responses": [
-        "Hello! How can I help you today?",
-        "Hi there! What can I do for you?",
-        "Hey! How may I assist you?",
-        "Greetings! What would you like to know?"
+        {
+          "id": "greeting_0",
+          "text": "Hello! How can I help you today?"
+        },
+        {
+          "id": "greeting_1",
+          "text": "Hi there! What can I do for you?"
+        },
+        {
+          "id": "greeting_2",
+          "text": "Hey! How may I assist you?"
+        },
+        {
+          "id": "greeting_3",
+          "text": "Greetings! What would you like to know?"
+        }
       ],
       "metadata": {
         "category": "greeting",
-        "confidence_threshold": 0.7,
+
         "priority": 1,
         "tags": ["greeting", "conversation_starter"]
       }
@@ -43,11 +56,16 @@
       "id": "time_forward_kids",
       "patterns": ["why does time go forward"],
       "responses": [
-        "Because things change! Like day turns to night, and ice melts into water—that's time moving forward."
+        {
+          "id": "time_forward_kids_0",
+          "text": "Because things change! Like day turns to night, and ice melts into water—that's time moving forward."
+        }
       ],
       "metadata": {
-        "category": "science",
-        "confidence_threshold": 0.7,
+        "category": "physics",
+        "subcategory": "time",
+        "audience": "kids",
+        "related_topics": [],
         "priority": 3,
         "tags": ["time_travel", "physics", "kids", "science"]
       }
@@ -56,11 +74,14 @@
       "id": "move_fast_kids",
       "patterns": ["what happens if I move super fast"],
       "responses": [
-        "Time moves slower for you! If you fly really fast, you'd age a little slower than your friends."
+        {
+          "id": "move_fast_kids_0",
+          "text": "Time moves slower for you! If you fly really fast, you'd age a little slower than your friends."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
+
         "priority": 3,
         "tags": ["time_travel", "physics", "kids", "science"]
       }
@@ -69,11 +90,14 @@
       "id": "what_second_kids",
       "patterns": ["what is a second"],
       "responses": [
-        "A second is a tiny bit of time—there are 60 of them in a minute. Scientists use it to keep track of how fast things happen."
+        {
+          "id": "what_second_kids_0",
+          "text": "A second is a tiny bit of time—there are 60 of them in a minute. Scientists use it to keep track of how fast things happen."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
+
         "priority": 3,
         "tags": ["time_travel", "physics", "kids", "science"]
       }
@@ -82,11 +106,14 @@
       "id": "time_stop_kids",
       "patterns": ["can time stop"],
       "responses": [
-        "Not really, but it can slow down in space or near a black hole! Time never really stops completely."
+        {
+          "id": "time_stop_kids_0",
+          "text": "Not really, but it can slow down in space or near a black hole! Time never really stops completely."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
+
         "priority": 3,
         "tags": ["time_travel", "physics", "kids", "science"]
       }
@@ -95,11 +122,14 @@
       "id": "why_clocks_kids",
       "patterns": ["why do we have clocks"],
       "responses": [
-        "Clocks help us know when things happen—like when to wake up, eat, or play! They keep track of time for us."
+        {
+          "id": "why_clocks_kids_0",
+          "text": "Clocks help us know when things happen—like when to wake up, eat, or play! They keep track of time for us."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
+
         "priority": 3,
         "tags": ["time_travel", "physics", "kids", "science"]
       }
@@ -108,11 +138,14 @@
       "id": "time_travel_real_kids",
       "patterns": ["can we really travel through time"],
       "responses": [
-        "Not like in the movies, but time can move slower for people going super fast—like astronauts! That's kind of like time travel."
+        {
+          "id": "time_travel_real_kids_0",
+          "text": "Not like in the movies, but time can move slower for people going super fast—like astronauts! That's kind of like time travel."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
+
         "priority": 3,
         "tags": ["time_travel", "physics", "kids", "science"]
       }
@@ -121,11 +154,14 @@
       "id": "what_time_kids",
       "patterns": ["what is time"],
       "responses": [
-        "Time is how we know when things happen—like morning, lunchtime, or bedtime. It helps us tell the story of the day."
+        {
+          "id": "what_time_kids_0",
+          "text": "Time is how we know when things happen—like morning, lunchtime, or bedtime. It helps us tell the story of the day."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
+
         "priority": 3,
         "tags": ["time_travel", "physics", "kids", "science"]
       }
@@ -134,11 +170,14 @@
       "id": "clock_tick_kids",
       "patterns": ["why do clocks tick"],
       "responses": [
-        "Clocks tick because they're keeping track of seconds—like a tiny drum going \"tick-tock\" to keep time moving!"
+        {
+          "id": "clock_tick_kids_0",
+          "text": "Clocks tick because they're keeping track of seconds—like a tiny drum going \"tick-tock\" to keep time moving!"
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
+
         "priority": 3,
         "tags": ["time_travel", "physics", "kids", "science"]
       }
@@ -147,11 +186,14 @@
       "id": "dinosaurs_kids",
       "patterns": ["can I go back to see dinosaurs"],
       "responses": [
-        "That would be awesome! But for now, we can't go back in time. Scientists are still trying to figure that out."
+        {
+          "id": "dinosaurs_kids_0",
+          "text": "That would be awesome! But for now, we can't go back in time. Scientists are still trying to figure that out."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
+
         "priority": 3,
         "tags": ["time_travel", "physics", "kids", "science"]
       }
@@ -160,11 +202,14 @@
       "id": "astronauts_age_kids",
       "patterns": ["do astronauts age slower"],
       "responses": [
-        "Yes! When they zoom super fast in space, time slows down a tiny bit for them. That's real science!"
+        {
+          "id": "astronauts_age_kids_0",
+          "text": "Yes! When they zoom super fast in space, time slows down a tiny bit for them. That's real science!"
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
+
         "priority": 3,
         "tags": ["time_travel", "physics", "kids", "science"]
       }
@@ -173,11 +218,14 @@
       "id": "time_gravity_adult",
       "patterns": ["why does time slow down near gravity"],
       "responses": [
-        "Massive objects like planets and black holes bend spacetime, which affects how quickly time flows. The stronger the gravity, the slower time passes."
+        {
+          "id": "time_gravity_adult_0",
+          "text": "Massive objects like planets and black holes bend spacetime, which affects how quickly time flows. The stronger the gravity, the slower time passes."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
+
         "priority": 3,
         "tags": ["time_travel", "physics", "adult", "relativity", "science"]
       }
@@ -186,11 +234,14 @@
       "id": "time_dilation_proven_adult",
       "patterns": ["has time dilation been proven"],
       "responses": [
-        "Yes. Experiments with atomic clocks on fast-moving planes and satellites show measurable differences in time—just like Einstein predicted."
+        {
+          "id": "time_dilation_proven_adult_0",
+          "text": "Yes. Experiments with atomic clocks on fast-moving planes and satellites show measurable differences in time—just like Einstein predicted."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
+
         "priority": 3,
         "tags": ["time_travel", "physics", "adult", "relativity", "science"]
       }
@@ -199,11 +250,14 @@
       "id": "time_travel_past_adult",
       "patterns": ["is time travel to the past possible"],
       "responses": [
-        "Theoretically, some models like wormholes allow backward travel, but they require exotic matter and remain unproven."
+        {
+          "id": "time_travel_past_adult_0",
+          "text": "Theoretically, some models like wormholes allow backward travel, but they require exotic matter and remain unproven."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
+
         "priority": 3,
         "tags": ["time_travel", "physics", "adult", "relativity", "science"]
       }
@@ -212,11 +266,14 @@
       "id": "spacetime_adult",
       "patterns": ["what is spacetime"],
       "responses": [
-        "Spacetime combines space and time into one fabric. Objects with mass bend this fabric, and that bending is what we experience as gravity."
+        {
+          "id": "spacetime_adult_0",
+          "text": "Spacetime combines space and time into one fabric. Objects with mass bend this fabric, and that bending is what we experience as gravity."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
+
         "priority": 3,
         "tags": ["time_travel", "physics", "adult", "relativity", "science"]
       }
@@ -225,11 +282,14 @@
       "id": "twin_paradox_adult",
       "patterns": ["what's the twin paradox"],
       "responses": [
-        "If one twin travels in space at near light-speed and comes back, they will have aged less than the twin who stayed on Earth. It's a real effect of relativity."
+        {
+          "id": "twin_paradox_adult_0",
+          "text": "If one twin travels in space at near light-speed and comes back, they will have aged less than the twin who stayed on Earth. It's a real effect of relativity."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
+
         "priority": 3,
         "tags": ["time_travel", "physics", "adult", "relativity", "science"]
       }
@@ -238,11 +298,13 @@
       "id": "time_travel_possible_adult",
       "patterns": ["is time travel possible"],
       "responses": [
-        "According to Einstein's theory of relativity, time travel into the future is theoretically possible via high-speed travel or intense gravity. Time travel to the past remains speculative."
+        {
+          "id": "time_travel_possible_adult_0",
+          "text": "According to Einstein's theory of relativity, time travel into the future is theoretically possible via high-speed travel or intense gravity. Time travel to the past remains speculative."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["time_travel", "physics", "adult", "relativity", "science"]
       }
@@ -251,11 +313,13 @@
       "id": "time_dilation_adult",
       "patterns": ["what is time dilation"],
       "responses": [
-        "Time dilation occurs when time slows down for an object moving very fast or near a massive object like a black hole. It's a real, measurable effect proven with atomic clocks."
+        {
+          "id": "time_dilation_adult_0",
+          "text": "Time dilation occurs when time slows down for an object moving very fast or near a massive object like a black hole. It's a real, measurable effect proven with atomic clocks."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["time_travel", "physics", "adult", "relativity", "science"]
       }
@@ -264,11 +328,13 @@
       "id": "time_machine_adult",
       "patterns": ["can we build a time machine"],
       "responses": [
-        "Currently, no. Some theories suggest possibilities—like wormholes or cosmic strings—but they're unproven and require exotic physics."
+        {
+          "id": "time_machine_adult_0",
+          "text": "Currently, no. Some theories suggest possibilities—like wormholes or cosmic strings—but they're unproven and require exotic physics."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["time_travel", "physics", "adult", "relativity", "science"]
       }
@@ -277,11 +343,13 @@
       "id": "einstein_theory_adult",
       "patterns": ["how does Einstein's theory relate to time"],
       "responses": [
-        "Einstein showed that time is not absolute. It's part of a flexible fabric called spacetime that bends with gravity and speed."
+        {
+          "id": "einstein_theory_adult_0",
+          "text": "Einstein showed that time is not absolute. It's part of a flexible fabric called spacetime that bends with gravity and speed."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["time_travel", "physics", "adult", "relativity", "science"]
       }
@@ -290,11 +358,13 @@
       "id": "arrow_time_adult",
       "patterns": ["what causes the arrow of time"],
       "responses": [
-        "The arrow of time moves forward because entropy—or disorder—tends to increase. That's why things break or age but don't reverse naturally."
+        {
+          "id": "arrow_time_adult_0",
+          "text": "The arrow of time moves forward because entropy—or disorder—tends to increase. That's why things break or age but don't reverse naturally."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["time_travel", "physics", "adult", "relativity", "science"]
       }
@@ -303,11 +373,13 @@
       "id": "travel_future_adult",
       "patterns": ["how do I travel to the future"],
       "responses": [
-        "You already are! But to speed it up, you'd need to travel near light speed or stay near something with strong gravity—like a black hole. Time moves slower there."
+        {
+          "id": "travel_future_adult_0",
+          "text": "You already are! But to speed it up, you'd need to travel near light speed or stay near something with strong gravity—like a black hole. Time moves slower there."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["time_travel", "physics", "adult", "relativity", "science"]
       }
@@ -316,11 +388,13 @@
       "id": "special_relativity_adult",
       "patterns": ["what is special relativity"],
       "responses": [
-        "It's a theory I developed in 1905. It says the laws of physics are the same for everyone, and that space and time are connected—and can stretch or shrink depending on speed."
+        {
+          "id": "special_relativity_adult_0",
+          "text": "It's a theory I developed in 1905. It says the laws of physics are the same for everyone, and that space and time are connected—and can stretch or shrink depending on speed."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["time_travel", "physics", "adult", "relativity", "science"]
       }
@@ -329,11 +403,13 @@
       "id": "black_holes_black_kids",
       "patterns": ["why are black holes black"],
       "responses": [
-        "Because light can't get out! They pull it in so nothing can shine back to us."
+        {
+          "id": "black_holes_black_kids_0",
+          "text": "Because light can't get out! They pull it in so nothing can shine back to us."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["black_holes", "space", "kids", "science"]
       }
@@ -342,11 +418,13 @@
       "id": "too_close_black_hole_kids",
       "patterns": ["what would happen if I got too close to the black holes"],
       "responses": [
-        "You'd get stretched super thin and pulled in—like spaghetti! That's why it's called spaghettification!"
+        {
+          "id": "too_close_black_hole_kids_0",
+          "text": "You'd get stretched super thin and pulled in—like spaghetti! That's why it's called spaghettification!"
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["black_holes", "space", "kids", "science"]
       }
@@ -355,11 +433,13 @@
       "id": "black_holes_move_kids",
       "patterns": ["do black holes move"],
       "responses": [
-        "Yes! They can move through space, and sometimes they even crash into other black holes!"
+        {
+          "id": "black_holes_move_kids_0",
+          "text": "Yes! They can move through space, and sometimes they even crash into other black holes!"
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["black_holes", "space", "kids", "science"]
       }
@@ -368,11 +448,13 @@
       "id": "robot_black_hole_kids",
       "patterns": ["can we send a robot into a black hole"],
       "responses": [
-        "We could try, but it would get pulled in and crushed before it could send much back."
+        {
+          "id": "robot_black_hole_kids_0",
+          "text": "We could try, but it would get pulled in and crushed before it could send much back."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["black_holes", "space", "kids", "science"]
       }
@@ -381,11 +463,13 @@
       "id": "inside_black_hole_kids",
       "patterns": ["what's inside a black hole"],
       "responses": [
-        "We're not sure! Everything gets squished so small, it's a big mystery to scientists."
+        {
+          "id": "inside_black_hole_kids_0",
+          "text": "We're not sure! Everything gets squished so small, it's a big mystery to scientists."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["black_holes", "space", "kids", "science"]
       }
@@ -394,11 +478,13 @@
       "id": "what_black_hole_kids",
       "patterns": ["what is a black hole"],
       "responses": [
-        "It's like a giant space vacuum that pulls everything in—even light! It's invisible but very strong."
+        {
+          "id": "what_black_hole_kids_0",
+          "text": "It's like a giant space vacuum that pulls everything in—even light! It's invisible but very strong."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["black_holes", "space", "kids", "science"]
       }
@@ -407,11 +493,13 @@
       "id": "see_black_holes_kids",
       "patterns": ["can we see black holes"],
       "responses": [
-        "We can't see them directly, but we see what they do to stars and light nearby—like space detectives!"
+        {
+          "id": "see_black_holes_kids_0",
+          "text": "We can't see them directly, but we see what they do to stars and light nearby—like space detectives!"
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["black_holes", "space", "kids", "science"]
       }
@@ -420,11 +508,13 @@
       "id": "black_hole_earth_kids",
       "patterns": ["will a black hole eat the Earth"],
       "responses": [
-        "Nope! The ones we know about are very, very far away and won't come near us."
+        {
+          "id": "black_hole_earth_kids_0",
+          "text": "Nope! The ones we know about are very, very far away and won't come near us."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["black_holes", "space", "kids", "science"]
       }
@@ -433,11 +523,13 @@
       "id": "black_holes_happen_kids",
       "patterns": ["how do black holes happen"],
       "responses": [
-        "When a super big star runs out of energy, it squishes into something super tiny—that's a black hole!"
+        {
+          "id": "black_holes_happen_kids_0",
+          "text": "When a super big star runs out of energy, it squishes into something super tiny—that's a black hole!"
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["black_holes", "space", "kids", "science"]
       }
@@ -446,11 +538,13 @@
       "id": "fall_black_hole_kids",
       "patterns": ["can I fall into a black hole"],
       "responses": [
-        "Not unless you're in a spaceship going way out into space. But if you did, you'd stretch like spaghetti! (We call that \"spaghettification\"!)"
+        {
+          "id": "fall_black_hole_kids_0",
+          "text": "Not unless you're in a spaceship going way out into space. But if you did, you'd stretch like spaghetti! (We call that \"spaghettification\"!)"
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["black_holes", "space", "kids", "science"]
       }
@@ -459,11 +553,13 @@
       "id": "cant_see_black_holes_kids",
       "patterns": ["why can't we see the black holes"],
       "responses": [
-        "Because they don't shine! But we know they're there because of how they move stars and light around them."
+        {
+          "id": "cant_see_black_holes_kids_0",
+          "text": "Because they don't shine! But we know they're there because of how they move stars and light around them."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["black_holes", "space", "kids", "science"]
       }
@@ -472,11 +568,13 @@
       "id": "event_horizon_adult",
       "patterns": ["what is an event horizon"],
       "responses": [
-        "It's the boundary around a black hole. Once something crosses it, it can't escape—not even light."
+        {
+          "id": "event_horizon_adult_0",
+          "text": "It's the boundary around a black hole. Once something crosses it, it can't escape—not even light."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["black_holes", "space", "adult", "astrophysics", "science"]
       }
@@ -485,11 +583,13 @@
       "id": "see_inside_black_hole_adult",
       "patterns": ["can we see what's inside a black hole"],
       "responses": [
-        "No. We can't see inside the event horizon. The laws of physics as we know them break down beyond that point."
+        {
+          "id": "see_inside_black_hole_adult_0",
+          "text": "No. We can't see inside the event horizon. The laws of physics as we know them break down beyond that point."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["black_holes", "space", "adult", "astrophysics", "science"]
       }
@@ -498,11 +598,13 @@
       "id": "hawking_radiation_adult",
       "patterns": ["what's Hawking radiation"],
       "responses": [
-        "A theory by Stephen Hawking that black holes emit tiny amounts of radiation and can eventually shrink and vanish over time."
+        {
+          "id": "hawking_radiation_adult_0",
+          "text": "A theory by Stephen Hawking that black holes emit tiny amounts of radiation and can eventually shrink and vanish over time."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["black_holes", "space", "adult", "astrophysics", "science"]
       }
@@ -511,11 +613,13 @@
       "id": "black_holes_merge_adult",
       "patterns": ["can black holes merge"],
       "responses": [
-        "Yes. When two black holes collide, they form a larger one and release gravitational waves we can detect from Earth."
+        {
+          "id": "black_holes_merge_adult_0",
+          "text": "Yes. When two black holes collide, they form a larger one and release gravitational waves we can detect from Earth."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["black_holes", "space", "adult", "astrophysics", "science"]
       }
@@ -524,11 +628,13 @@
       "id": "black_holes_important_adult",
       "patterns": ["are black holes important for science"],
       "responses": [
-        "Very. They help us test theories of gravity, space, and quantum physics—pushing the boundaries of what we know."
+        {
+          "id": "black_holes_important_adult_0",
+          "text": "Very. They help us test theories of gravity, space, and quantum physics—pushing the boundaries of what we know."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["black_holes", "space", "adult", "astrophysics", "science"]
       }
@@ -537,11 +643,13 @@
       "id": "black_holes_formed_adult",
       "patterns": ["how are black holes formed"],
       "responses": [
-        "Most black holes form when massive stars collapse after a supernova, compressing into an incredibly dense point called a singularity."
+        {
+          "id": "black_holes_formed_adult_0",
+          "text": "Most black holes form when massive stars collapse after a supernova, compressing into an incredibly dense point called a singularity."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["black_holes", "space", "adult", "astrophysics", "science"]
       }
@@ -550,11 +658,13 @@
       "id": "fall_into_black_hole_adult",
       "patterns": ["what happens if you fall into a black hole"],
       "responses": [
-        "You'd pass the event horizon—beyond which no information can escape. Tidal forces would stretch your body in a process nicknamed \"spaghettification.\""
+        {
+          "id": "fall_into_black_hole_adult_0",
+          "text": "You'd pass the event horizon—beyond which no information can escape. Tidal forces would stretch your body in a process nicknamed \"spaghettification.\""
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["black_holes", "space", "adult", "astrophysics", "science"]
       }
@@ -563,11 +673,13 @@
       "id": "black_holes_destroy_info_adult",
       "patterns": ["can black holes destroy information"],
       "responses": [
-        "That's an ongoing debate. Some theories suggest information is lost, others say it's encoded in Hawking radiation. This is known as the black hole information paradox."
+        {
+          "id": "black_holes_destroy_info_adult_0",
+          "text": "That's an ongoing debate. Some theories suggest information is lost, others say it's encoded in Hawking radiation. This is known as the black hole information paradox."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["black_holes", "space", "adult", "astrophysics", "science"]
       }
@@ -576,11 +688,13 @@
       "id": "spacetime_warping_adult",
       "patterns": ["what is spacetime warping"],
       "responses": [
-        "Mass curves space and time around it. Black holes, being very dense, warp spacetime dramatically—bending the paths of light and matter nearby."
+        {
+          "id": "spacetime_warping_adult_0",
+          "text": "Mass curves space and time around it. Black holes, being very dense, warp spacetime dramatically—bending the paths of light and matter nearby."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["black_holes", "space", "adult", "astrophysics", "science"]
       }
@@ -589,11 +703,13 @@
       "id": "black_holes_real_adult",
       "patterns": ["are black holes real"],
       "responses": [
-        "Absolutely! We've observed stars orbiting invisible objects, and even captured an image of a black hole's shadow with the Event Horizon Telescope in 2019."
+        {
+          "id": "black_holes_real_adult_0",
+          "text": "Absolutely! We've observed stars orbiting invisible objects, and even captured an image of a black hole's shadow with the Event Horizon Telescope in 2019."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["black_holes", "space", "adult", "astrophysics", "science"]
       }
@@ -602,11 +718,13 @@
       "id": "inside_black_hole_adult",
       "patterns": ["what happens inside a black hole"],
       "responses": [
-        "We don't know for sure. At the center is a singularity—where gravity is so strong, physics breaks down. It's one of science's biggest mysteries."
+        {
+          "id": "inside_black_hole_adult_0",
+          "text": "We don't know for sure. At the center is a singularity—where gravity is so strong, physics breaks down. It's one of science's biggest mysteries."
+        }
       ],
       "metadata": {
         "category": "science",
-        "confidence_threshold": 0.7,
         "priority": 3,
         "tags": ["black_holes", "space", "adult", "astrophysics", "science"]
       }
@@ -622,14 +740,25 @@
         "no"
       ],
       "responses": [
-        "No problem! I'm always here if curiosity strikes again.",
-        "Okay! But whenever you're curious again, just ask me!",
-        "Very well. But the universe is always waiting for your next question!",
-        "Alright! Come back anytime you're curious!"
+        {
+          "id": "no_thanks_0",
+          "text": "No problem! I'm always here if curiosity strikes again."
+        },
+        {
+          "id": "no_thanks_1",
+          "text": "Okay! But whenever you're curious again, just ask me!"
+        },
+        {
+          "id": "no_thanks_2",
+          "text": "Very well. But the universe is always waiting for your next question!"
+        },
+        {
+          "id": "no_thanks_3",
+          "text": "Alright! Come back anytime you're curious!"
+        }
       ],
       "metadata": {
         "category": "decline",
-        "confidence_threshold": 0.7,
         "priority": 2,
         "tags": ["decline", "polite_refusal"]
       }

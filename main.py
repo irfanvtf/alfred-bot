@@ -40,7 +40,7 @@ API_PORT = int(os.getenv("API_PORT", "8000"))
 app = FastAPI(
     title=settings.api_title,
     version=settings.api_version,
-    description="A session-aware knowledge-based chatbot using spaCy and ChromaDB",
+    description="A session-aware knowledge-based chatbot using sentence-transformers and ChromaDB",
     docs_url="/docs",
     redoc_url="/redoc",
     openapi_url="/openapi.json",
@@ -106,31 +106,7 @@ async def test_dependencies():
     """Test endpoint to verify all dependencies are working"""
     results = {}
 
-    # Test spaCy
-    try:
-        import spacy
-
-        nlp = spacy.load("en_core_web_md")
-        doc = nlp("test")
-        results["spacy"] = {
-            "status": "OK",
-            "model": "en_core_web_md",
-            "vector_size": len(doc.vector),
-        }
-    except Exception as e:
-        try:
-            import spacy
-
-            nlp = spacy.load("en_core_web_sm")
-            doc = nlp("test")
-            results["spacy"] = {
-                "status": "OK",
-                "model": "en_core_web_sm",
-                "vector_size": len(doc.vector),
-                "note": "Using small model - consider upgrading to en_core_web_md",
-            }
-        except Exception as e2:
-            results["spacy"] = {"status": "ERROR", "error": str(e2)}
+    
 
     # Test Pinecone
     try:

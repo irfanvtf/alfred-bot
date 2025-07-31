@@ -38,7 +38,7 @@ The Alfred Bot is an intelligent conversational AI designed to provide accurate 
 
 ### 4.3 Core Services and API
 
-- **Text Processing:** Preprocessing of text (cleaning, tokenization, lemmatization) and generation of vector embeddings using spaCy.
+- **Text Processing:** Preprocessing of text (cleaning, tokenization, lemmatization) and generation of vector embeddings using sentence-transformers.
 - **Vector Storage:** Efficient storage and retrieval of vector embeddings (ChromaDB/Pinecone).
 - **Session Management:** Persistence and management of user session data (Redis).
 - **API Interface:** Provide a robust RESTful API for external applications to interact with the bot.
@@ -57,7 +57,7 @@ The Alfred Bot is an intelligent conversational AI designed to provide accurate 
 ## 6. Technical Considerations
 
 - **Language:** Python
-- **Frameworks/Libraries:** FastAPI, spaCy, ChromaDB/Pinecone, Redis, Pydantic.
+- **Frameworks/Libraries:** FastAPI, sentence-transformers, ChromaDB/Pinecone, Redis, Pydantic.
 - **Deployment:** Dockerized application for consistent and scalable deployment.
 
 ## 7. Quality Assurance and Testing

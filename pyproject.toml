@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "alfred-bot"
-version = "0.7.0"
+version = "0.8.0"
 description = "Alfred Bot - A local assistant chatbot with vector search and session management"
 authors = [
     { name = "Irfan Murad", email = "irfanfmurad@gmail.com" }
@@ -31,7 +31,6 @@ dependencies = [
     "uvicorn[standard]>=0.24.0,<1.0.0",
     "pydantic>=2.11.7,<3.0.0",
     "redis>=6.2.0,<7.0.0",
-    "spacy>=3.8.7,<4.0.0",
     "pinecone-client>=2.2.4,<3.0.0",
     "python-dotenv>=1.0.0,<2.0.0",
     "loguru>=0.7.3,<1.0.0",
@@ -135,7 +134,7 @@ show_error_codes = true
 module = [
     "chromadb.*",
     "pinecone.*",
-    "spacy.*",
+    
     "redis.*",
 ]
 ignore_missing_imports = true

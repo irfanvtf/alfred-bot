@@ -136,30 +136,7 @@ async def dependencies_health_check():
         health_results["chroma"] = {"status": "unhealthy", "error": str(e)}
         overall_healthy = False
 
-    # Check spaCy
-    try:
-        nlp = (
-            chatbot_engine.vector_service.nlp
-            if hasattr(chatbot_engine.vector_service, "nlp")
-            else None
-        )
-        if nlp:
-            # Test spaCy processing
-            doc = nlp("health check test")
-            health_results["spacy"] = {
-                "status": "healthy",
-                "error": None,
-                "model": nlp.meta.get("name", "unknown"),
-                "vector_size": len(doc.vector) if doc.has_vector else 0,
-            }
-        else:
-            health_results["spacy"] = {
-                "status": "unknown",
-                "error": "NLP model not accessible",
-            }
-    except Exception as e:
-        health_results["spacy"] = {"status": "unhealthy", "error": str(e)}
-        overall_healthy = False
+    
 
     # Check knowledge base
     try:

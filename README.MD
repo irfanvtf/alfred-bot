@@ -2,14 +2,14 @@ ALFRED CHATBOT
 
 # Alfred Chatbot
 
-Alfred Bot is a session-aware, knowledge-based chatbot built with Python, FastAPI, and spaCy. It uses a vector store (ChromaDB) for intent matching and Redis for session management.
+Alfred Bot is a session-aware, knowledge-based chatbot built with Python, FastAPI, and sentence-transformers. It uses a vector store (ChromaDB) for intent matching and Redis for session management.
 
 ## Features
 
 - **Session-aware conversations**: Maintains conversation history for context-aware responses.
 - **Knowledge-based responses**: Retrieves answers from a knowledge base using vector-based similarity search.
 - **FastAPI backend**: A modern, fast (high-performance) web framework for building APIs.
-- **Vector Search**: Utilizes spaCy for natural language processing and ChromaDB for efficient vector storage and retrieval.
+- **Vector Search**: Utilizes natural language processing and ChromaDB for efficient vector storage and retrieval.
 - **Redis Session Management**: Manages user sessions for a personalized experience.
 - **Dockerized**: Comes with Docker and Docker Compose configurations for easy setup and deployment.
 - **Extensible**: The project is structured to be easily extended with new features and knowledge.
@@ -62,7 +62,7 @@ The main dependencies of this project are:
 
 - **FastAPI**: For building the API.
 - **Uvicorn**: For running the FastAPI application.
-- **spaCy**: For natural language processing.
+
 - **ChromaDB**: For vector storage and similarity search.
 - **Redis**: For session management.
 - **Pydantic**: For data validation.

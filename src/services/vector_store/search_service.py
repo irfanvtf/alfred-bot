@@ -4,11 +4,12 @@ import random
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 import logging
-
 from src.utils.exceptions import ConfigurationError
 from .chroma_store import ChromaVectorStore
 from .pinecone_store import PineconeVectorStore
 from src.services.text_processor import TextProcessor
+
+logger = logging.getLogger(__name__)
 
 
 class VectorSearchService:
@@ -17,7 +18,7 @@ class VectorSearchService:
     def __init__(self, use_chroma: bool = True):
         self.text_processor = TextProcessor()
         self.vector_store = ChromaVectorStore() if use_chroma else PineconeVectorStore()
-        self.confidence_threshold = 0.7
+        self.confidence_threshold = 0.5
 
     def initialize(self) -> None:
         """Initialize the vector search service"""
@@ -38,7 +39,7 @@ class VectorSearchService:
                 try:
                     # Process text and get vector
                     processed = self.text_processor.preprocess_text(pattern)
-                    vector = processed["vector"].tolist()
+                    vector = processed["vector"]
 
                     # Create vector entry
                     vector_entry = {
@@ -50,7 +51,7 @@ class VectorSearchService:
                             "type": "pattern",
                             "category": metadata.get("category", "general"),
                             "confidence_threshold": metadata.get(
-                                "confidence_threshold", 0.7
+                                "confidence_threshold", 0.5
                             ),
                             "responses": json.dumps(responses),
                             "original_text": pattern,
@@ -69,7 +70,7 @@ class VectorSearchService:
         # Add vectors to store
         if vectors:
             self.vector_store.add_vectors(vectors)
-            print(f"✅ Indexed {len(vectors)} patterns from knowledge base")
+            logger.info(f"Indexed {len(vectors)} patterns from knowledge base")
         else:
             print("⚠️ No vectors created from knowledge base")
 
@@ -84,18 +85,24 @@ class VectorSearchService:
             # Enhance query with session context
             enhanced_query = self._enhance_query_with_context(query, session_context)
 
+            # logger.debug(f"Enhanced query: {enhanced_query}")
+
             # Get query vector
             query_vector = self.text_processor.get_text_vector(enhanced_query)
+
+            # logger.debug(f"Query vector: {query_vector}")
 
             # Build filters based on session context
             filters = self._build_context_filters(session_context)
 
-            # Search vector store
+            # Search vector store (temporarily disable filters)
             results = self.vector_store.search(
                 query_vector=query_vector,
                 top_k=top_k,
-                filters=filters,
+                filters=None,  # Temporarily disable filters
             )
+
+            logger.debug(f"Search intents results: {results}")
 
             # Filter by confidence threshold and add context scoring
             filtered_results = []
@@ -107,8 +114,7 @@ class VectorSearchService:
                 )
 
                 if score >= threshold:
-                    
-                    # TODO: Add context-aware scoring
+                    # Add context-aware scoring
                     context_score = self._calculate_context_score(
                         result, session_context
                     )
