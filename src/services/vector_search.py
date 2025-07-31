@@ -5,9 +5,16 @@ from typing import List, Dict, Any, Optional
 from datetime import datetime
 import logging
 from src.utils.exceptions import ConfigurationError
-from .chroma_store import ChromaVectorStore
-from .pinecone_store import PineconeVectorStore
 from src.services.text_processor import TextProcessor
+
+# Import for Chroma (add to requirements.txt: chromadb)
+try:
+    import chromadb
+    from chromadb.config import Settings
+
+    CHROMA_AVAILABLE = True
+except ImportError:
+    CHROMA_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 
@@ -15,14 +22,147 @@ logger = logging.getLogger(__name__)
 class VectorSearchService:
     """Service for managing vector operations with session context"""
 
-    def __init__(self, use_chroma: bool = True):
+    def __init__(
+        self,
+        collection_name: str = "alfred_knowledge",
+        persist_path: str = "./data/chroma_db",
+    ):
         self.text_processor = TextProcessor()
-        self.vector_store = ChromaVectorStore() if use_chroma else PineconeVectorStore()
         self.confidence_threshold = 0.5
+        self.collection_name = collection_name
+        self.persist_path = persist_path
+        self.client = None
+        self.collection = None
 
     def initialize(self) -> None:
-        """Initialize the vector search service"""
-        self.vector_store.initialize()
+        """Initialize Chroma client and collection"""
+        if not CHROMA_AVAILABLE:
+            raise ConfigurationError(
+                "chromadb not installed. Run: pip install chromadb"
+            )
+
+        try:
+            # Initialize Chroma client (persistent storage)
+            self.client = chromadb.PersistentClient(
+                path=self.persist_path, settings=Settings(anonymized_telemetry=False)
+            )
+
+            # Create or get collection
+            self.collection = self.client.get_or_create_collection(
+                name=self.collection_name,
+                metadata={"description": "Alfred Bot Knowledge Base"},
+            )
+
+            print(f"✅ Chroma initialized with collection: {self.collection_name}")
+
+        except Exception as e:
+            raise ConfigurationError(f"Failed to initialize Chroma: {e}") from e
+
+    def add_vectors(self, vectors: List[Dict[str, Any]]) -> None:
+        """Add vectors to Chroma collection"""
+        if not self.collection:
+            self.initialize()
+
+        try:
+            ids = [v["id"] for v in vectors]
+            embeddings = [v["vector"] for v in vectors]
+            metadatas = [v["metadata"] for v in vectors]
+            documents = [v["text"] for v in vectors]
+
+            self.collection.add(
+                ids=ids, embeddings=embeddings, metadatas=metadatas, documents=documents
+            )
+
+            print(f"✅ Added {len(vectors)} vectors to Chroma")
+
+        except Exception as e:
+            raise ConfigurationError(f"Failed to add vectors to Chroma: {e}") from e
+
+    def search(
+        self,
+        query_vector: List[float],
+        top_k: int = 5,
+        filters: Optional[Dict[str, Any]] = None,
+    ) -> List[Dict[str, Any]]:
+        """Search Chroma collection"""
+        if not self.collection:
+            self.initialize()
+
+        try:
+            # Build where clause for filtering
+            where_clause = None
+            if filters:
+                where_clause = {}
+                for key, value in filters.items():
+                    where_clause[key] = {"$eq": value}
+
+            results = self.collection.query(
+                query_embeddings=[query_vector],
+                n_results=top_k,
+                where=where_clause,
+                include=["documents", "metadatas", "distances"],
+            )
+
+            # Format results
+            formatted_results = []
+            if results["ids"] and len(results["ids"][0]) > 0:
+                for i in range(len(results["ids"][0])):
+                    distance = results["distances"][0][i]
+                    # For very high distances, use inverse relationship
+                    # Temporarily use a more lenient scoring for testing
+                    similarity = 1.0 / (
+                        1.0 + distance / 5.0
+                    )  # This will give values between 0-1
+
+                    formatted_results.append(
+                        {
+                            "id": results["ids"][0][i],
+                            "text": results["documents"][0][i],
+                            "metadata": results["metadatas"][0][i],
+                            "score": similarity,
+                            "distance": distance,
+                        }
+                    )
+
+            return formatted_results
+
+        except Exception as e:
+            raise ConfigurationError(f"Failed to search Chroma: {e}") from e
+
+    def delete_vectors(self, ids: List[str]) -> None:
+        """Delete vectors from Chroma"""
+        if not self.collection:
+            self.initialize()
+
+        try:
+            self.collection.delete(ids=ids)
+            print(f"✅ Deleted {len(ids)} vectors from Chroma")
+
+        except Exception as e:
+            raise ConfigurationError(
+                f"Failed to delete vectors from Chroma: {e}"
+            ) from e
+
+    def get_stats(self) -> Dict[str, Any]:
+        """Get Chroma collection statistics"""
+        if not self.collection:
+            self.initialize()
+
+        try:
+            count = self.collection.count()
+            return {
+                "store_type": "chroma",
+                "collection_name": self.collection_name,
+                "vector_count": count,
+                "status": "connected",
+            }
+        except Exception as e:
+            return {
+                "store_type": "chroma",
+                "collection_name": self.collection_name,
+                "vector_count": 0,
+                "status": f"error: {e}",
+            }
 
     def index_knowledge_base(self, knowledge_base_data: Dict[str, Any]) -> None:
         """Index all intents from knowledge base"""
@@ -69,7 +209,7 @@ class VectorSearchService:
 
         # Add vectors to store
         if vectors:
-            self.vector_store.add_vectors(vectors)
+            self.add_vectors(vectors)
             logger.info(f"Indexed {len(vectors)} patterns from knowledge base")
         else:
             print("⚠️ No vectors created from knowledge base")
@@ -85,18 +225,14 @@ class VectorSearchService:
             # Enhance query with session context
             enhanced_query = self._enhance_query_with_context(query, session_context)
 
-            # logger.debug(f"Enhanced query: {enhanced_query}")
-
             # Get query vector
             query_vector = self.text_processor.get_text_vector(enhanced_query)
-
-            # logger.debug(f"Query vector: {query_vector}")
 
             # Build filters based on session context
             filters = self._build_context_filters(session_context)
 
             # Search vector store (temporarily disable filters)
-            results = self.vector_store.search(
+            results = self.search(
                 query_vector=query_vector,
                 top_k=top_k,
                 filters=None,  # Temporarily disable filters
@@ -245,9 +381,9 @@ class VectorSearchService:
             ],
         }
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_service_stats(self) -> Dict[str, Any]:
         """Get comprehensive statistics"""
-        store_stats = self.vector_store.get_stats()
+        store_stats = self.get_stats()
         processor_stats = self.text_processor.get_model_info()
 
         return {

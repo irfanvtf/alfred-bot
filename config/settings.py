@@ -7,13 +7,6 @@ load_dotenv()
 
 
 class Settings:
-    # Pinecone configuration
-    pinecone_api_key: str = os.getenv("PINECONE_API_KEY", "")
-    pinecone_environment: str = os.getenv("PINECONE_ENVIRONMENT", "")
-    pinecone_index_name: str = os.getenv("PINECONE_INDEX_NAME", "chatbot-knowledge")
-
-    
-
     # API configuration
     api_title: str = os.getenv("API_TITLE", "")
     api_version: str = os.getenv("API_VERSION", "")
@@ -40,10 +33,7 @@ class Settings:
 
     def validate(self):
         """Validate required settings"""
-        if not self.pinecone_api_key:
-            raise ValueError("PINECONE_API_KEY is required")
-        if not self.pinecone_environment:
-            raise ValueError("PINECONE_ENVIRONMENT is required")
+        pass
 
 
 settings = Settings()

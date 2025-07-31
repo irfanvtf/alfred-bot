@@ -114,14 +114,7 @@ ENV BERT_MODEL=all-MiniLM-L6-v2
 
 # Vector database configuration
 ENV CHROMA_PERSIST_DIRECTORY=/app/data/chroma_db
-ENV PINECONE_INDEX_NAME=chatbot-knowledge
 
-# Sentence Transformers cache location
-ENV SENTENCE_TRANSFORMERS_HOME=/home/alfred/.cache/torch/sentence_transformers
-
-# These should be set via docker-compose.yml or docker run for security
-# ENV PINECONE_API_KEY=your_api_key_here
-# ENV PINECONE_ENVIRONMENT=your_environment_here
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=30s --start-period=40s --retries=3 \

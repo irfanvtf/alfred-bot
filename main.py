@@ -108,21 +108,7 @@ async def test_dependencies():
 
     
 
-    # Test Pinecone
-    try:
-        import pinecone
-
-        api_key = os.getenv("PINECONE_API_KEY")
-        if api_key:
-            results["pinecone"] = {"status": "OK", "api_key_set": True}
-        else:
-            results["pinecone"] = {
-                "status": "WARNING",
-                "api_key_set": False,
-                "message": "API key not set",
-            }
-    except Exception as e:
-        results["pinecone"] = {"status": "ERROR", "error": str(e)}
+    
 
     # Test other dependencies
     try:

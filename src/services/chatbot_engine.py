@@ -5,7 +5,7 @@ from typing import Dict, Any, Optional, List
 from datetime import datetime
 from enum import Enum
 import json
-from src.services.vector_store.search_service import VectorSearchService
+from src.services.vector_search import VectorSearchService
 from src.services.session_manager import session_manager
 from src.services.knowledge_manager import KnowledgeManager
 from src.models.session import SessionUpdate
@@ -28,7 +28,7 @@ class ChatbotEngine:
     """Main chatbot engine with session-aware logic"""
 
     def __init__(self):
-        self.vector_service = VectorSearchService(use_chroma=True)
+        self.vector_service = VectorSearchService()
         self.knowledge_manager = KnowledgeManager("data/knowledge-base.json")
         self.fallback_knowledge_manager = KnowledgeManager(
             "data/fallback-responses.json"
@@ -455,9 +455,6 @@ class ChatbotEngine:
         response_text = response_data.get(
             "response", "I'm not sure how to respond to that."
         )
-
-        # Simple template variable replacement
-        # TODO: Implement more sophisticated templating
 
         # Replace user name if available
         user_name = session_context.get("context_variables", {}).get("user_name")
