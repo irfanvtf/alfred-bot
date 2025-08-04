@@ -26,7 +26,7 @@
 - [ ] User roles & permissions
 - [ ] Preview mode for testing changes
 
-### Phase 7: Basic Testing & Validation (Priority)
+### Phase 9: Basic Testing & Validation (Priority)
 
 - [ ] Core functionality tests
 - [ ] Deployment validation script
@@ -35,7 +35,7 @@
 
 ## Medium-term (2-4 months)
 
-### Phase 9: Analytics Dashboard
+### Phase 10: Analytics Dashboard
 
 - [ ] User interaction tracking & conversation analytics
 - [ ] Real-time performance metrics dashboard
@@ -48,6 +48,13 @@
 - [ ] Response personalization
 - [ ] Enhanced fallback responses
 - [ ] Multi-language support
+
+### Production Readiness
+
+- [ ] HTTPS configuration with SSL certificates
+- [ ] Docker secrets management implementation
+- [ ] CI/CD pipeline setup (GitHub Actions)
+- [ ] Basic monitoring and logging (Prometheus/Grafana or cloud monitoring)
 
 ## Long-term (4+ months)
 
@@ -65,13 +72,23 @@
 - [ ] Kubernetes deployment
 - [ ] Voice integration (speech-to-text/text-to-speech)
 
+### Production Infrastructure
+
+- [ ] Container orchestration migration (Kubernetes evaluation)
+- [ ] Advanced secrets management (cloud-based)
+- [ ] Comprehensive monitoring and alerting system
+- [ ] APM tools integration for performance insights
+
 ## Technical Debt
 
 - [ ] Complete test coverage
 - [ ] API documentation improvements
 - [ ] Security audit
+- [ ] Production security audit
+- [ ] Container security hardening
 - [ ] Performance profiling
 - [ ] Microservices architecture evaluation
+- [ ] Automated deployment pipeline (CD)
 
 ## Success Targets
 
@@ -83,4 +100,4 @@
 
 ---
 
-_Current Version: 0.8.0 | Last Updated: July 2024_
+_Current Version: 0.8.0 | Last Updated: August 2025_
