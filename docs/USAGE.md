@@ -84,13 +84,11 @@ If you prefer to run the application locally without Docker, you will need to ha
 
     5.  **Set up the environment variables:**
 
-        Create a `.env` file in the root directory and add the following variables. Make sure the `REDIS_HOST` and `REDIS_PORT` match your local Redis server configuration.
-
-        ```env
-        REDIS_HOST=localhost
-        REDIS_PORT=6379
-        REDIS_PASSWORD=
+        Create a `.env` file by copying the example file. This is recommended to ensure all required environment variables are present.
+        ```bash
+        cp .env.example .env
         ```
+        After copying, open the `.env` file and ensure the variables match your local setup, especially `REDIS_HOST` and `REDIS_PORT` for your Redis server.
 
 3.  **Running the Application:**
 
