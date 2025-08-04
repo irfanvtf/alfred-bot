@@ -40,7 +40,7 @@ FROM python:3.11-slim AS production
 # Set metadata
 LABEL maintainer="Irfan Murad <irfanfmurad@gmail.com>"
 LABEL description="Alfred Bot - Local Assistant Bot with BERT"
-LABEL version="1.1.0"
+LABEL version="0.9.0"
 
 # Install runtime system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \

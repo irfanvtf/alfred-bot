@@ -5,7 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.8.0] - 2024-07-10
+## [0.9.0] - 2025-08-04
+
+### Added
+
+- Structured response support with response IDs for all chatbot replies, enabling richer response metadata and improved fallback handling
+- New test script to validate intent-response matching via the API
+- Sample environment configuration file and detailed contributor guidelines
+
+### Changed
+
+- Migrated from spaCy and Pinecone to BERT sentence-transformers and ChromaDB for vector search and text processing
+- Simplified and unified vector store implementation, removing legacy Pinecone and spaCy dependencies
+- Updated Docker and environment configuration for streamlined deployment and setup
+
+### Fixed
+
+- Improved session save logging to reduce log noise and prevent memory leaks in session tracking
+- Fixed session ID not being persistent in API response
+
+### Documentation
+
+- Overhauled and condensed API, usage, and product requirement documentation
+- Updated README, roadmap, and licensing information (now GPLv3)
+
+### Removed
+
+- Obsolete test suites and vector store modules
+- Legacy Pinecone and spaCy dependencies
+- Updated dependency management and project metadata
+
+## [0.8.0] - 2025-07-10
 
 ### Added
 
@@ -29,7 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed multiple manual and integration test scripts, including environment setup, Redis connection, session management, vector search debugging, and API endpoint integration tests
 
-## [0.7.0] - 2024-07-06
+## [0.7.0] - 2025-07-06
 
 ### Added
 
@@ -58,7 +88,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added detailed documentation for confidence threshold test coverage and manual verification procedures
 
-## [0.6.0] - 2024-07-06
+## [0.6.0] - 2025-07-06
 
 ### Added
 
@@ -78,7 +108,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [List any security improvements here]
 
-## [0.5.0] - 2024-07-04
+## [0.5.0] - 2025-07-04
 
 ### Added
 
@@ -91,7 +121,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated dependencies and supporting modules for logging and middleware configuration
 
-## [0.4.0] - 2024-07-01
+## [0.4.0] - 2025-07-01
 
 ### Added
 
@@ -110,7 +140,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Conversation context retrieval now includes full recent message history
 
-## [0.3.0] - 2024-06-30
+## [0.3.0] - 2025-06-30
 
 ### Added
 
@@ -129,7 +159,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Improved file ignore patterns to exclude additional development artifacts and data files
 
-## [0.2.0] - 2024-06-30
+## [0.2.0] - 2025-06-30
 
 ### Added
 
@@ -137,10 +167,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Docker image configuration for Redis deployment
 - System health check endpoint to monitor Redis connectivity and status
 
-## [0.1.0] - 2024-06-26
+## [0.1.0] - 2025-06-26
 
 ### Added
-
 
 - Text cleaning functionality including lemmatization and stop-word removal
 - Knowledge base manager for interacting with JSON-stored intents and responses

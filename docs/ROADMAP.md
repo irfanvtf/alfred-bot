@@ -100,4 +100,4 @@
 
 ---
 
-_Current Version: 0.8.0 | Last Updated: August 2025_
+_Current Version: 0.9.0 | Last Updated: August 2025_
