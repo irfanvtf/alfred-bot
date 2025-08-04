@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "0.2.0",
   "metadata": {
     "created_at": "2025-07-07T00:00:00",
     "updated_at": "2025-07-07T00:00:00",
@@ -11,10 +11,22 @@
       "id": "fallback",
       "patterns": ["*"],
       "responses": [
-        "I'm not sure I understand that completely. Could you rephrase it?",
-        "I don't have specific information about that. Can you ask me something else?",
-        "That's not something I'm familiar with yet. How else can I help you?",
-        "I'm still learning about that topic. Is there something else I can assist with?"
+        {
+          "id": "fallback_0",
+          "text": "I'm not sure I understand that completely. Could you rephrase it?"
+        },
+        {
+          "id": "fallback_1",
+          "text": "I don't have specific information about that. Can you ask me something else?"
+        },
+        {
+          "id": "fallback_2",
+          "text": "That's not something I'm familiar with yet. How else can I help you?"
+        },
+        {
+          "id": "fallback_3",
+          "text": "I'm still learning about that topic. Is there something else I can assist with?"
+        }
       ],
       "metadata": {
         "category": "fallback",

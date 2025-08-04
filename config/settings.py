@@ -7,15 +7,6 @@ load_dotenv()
 
 
 class Settings:
-    # Pinecone configuration
-    pinecone_api_key: str = os.getenv("PINECONE_API_KEY", "")
-    pinecone_environment: str = os.getenv("PINECONE_ENVIRONMENT", "")
-    pinecone_index_name: str = os.getenv("PINECONE_INDEX_NAME", "chatbot-knowledge")
-
-    # spaCy configuration
-    spacy_model_md: str = os.getenv("SPACY_MODEL_MD", "en_core_web_md")
-    spacy_model_sm: str = os.getenv("SPACY_MODEL_SM", "en_core_web_sm")
-
     # API configuration
     api_title: str = os.getenv("API_TITLE", "")
     api_version: str = os.getenv("API_VERSION", "")
@@ -42,10 +33,19 @@ class Settings:
 
     def validate(self):
         """Validate required settings"""
-        if not self.pinecone_api_key:
-            raise ValueError("PINECONE_API_KEY is required")
-        if not self.pinecone_environment:
-            raise ValueError("PINECONE_ENVIRONMENT is required")
+        if not self.api_title:
+            raise ValueError("API_TITLE must be set")
+
+        # Ensure numeric env vars are really numeric
+        try:
+            self.api_port = int(self.api_port)
+            self.redis_port = int(self.redis_port)
+            self.redis_db = int(self.redis_db)
+            self.session_ttl = int(self.session_ttl)
+            self.max_results = int(self.max_results)
+            self.similarity_threshold = float(self.similarity_threshold)
+        except ValueError as exc:
+            raise ValueError("Invalid numeric environment variable") from exc
 
 
 settings = Settings()

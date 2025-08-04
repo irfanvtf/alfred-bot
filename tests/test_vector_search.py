@@ -8,7 +8,7 @@ from pathlib import Path
 # Add src to path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from src.services.vector_store import (
+from src.services.vector_search import (
     VectorSearchService,
 )
 from src.services.knowledge_manager import KnowledgeManager
@@ -36,10 +36,10 @@ class TestVectorSearch:
         # Temporarily change the data path for testing
         original_path = None
         try:
-            service = VectorSearchService(use_chroma=True)
+            service = VectorSearchService()
             # Override the data path for testing
-            if hasattr(service.vector_store, "client"):
-                service.vector_store.client = None  # Reset client to use new path
+            if hasattr(service, "client"):
+                service.client = None  # Reset client to use new path
             service.initialize()
             return service
         except Exception as e:
@@ -319,7 +319,7 @@ class TestVectorSearch:
             pytest.fail(f"Error getting service stats: {e}")
 
     def test_confidence_threshold_filtering(self, vector_service, sample_knowledge_base):
-        """Test that the 0.25 confidence threshold is correctly applied"""
+        """Test that the 0.6 confidence threshold is correctly applied"""
         # Convert to dict format
         kb_dict = (
             sample_knowledge_base.model_dump()
@@ -336,7 +336,7 @@ class TestVectorSearch:
         vector_service.index_knowledge_base(kb_dict)
 
         # Verify the service has the correct threshold
-        assert vector_service.confidence_threshold == 0.25, f"Expected threshold 0.25, got {vector_service.confidence_threshold}"
+        assert vector_service.confidence_threshold == 0.6, f"Expected threshold 0.6, got {vector_service.confidence_threshold}"
 
         # Test with queries that should produce different confidence levels
         test_cases = [
@@ -356,12 +356,12 @@ class TestVectorSearch:
                 
                 if should_pass_threshold:
                     # Should have results above threshold
-                    assert len(results) > 0, f"Query '{query}' should have results above 0.25 threshold but got none"
+                    assert len(results) > 0, f"Query '{query}' should have results above 0.6 threshold but got none"
                     
                     # Check that all returned results meet the threshold
                     for result in results:
                         score = result.get("final_score", result.get("score", 0))
-                        assert score >= 0.25, f"Result score {score} is below 0.25 threshold for query '{query}'"
+                        assert score >= 0.6, f"Result score {score} is below 0.6 threshold for query '{query}'"
                         
                         # If we expect a specific intent, check it's found
                         if expected_intent:
@@ -375,17 +375,17 @@ class TestVectorSearch:
                             print(f"⚠️  Query '{query}' expected intent '{expected_intent}' but found: {found_intents}")
                 else:
                     # Should have no results or very low confidence results
-                    low_confidence_results = [r for r in results if r.get("final_score", r.get("score", 0)) < 0.25]
-                    high_confidence_results = [r for r in results if r.get("final_score", r.get("score", 0)) >= 0.25]
+                    low_confidence_results = [r for r in results if r.get("final_score", r.get("score", 0)) < 0.6]
+                    high_confidence_results = [r for r in results if r.get("final_score", r.get("score", 0)) >= 0.6]
                     
-                    assert len(high_confidence_results) == 0, f"Query '{query}' should not have results above 0.25 threshold but got {len(high_confidence_results)}"
-                    print(f"✅ Query '{query}' correctly filtered out - no results above 0.25 threshold")
+                    assert len(high_confidence_results) == 0, f"Query '{query}' should not have results above 0.6 threshold but got {len(high_confidence_results)}"
+                    print(f"✅ Query '{query}' correctly filtered out - no results above 0.6 threshold")
                     
             except Exception as e:
                 print(f"Error testing confidence threshold for query '{query}': {e}")
                 
     def test_borderline_confidence_scores(self, vector_service, sample_knowledge_base):
-        """Test behavior around the exact 0.25 threshold boundary"""
+        """Test behavior around the exact 0.6 threshold boundary"""
         # Convert to dict format
         kb_dict = (
             sample_knowledge_base.model_dump()
@@ -423,7 +423,7 @@ class TestVectorSearch:
                         print(f"Query '{query}' - Result {i+1}: {intent_id} (score: {score:.4f})")
                         
                         # Verify that returned results meet threshold
-                        assert score >= 0.25, f"Returned result has score {score} below 0.25 threshold"
+                        assert score >= 0.6, f"Returned result has score {score} below 0.6 threshold"
                         
                         # Test the exact boundary
                         if 0.24 <= score <= 0.26:
@@ -437,12 +437,12 @@ class TestVectorSearch:
     def test_confidence_threshold_consistency(self, vector_service):
         """Test that the confidence threshold is consistent across service methods"""
         # Check that threshold is set correctly
-        assert vector_service.confidence_threshold == 0.25, "Service should have confidence_threshold = 0.25"
+        assert vector_service.confidence_threshold == 0.6, "Service should have confidence_threshold = 0.6"
         
         # Check that stats report the correct threshold
         stats = vector_service.get_stats()
         reported_threshold = stats.get("service_config", {}).get("confidence_threshold")
-        assert reported_threshold == 0.25, f"Stats should report threshold as 0.25, but got {reported_threshold}"
+        assert reported_threshold == 0.6, f"Stats should report threshold as 0.6, but got {reported_threshold}"
         
         print(f"✅ Confidence threshold consistently set to {vector_service.confidence_threshold}")
         
@@ -471,7 +471,7 @@ def run_manual_test():
 
     try:
         # Initialize service
-        service = VectorSearchService(use_chroma=True)
+        service = VectorSearchService()
         service.initialize()
         print("✅ Service initialized")
 

@@ -37,7 +37,7 @@ def extract_entities_from_context(session_id: str) -> Dict[str, Any]:
     recent_context = session_manager.get_conversation_context(session_id, 3)
 
     # TODO: Add simple entity extraction logic here
-    # This is a placeholder - you can enhance with spaCy NER later
+    # This is a placeholder - you can enhance with NER later
 
     return entities
 
