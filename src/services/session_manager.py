@@ -20,16 +20,14 @@ logger = logging.getLogger(__name__)
 
 class SessionManager:
     def __init__(self):
-        # FIXED: Change this line from redis_client.connection to just redis_client
         self.redis = redis_client.connection
         self.session_prefix = "alfred_session:"
         self.ttl = settings.session_ttl
         self.max_history = int(settings.max_conversation_history)
 
-        # Log deduplication tracking
-        self._last_logged_saves = defaultdict(float)  # session_id -> timestamp
-        self._save_counts = defaultdict(int)  # session_id -> count since last log
-        self._log_cooldown = 5.0  # seconds between duplicate logs
+        self._last_logged_saves = defaultdict(float)
+        self._save_counts = defaultdict(int)
+        self._log_cooldown = 5.0
 
     def get_session_key(self, session_id: str) -> str:
         """Generate Redis session key"""
@@ -45,7 +43,6 @@ class SessionManager:
             context_variables=session_create.initial_context or {},
         )
 
-        # Store in Redis
         key = self.get_session_key(session_id)
         self.redis.setex(key, self.ttl, session_data.model_dump_json())
 
@@ -63,7 +60,6 @@ class SessionManager:
         try:
             session_data = SessionData.model_validate_json(session_json)
 
-            # Update timestamp
             session_data.last_active = datetime.utcnow()
             self._save_session(session_data)
             return session_data
@@ -80,21 +76,17 @@ class SessionManager:
         if not session:
             return None
 
-        # Update message history
         if update.message:
             session.conversation_history.append(update.message)
 
-            # Trim long history
             if len(session.conversation_history) > self.max_history:
                 session.conversation_history = session.conversation_history[
                     -self.max_history :
                 ]
 
-        # Update context variables
         if update.context_variables:
             session.context_variables.update(update.context_variables)
 
-        # Update active status
         if update.is_active is not None:
             session.is_active = update.is_active
 
@@ -108,10 +100,8 @@ class SessionManager:
         key = self.get_session_key(session.session_id)
         self.redis.setex(key, self.ttl, session.model_dump_json())
 
-        # Track save count
         self._save_counts[session.session_id] += 1
 
-        # Check if we should log based on cooldown period
         now = time.time()
         last_logged = self._last_logged_saves[session.session_id]
 
@@ -124,7 +114,6 @@ class SessionManager:
             else:
                 logger.debug(f"Saved session: {session_id}. ({count} times)")
 
-            # Reset tracking for this session
             self._last_logged_saves[session.session_id] = now
             self._save_counts[session.session_id] = 0
 
@@ -133,7 +122,6 @@ class SessionManager:
         key = self.get_session_key(session_id)
         result = self.redis.delete(key)
 
-        # Clean up tracking data
         session_id_key = session_id
         if session_id_key in self._last_logged_saves:
             del self._last_logged_saves[session_id_key]
@@ -164,9 +152,8 @@ class SessionManager:
 
         for msg in recent_messages:
             if isinstance(msg, dict):
-                msg = ConversationMessage(**msg)  # parse dict into model
+                msg = ConversationMessage(**msg)
 
-            # Always handle the message if it's a ConversationMessage
             if isinstance(msg, ConversationMessage):
                 role_prefix = "User" if msg.role == "user" else "Alfred"
                 context_parts.append(f"{role_prefix}: {msg.message}")
@@ -186,9 +173,8 @@ class SessionManager:
     def cleanup_old_tracking_data(self):
         """Clean up old tracking data to prevent memory leaks"""
         now = time.time()
-        cutoff_time = now - (self._log_cooldown * 10)  # Keep 10x cooldown period
+        cutoff_time = now - (self._log_cooldown * 10)
 
-        # Remove old entries
         old_sessions = [
             session_id
             for session_id, timestamp in self._last_logged_saves.items()

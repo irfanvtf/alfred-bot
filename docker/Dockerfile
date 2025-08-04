@@ -85,37 +85,6 @@ ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
-# Application configuration
-ENV API_TITLE="PSN Chatbot API"
-ENV API_VERSION="v1"
-ENV API_HOST=0.0.0.0
-ENV API_PORT=8000
-
-# Logging configuration
-ENV LOG_LEVEL=INFO
-ENV LOG_TO_FILE=true
-
-# Redis configuration
-ENV REDIS_HOST=redis
-ENV REDIS_PORT=6379
-ENV REDIS_DB=0
-ENV REDIS_DECODE_RESPONSES=true
-
-# Session configuration
-ENV SESSION_TTL=3600
-ENV MAX_CONVERSATION_HISTORY=50
-
-# Chatbot configuration
-ENV SIMILARITY_THRESHOLD=0.7
-ENV MAX_RESULTS=5
-
-# BERT configuration
-ENV BERT_MODEL=all-MiniLM-L6-v2
-
-# Vector database configuration
-ENV CHROMA_PERSIST_DIRECTORY=/app/data/chroma_db
-
-
 # Health check
 HEALTHCHECK --interval=30s --timeout=30s --start-period=40s --retries=3 \
     CMD curl -f http://localhost:8000/health || exit 1
