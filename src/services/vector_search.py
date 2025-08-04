@@ -108,11 +108,9 @@ class VectorSearchService:
             if results["ids"] and len(results["ids"][0]) > 0:
                 for i in range(len(results["ids"][0])):
                     distance = results["distances"][0][i]
-                    # For very high distances, use inverse relationship
-                    # Temporarily use a more lenient scoring for testing
-                    similarity = 1.0 / (
-                        1.0 + distance / 5.0
-                    )  # This will give values between 0-1
+                    # Convert distance to similarity score (0-1 range)
+                    # ChromaDB uses L2/cosine distance, convert to similarity
+                    similarity = max(0.0, 1.0 - distance)
 
                     formatted_results.append(
                         {
@@ -231,11 +229,11 @@ class VectorSearchService:
             # Build filters based on session context
             filters = self._build_context_filters(session_context)
 
-            # Search vector store (temporarily disable filters)
+            # FIXME: Search vector store (temporarily disable filters)
             results = self.search(
                 query_vector=query_vector,
                 top_k=top_k,
-                filters=None,  # Temporarily disable filters
+                filters=None,  # FIXME: Temporarily disable filters
             )
 
             logger.debug(f"Search intents results: {results}")
