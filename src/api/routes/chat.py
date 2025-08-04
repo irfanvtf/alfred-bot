@@ -1,6 +1,5 @@
 # src/api/route/chat.py
-from fastapi import APIRouter, HTTPException, Depends
-from typing import Dict, Any, Optional
+from fastapi import APIRouter, HTTPException
 import logging
 from src.models.intent import ChatRequest, ChatResponse
 from src.services.chatbot_engine import chatbot_engine
@@ -12,7 +11,7 @@ router = APIRouter(prefix="/chat", tags=["chat"])
 
 
 @router.post("/", response_model=ChatResponse)
-async def chat(request: ChatRequest, session_id: Optional[str] = None):
+async def chat(request: ChatRequest):
     """
     Main chat endpoint with embedded session handling
 
@@ -26,9 +25,10 @@ async def chat(request: ChatRequest, session_id: Optional[str] = None):
     try:
         logger.info(f"Processing chat request: {request.message[:50]}...")
 
-        # Process message through chatbot engine (handles session internally)
         response = chatbot_engine.process_message(
-            message=request.message, session_id=session_id, user_id=request.user_id
+            message=request.message,
+            session_id=request.session_id,
+            user_id=request.user_id,
         )
 
         logger.info(f"Chat response generated: {response.intent_id or 'fallback'}")

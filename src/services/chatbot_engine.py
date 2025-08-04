@@ -11,6 +11,7 @@ from src.services.knowledge_manager import KnowledgeManager
 from src.models.session import SessionUpdate
 from src.models.intent import ChatResponse
 from src.utils.session_utils import create_user_message, create_bot_message
+from src.models.session import SessionCreate
 
 logger = logging.getLogger(__name__)
 
@@ -33,22 +34,18 @@ class ChatbotEngine:
         self.fallback_knowledge_manager = KnowledgeManager(
             "data/fallback-responses.json"
         )
-        self.confidence_threshold = 0.25  # Very low for testing
+        self.confidence_threshold = 0.25
         self.fallback_threshold = 0.1
 
-        # Initialize services
         self._initialize_services()
 
     def _initialize_services(self):
         """Initialize vector service with knowledge base"""
         try:
-            # Load knowledge base
             knowledge_base = self.knowledge_manager.load_knowledge_base()
 
-            # Initialize vector service
             self.vector_service.initialize()
 
-            # Index knowledge base
             kb_data = knowledge_base.model_dump()
             self.vector_service.index_knowledge_base(kb_data)
 
@@ -68,40 +65,28 @@ class ChatbotEngine:
         Process a user message and generate a response
         """
         try:
-            # Normalize message to lowercase
             message = message.lower()
 
-            # Get or create session
             session = self._get_or_create_session(session_id, user_id)
             session_id = session.session_id
 
-            # Add user message to session
             user_message = create_user_message(message)
             session_manager.add_message(session_id, user_message)
 
-            # Get session context for enhanced processing
             session_context = self._build_session_context(session_id)
 
-            # Classify intent with session context
             intent_matches = self._classify_intent(message, session_context)
-            # logger.debug(f"Intent matches: {intent_matches}")
 
-            # Select best response with session awareness
             response_data = self._select_response(
                 intent_matches, session_context, message
             )
 
-            # logger.debug(f"Response data: {response_data}")
-
-            # Update conversation state
             self._update_conversation_state(session_id, response_data)
 
-            # Generate final response with templating
             final_response = self._generate_response_text(
                 response_data, session_context
             )
 
-            # Add bot response to session
             bot_message = create_bot_message(
                 final_response,
                 metadata={
@@ -112,7 +97,6 @@ class ChatbotEngine:
             )
             session_manager.add_message(session_id, bot_message)
 
-            # Create response object
             chat_response = ChatResponse(
                 response=final_response,
                 intent_id=response_data.get("intent_id"),
@@ -132,7 +116,6 @@ class ChatbotEngine:
         except Exception as e:
             logger.error(f"Error processing message: {e}", exc_info=True)
 
-            # Return fallback response
             return ChatResponse(
                 response="I'm sorry, I encountered an error. Please try again.",
                 intent_id="error",
@@ -142,13 +125,11 @@ class ChatbotEngine:
 
     def _get_or_create_session(self, session_id: Optional[str], user_id: Optional[str]):
         """Get existing session or create new one"""
+
         if session_id:
             session = session_manager.get_session(session_id)
             if session:
                 return session
-
-        # Create new session
-        from src.models.session import SessionCreate
 
         session_create = SessionCreate(
             user_id=user_id,
