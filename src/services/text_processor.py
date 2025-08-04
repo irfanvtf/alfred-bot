@@ -1,7 +1,6 @@
 # src/services/text_processor.py
 import re
-import numpy as np
-from typing import List, Dict, Any, Optional, Tuple
+from typing import List, Dict, Any, Tuple
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from config.settings import settings
@@ -27,7 +26,7 @@ class TextProcessor:
             raise TextProcessingError(
                 f"Could not load sentence transformer model '{self.bert_model_name}'. "
                 f"Error: {e}. Please install with: pip install sentence-transformers"
-            )
+            ) from e
 
     def preprocess_text(self, text: str) -> Dict[str, Any]:
         """
@@ -179,7 +178,7 @@ class TextProcessor:
                     result = {
                         "original": text,
                         "cleaned": cleaned_text,
-                        "bert_vector": bert_embedding,
+                        "vector": bert_embedding,
                         "vector_dim": len(bert_embedding),
                     }
 
@@ -191,7 +190,7 @@ class TextProcessor:
                     results[text_idx] = {
                         "original": text,
                         "error": str(e),
-                        "bert_vector": [0.0]
+                        "vector": [0.0]
                         * self.sentence_transformer.get_sentence_embedding_dimension(),
                         "vector_dim": self.sentence_transformer.get_sentence_embedding_dimension(),
                     }
@@ -202,7 +201,7 @@ class TextProcessor:
                 results[i] = {
                     "original": texts[i],
                     "error": "Empty or invalid text",
-                    "bert_vector": [0.0]
+                    "vector": [0.0]
                     * self.sentence_transformer.get_sentence_embedding_dimension(),
                     "vector_dim": self.sentence_transformer.get_sentence_embedding_dimension(),
                 }

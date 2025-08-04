@@ -77,4 +77,4 @@ For a complete and versioned list of dependencies required for production, pleas
 
 The project has completed its core development phases, including the FastAPI integration, vector search, and session management. The immediate focus is on enhancing the knowledge management capabilities and improving the testing framework.
 
-Future improvements will focus on adding an analytics dashboard, advanced context handling, and integrations with external services. For a detailed view of the project's direction, please see the [Roadmap](./docs/ROADMAP.md).
+Future improvements will focus on adding an analytics dashboard, advanced context handling, and integrations with external services. For a detailed view of the project's direction, please see the [Roadmap](./docs/roadmap.md).

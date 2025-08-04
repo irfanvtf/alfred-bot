@@ -34,7 +34,7 @@ class ChatbotEngine:
         self.fallback_knowledge_manager = KnowledgeManager(
             "data/fallback-responses.json"
         )
-        self.confidence_threshold = 0.25
+        self.confidence_threshold = 0.6
         self.fallback_threshold = 0.1
 
         self._initialize_services()

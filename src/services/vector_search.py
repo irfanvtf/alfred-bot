@@ -28,7 +28,7 @@ class VectorSearchService:
         persist_path: str = "./data/chroma_db",
     ):
         self.text_processor = TextProcessor()
-        self.confidence_threshold = 0.5
+        self.confidence_threshold = 0.6
         self.collection_name = collection_name
         self.persist_path = persist_path
         self.client = None
@@ -191,7 +191,7 @@ class VectorSearchService:
                             "type": "pattern",
                             "category": metadata.get("category", "general"),
                             "confidence_threshold": metadata.get(
-                                "confidence_threshold", 0.5
+                                "confidence_threshold", 0.6
                             ),
                             "responses": json.dumps(responses),
                             "original_text": pattern,

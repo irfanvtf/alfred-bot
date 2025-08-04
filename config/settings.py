@@ -33,7 +33,19 @@ class Settings:
 
     def validate(self):
         """Validate required settings"""
-        pass
+        if not self.api_title:
+            raise ValueError("API_TITLE must be set")
+
+        # Ensure numeric env vars are really numeric
+        try:
+            self.api_port = int(self.api_port)
+            self.redis_port = int(self.redis_port)
+            self.redis_db = int(self.redis_db)
+            self.session_ttl = int(self.session_ttl)
+            self.max_results = int(self.max_results)
+            self.similarity_threshold = float(self.similarity_threshold)
+        except ValueError as exc:
+            raise ValueError("Invalid numeric environment variable") from exc
 
 
 settings = Settings()
