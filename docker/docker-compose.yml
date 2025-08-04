@@ -3,14 +3,29 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    command: ["wait-for-it.sh", "redis", "6379", "--", "python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    command:
+      [
+        "wait-for-it.sh",
+        "redis",
+        "6379",
+        "--",
+        "python",
+        "-m",
+        "uvicorn",
+        "main:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000",
+        "--reload",
+      ]
     ports:
       - "8000:8000"
     depends_on:
       - redis
     restart: always
-    environment:
-      - LOG_LEVEL=INFO
+    env_file:
+      - ../.env
     volumes:
       - ..:/app
       - alfred_logs:/app/logs

@@ -10,8 +10,8 @@ services:
     depends_on:
       - redis
     restart: always
-    environment:
-      - LOG_LEVEL=INFO
+    env_file:
+      - ../.env
     volumes:
       - alfred_logs:/app/logs
       - alfred_chroma_db:/app/data/chroma_db
