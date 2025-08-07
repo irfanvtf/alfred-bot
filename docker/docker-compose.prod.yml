@@ -1,7 +1,8 @@
 version: "3.8"
-
+name: alfred-bot
 services:
   api:
+    image: alfred-bot-api
     build:
       context: ..
       dockerfile: docker/Dockerfile
