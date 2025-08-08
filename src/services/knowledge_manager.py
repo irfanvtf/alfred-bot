@@ -10,7 +10,7 @@ from src.utils.exceptions import ConfigurationError
 class KnowledgeManager:
     """Manages knowledge base operations with caching"""
 
-    def __init__(self, knowledge_file: str = "data/knowledge_base.json"):
+    def __init__(self, knowledge_file: str = "data/knowledge/knowledge-base.json"):
         self.knowledge_file = knowledge_file
         self.knowledge_base: Optional[KnowledgeBase] = None
         self._last_modified_time: Optional[float] = None

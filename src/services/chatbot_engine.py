@@ -29,10 +29,11 @@ class ChatbotEngine:
     """Main chatbot engine with session-aware logic"""
 
     def __init__(self):
+        # TODO: add function to load knowledge base for different languages
         self.vector_service = VectorSearchService()
-        self.knowledge_manager = KnowledgeManager("data/knowledge-base.json")
+        self.knowledge_manager = KnowledgeManager("data/sources/json/dialog-en.json")
         self.fallback_knowledge_manager = KnowledgeManager(
-            "data/fallback-responses.json"
+            "data/fallback/json/fallback-responses.json"
         )
         self.confidence_threshold = 0.6
         self.fallback_threshold = 0.1
