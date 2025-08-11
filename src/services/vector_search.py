@@ -221,7 +221,7 @@ class VectorSearchService:
         """Search for matching intents with session context"""
         try:
             # Enhance query with session context
-            enhanced_query = self._enhance_query_with_context(query, session_context)
+            enhanced_query = self.text_processor.enhance_query_with_context(query, session_context)
 
             # Get query vector
             query_vector = self.text_processor.get_text_vector(enhanced_query)
@@ -267,35 +267,6 @@ class VectorSearchService:
             if isinstance(e, ConfigurationError):
                 raise
             return []
-
-    def _enhance_query_with_context(
-        self, query: str, context: Optional[Dict[str, Any]]
-    ) -> str:
-        """Enhance query with conversation context"""
-        if not context:
-            return query
-
-        enhanced_query = query
-
-        # Add recent conversation context
-        history = context.get("conversation_history", [])
-        if history:
-            # Get last few user messages for context
-            recent_messages = [
-                msg["message"] for msg in history[-3:] if msg.get("role") == "user"
-            ]
-            if recent_messages:
-                context_text = " ".join(recent_messages[-2:])  # Last 2 user messages
-                enhanced_query = f"{context_text} {query}"
-
-        # Add context variables as keywords
-        context_vars = context.get("context_variables", {})
-        if context_vars:
-            for key, value in context_vars.items():
-                if isinstance(value, str) and len(value) < 50:
-                    enhanced_query = f"{enhanced_query} {value}"
-
-        return enhanced_query
 
     def _build_context_filters(
         self, context: Optional[Dict[str, Any]]
@@ -353,31 +324,6 @@ class VectorSearchService:
                 score += 0.15
 
         return min(score, 1.0)  # Cap at 1.0
-
-    def get_fallback_response(
-        self, query: str, session_context: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
-        """Generate fallback response when no good matches found"""
-        fallback_responses = [
-            "I'm not sure I understand. Could you please rephrase that?",
-            "I don't have information about that topic. Can you ask something else?",
-            "That's not something I'm familiar with. How else can I help you?",
-            "I'm still learning about that. Is there something else I can assist with?",
-        ]
-
-        # Choose response based on context
-        response = random.choice(fallback_responses)
-
-        return {
-            "intent_id": "fallback",
-            "response": response,
-            "confidence": 0.0,
-            "type": "fallback",
-            "suggestions": [
-                "Try asking about greetings, help, or thanks",
-                "Be more specific in your question",
-            ],
-        }
 
     def get_service_stats(self) -> Dict[str, Any]:
         """Get comprehensive statistics"""

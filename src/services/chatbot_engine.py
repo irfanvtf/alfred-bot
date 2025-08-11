@@ -74,7 +74,7 @@ class ChatbotEngine:
             user_message = create_user_message(message)
             session_manager.add_message(session_id, user_message)
 
-            session_context = self._build_session_context(session_id)
+            session_context = session_manager.build_session_context(session_id)
 
             intent_matches = self._classify_intent(message, session_context)
 
@@ -138,43 +138,7 @@ class ChatbotEngine:
         )
         return session_manager.create_session(session_create)
 
-    def _build_session_context(self, session_id: str) -> Dict[str, Any]:
-        """Build comprehensive session context"""
-        session = session_manager.get_session(session_id)
-        if not session:
-            return {}
-
-        # Get conversation history
-        conversation_history = []
-        for msg in session.conversation_history[-5:]:  # Last 5 messages
-            if isinstance(msg, dict):
-                conversation_history.append(msg)
-            else:
-                conversation_history.append(
-                    {
-                        "role": msg.role,
-                        "message": msg.message,
-                        "timestamp": msg.timestamp.isoformat()
-                        if msg.timestamp
-                        else None,
-                    }
-                )
-
-        # Build context
-        context = {
-            "session_id": session_id,
-            "user_id": session.user_id,
-            "conversation_history": conversation_history,
-            "context_variables": session.context_variables.copy(),
-            "conversation_state": session.context_variables.get(
-                "conversation_state", ConversationState.GREETING
-            ),
-            "last_intent": session.context_variables.get("last_intent"),
-            "last_category": session.context_variables.get("last_category"),
-            "message_count": len(session.conversation_history),
-        }
-
-        return context
+    
 
     def _classify_intent(
         self, message: str, session_context: Dict[str, Any]

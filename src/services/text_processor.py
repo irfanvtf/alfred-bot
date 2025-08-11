@@ -1,6 +1,6 @@
 # src/services/text_processor.py
 import re
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Any, Tuple, Optional
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from config.settings import settings
@@ -235,6 +235,35 @@ class TextProcessor:
         text_sim_pairs.sort(key=lambda x: x[1], reverse=True)
 
         return text_sim_pairs[:top_k]
+
+    def enhance_query_with_context(
+        self, query: str, context: Optional[Dict[str, Any]]
+    ) -> str:
+        """Enhance query with conversation context"""
+        if not context:
+            return query
+
+        enhanced_query = query
+
+        # Add recent conversation context
+        history = context.get("conversation_history", [])
+        if history:
+            # Get last few user messages for context
+            recent_messages = [
+                msg["message"] for msg in history[-3:] if msg.get("role") == "user"
+            ]
+            if recent_messages:
+                context_text = " ".join(recent_messages[-2:])  # Last 2 user messages
+                enhanced_query = f"{context_text} {query}"
+
+        # Add context variables as keywords
+        context_vars = context.get("context_variables", {})
+        if context_vars:
+            for key, value in context_vars.items():
+                if isinstance(value, str) and len(value) < 50:
+                    enhanced_query = f"{enhanced_query} {value}"
+
+        return enhanced_query
 
 
 # Create singleton instance

@@ -160,6 +160,46 @@ class SessionManager:
 
         return "\n".join(context_parts)
 
+    def build_session_context(self, session_id: str) -> Dict[str, Any]:
+        """Build comprehensive session context"""
+        from src.services.chatbot_engine import ConversationState
+        
+        session = self.get_session(session_id)
+        if not session:
+            return {}
+
+        # Get conversation history
+        conversation_history = []
+        for msg in session.conversation_history[-5:]:  # Last 5 messages
+            if isinstance(msg, dict):
+                conversation_history.append(msg)
+            else:
+                conversation_history.append(
+                    {
+                        "role": msg.role,
+                        "message": msg.message,
+                        "timestamp": msg.timestamp.isoformat()
+                        if msg.timestamp
+                        else None,
+                    }
+                )
+
+        # Build context
+        context = {
+            "session_id": session_id,
+            "user_id": session.user_id,
+            "conversation_history": conversation_history,
+            "context_variables": session.context_variables.copy(),
+            "conversation_state": session.context_variables.get(
+                "conversation_state", ConversationState.GREETING
+            ),
+            "last_intent": session.context_variables.get("last_intent"),
+            "last_category": session.context_variables.get("last_category"),
+            "message_count": len(session.conversation_history),
+        }
+
+        return context
+
     def extend_session_ttl(self, session_id: str) -> bool:
         """Extend session TTL"""
         key = self.get_session_key(session_id)
