@@ -12,6 +12,7 @@ from src.models.session import (
     SessionUpdate,
     ConversationMessage,
 )
+from src.models.conversation_state import ConversationState
 import logging
 
 
@@ -162,7 +163,6 @@ class SessionManager:
 
     def build_session_context(self, session_id: str) -> Dict[str, Any]:
         """Build comprehensive session context"""
-        from src.services.chatbot_engine import ConversationState
         
         session = self.get_session(session_id)
         if not session:

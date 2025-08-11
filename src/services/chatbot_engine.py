@@ -3,38 +3,38 @@ import random
 import logging
 from typing import Dict, Any, Optional, List
 from datetime import datetime
-from enum import Enum
 import json
 from src.services.vector_search import VectorSearchService
 from src.services.session_manager import session_manager
 from src.services.knowledge_manager import KnowledgeManager
 from src.models.session import SessionUpdate
 from src.models.intent import ChatResponse
+from src.models.conversation_state import ConversationState
 from src.utils.session_utils import create_user_message, create_bot_message
 from src.models.session import SessionCreate
 
 logger = logging.getLogger(__name__)
 
 
-class ConversationState(str, Enum):
-    """Conversation states for flow management"""
-
-    GREETING = "greeting"
-    ONGOING = "ongoing"
-    CLOSING = "closing"
-    ENDED = "ended"
-
-
 class ChatbotEngine:
     """Main chatbot engine with session-aware logic"""
 
-    def __init__(self):
-        # TODO: add function to load knowledge base for different languages
+    def __init__(self, language: str = "en"):
         self.vector_service = VectorSearchService()
-        self.knowledge_manager = KnowledgeManager("data/sources/json/dialog-en.json")
-        self.fallback_knowledge_manager = KnowledgeManager(
-            "data/fallback/json/fallback-responses.json"
-        )
+        self.language = language
+        
+        # Set knowledge base files based on language
+        if language == "ms":
+            self.knowledge_manager = KnowledgeManager("data/sources/ms/dialog-ms.json")
+            self.fallback_knowledge_manager = KnowledgeManager(
+                "data/fallback/ms/fallback-responses.json"
+            )
+        else:  # default to English
+            self.knowledge_manager = KnowledgeManager("data/sources/en/dialog-en.json")
+            self.fallback_knowledge_manager = KnowledgeManager(
+                "data/fallback/en/fallback-responses.json"
+            )
+        
         self.confidence_threshold = 0.6
         self.fallback_threshold = 0.1
 
