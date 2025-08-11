@@ -10,12 +10,17 @@ from src.utils.exceptions import TextProcessingError
 class TextProcessor:
     """Handles all text processing operations using BERT sentence transformers"""
 
-    def __init__(self, bert_model_name: str = None):
+    def __init__(
+        self,
+        bert_model_name: str = None,
+        sentence_transformer: "SentenceTransformer" = None,
+    ):
         self.bert_model_name = bert_model_name or getattr(
-            settings, "bert_model", "all-MiniLM-L6-v2"
+            settings, "bert_model", "paraphrase-multilingual-MiniLM-L12-v2"
         )
-        self.sentence_transformer = None
-        self._load_models()
+        self.sentence_transformer = sentence_transformer
+        if not self.sentence_transformer:
+            self._load_models()
 
     def _load_models(self):
         """Load sentence transformer models"""

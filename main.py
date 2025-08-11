@@ -9,6 +9,7 @@ from config.settings import settings
 from src.api.routes.chat import router as chat_router
 from src.api.routes.session import router as session_router
 from src.api.routes.health import router as health_router
+from src.api.routes.chroma import router as chroma_router
 
 # Import middleware and error handling
 from src.api.middleware import (
@@ -66,6 +67,7 @@ setup_exception_handlers(app)
 app.include_router(chat_router, prefix="/api/v1")
 app.include_router(session_router, prefix="/api/v1")
 app.include_router(health_router, prefix="/api/v1")
+app.include_router(chroma_router, prefix="/api/v1")
 
 
 @app.get("/")
