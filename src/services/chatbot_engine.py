@@ -6,6 +6,7 @@ from datetime import datetime
 import json
 from src.services.vector_search import VectorSearchService
 from src.services.session_manager import session_manager
+# Import the refactored KnowledgeManager
 from src.services.knowledge_manager import KnowledgeManager
 from src.models.session import SessionUpdate
 from src.models.intent import ChatResponse
@@ -23,17 +24,15 @@ class ChatbotEngine:
         self.vector_service = VectorSearchService()
         self.language = language
         
-        # Set knowledge base files based on language
+        # Use a single KnowledgeManager instance for all sources
+        self.knowledge_manager = KnowledgeManager()
+        # Register main and fallback knowledge sources for the specified language
         if language == "ms":
-            self.knowledge_manager = KnowledgeManager("data/sources/ms/dialog-ms.json")
-            self.fallback_knowledge_manager = KnowledgeManager(
-                "data/fallback/ms/fallback-responses.json"
-            )
+            self.knowledge_manager.register_knowledge_source("main", "data/sources/ms/dialog-ms.json")
+            self.knowledge_manager.register_knowledge_source("fallback", "data/fallback/ms/fallback-responses.json")
         else:  # default to English
-            self.knowledge_manager = KnowledgeManager("data/sources/en/dialog-en.json")
-            self.fallback_knowledge_manager = KnowledgeManager(
-                "data/fallback/en/fallback-responses.json"
-            )
+            self.knowledge_manager.register_knowledge_source("main", "data/sources/en/dialog-en.json")
+            self.knowledge_manager.register_knowledge_source("fallback", "data/fallback/en/fallback-responses.json")
         
         self.confidence_threshold = 0.6
         self.fallback_threshold = 0.1
@@ -41,19 +40,24 @@ class ChatbotEngine:
         self._initialize_services()
 
     def _initialize_services(self):
-        """Initialize vector service with knowledge base"""
+        """Initialize vector service client. Indexing is handled separately."""
         try:
-            knowledge_base = self.knowledge_manager.load_knowledge_base()
+            # Ensure the main knowledge base for this language is loaded using the identifier "main"
+            self.knowledge_manager.load_knowledge_base("main")
+            
+            # Ensure the fallback knowledge base is loaded using the identifier "fallback"
+            self.knowledge_manager.load_knowledge_base("fallback")
 
+            # Initialize the vector service client
             self.vector_service.initialize()
-
-            kb_data = knowledge_base.model_dump()
-            self.vector_service.index_knowledge_base(kb_data)
-
-            logger.info("Chatbot engine initialized successfully")
+            
+            # Note: Indexing is now handled externally before ChatbotEngine instances are created.
+            # This engine will use pre-existing collections named 'intent_{self.language}'.
+            
+            logger.info(f"Chatbot engine client for language '{self.language}' initialized successfully.")
 
         except Exception as e:
-            logger.error(f"Failed to initialize chatbot engine: {e}")
+            logger.error(f"Failed to initialize chatbot engine client for language '{self.language}': {e}")
             raise
 
     def process_message(
@@ -74,7 +78,13 @@ class ChatbotEngine:
             user_message = create_user_message(message)
             session_manager.add_message(session_id, user_message)
 
+            # IMPORTANT: Pass session context to search_intents so it can determine the collection
+            # The session context might need to include language information if not determined otherwise.
+            # For now, we rely on the engine's self.language or the service's determination logic.
+            # If language should be tied to the user/session, it should be part of session_context.
             session_context = session_manager.build_session_context(session_id)
+            # Example of potentially adding language to session context if needed by downstream logic
+            # session_context.setdefault("context_variables", {})["preferred_language"] = self.language
 
             intent_matches = self._classify_intent(message, session_context)
 
@@ -145,7 +155,8 @@ class ChatbotEngine:
     ) -> List[Dict[str, Any]]:
         """Classify intent with session context"""
         try:
-            # Search for intent matches
+            # The vector_service.search_intents now handles collection determination
+            # based on the message and session_context (including potential language info)
             results = self.vector_service.search_intents(
                 query=message, session_context=session_context, top_k=5
             )
@@ -335,31 +346,50 @@ class ChatbotEngine:
         self, message: str, session_context: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Generate fallback response with context awareness"""
-        fallback_intent = self.fallback_knowledge_manager.get_intent("fallback")
-        if fallback_intent and fallback_intent.responses:
-            # Select a random response object first
-            selected_response = random.choice(fallback_intent.responses)
+        # Load the fallback knowledge base for this language using the identifier "fallback"
+        try:
+            # Ensure the fallback knowledge base is loaded
+            self.knowledge_manager.load_knowledge_base("fallback") # This will load if not cached or cache is invalid
+            # Get the specific intent from the loaded fallback knowledge base
+            fallback_intent = self.knowledge_manager.get_intent("fallback", "fallback") # identifier, intent_id
+            if fallback_intent and fallback_intent.responses:
+                # Select a random response object first
+                selected_response = random.choice(fallback_intent.responses)
 
-            # Extract id and text from the response object
-            if hasattr(selected_response, "text") and hasattr(selected_response, "id"):
-                response_id = selected_response.id
-                response_text = selected_response.text
-            elif isinstance(selected_response, dict):
-                response_id = selected_response.get("id", "unknown")
-                response_text = selected_response.get("text", str(selected_response))
+                # Extract id and text from the response object
+                if hasattr(selected_response, "text") and hasattr(selected_response, "id"):
+                    response_id = selected_response.id
+                    response_text = selected_response.text
+                elif isinstance(selected_response, dict):
+                    response_id = selected_response.get("id", "unknown")
+                    response_text = selected_response.get("text", str(selected_response))
+                else:
+                    # Fallback for string responses
+                    response_id = "legacy_response"
+                    response_text = str(selected_response)
+
+                logger.debug(f"Selected fallback response ID: {response_id}, Text: {response_text}")
+                return {
+                    "type": "fallback",
+                    "intent_id": "fallback",
+                    "response_id": response_id,
+                    "confidence": 0.0,
+                    "response": response_text,
+                    "category": "fallback",
+                }
             else:
-                # Fallback for string responses
-                response_id = "legacy_response"
-                response_text = str(selected_response)
+                logger.warning("Fallback intent not found or has no responses.")
+        except Exception as e:
+            logger.error(f"Error loading fallback responses: {e}")
 
-            logger.debug(f"Selected response ID: {response_id}, Text: {response_text}")
-
+        # Final fallback if KB loading or intent retrieval fails
+        logger.warning("Using hardcoded final fallback response.")
         return {
             "type": "fallback",
             "intent_id": "fallback",
-            "response_id": response_id,
+            "response_id": "hardcoded_fallback_0",
             "confidence": 0.0,
-            "response": response_text,
+            "response": "I'm sorry, I didn't understand that. Could you please rephrase?",
             "category": "fallback",
         }
 
@@ -420,8 +450,9 @@ class ChatbotEngine:
 
     def get_engine_stats(self) -> Dict[str, Any]:
         """Get chatbot engine statistics"""
-        vector_stats = self.vector_service.get_stats()
-        kb_stats = self.knowledge_manager.get_stats()
+        vector_stats = self.vector_service.get_service_stats() # Use the new method name
+        # Get stats for the main knowledge base using its identifier
+        kb_stats = self.knowledge_manager.get_stats("main") # Pass the identifier "main"
 
         return {
             "engine_config": {
@@ -435,4 +466,9 @@ class ChatbotEngine:
 
 
 # Create global instance
-chatbot_engine = ChatbotEngine()
+chatbot_engine = ChatbotEngine("en")
+
+
+def get_chatbot_engine(language: str = "en") -> "ChatbotEngine":
+    """Get a chatbot engine instance for the specified language"""
+    return ChatbotEngine(language)

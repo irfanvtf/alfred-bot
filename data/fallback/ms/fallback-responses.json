@@ -1,0 +1,41 @@
+{
+  "version": "0.2.0",
+  "metadata": {
+    "created_at": "2024-01-01T00:00:00",
+    "updated_at": "2025-07-07T00:00:00",
+    "description": "Respons Sandaran Alfred Bot",
+    "language": "ms",
+    "search_config": {
+      "default_confidence_threshold": 0.6
+    }
+  },
+  "intents": [
+    {
+      "id": "fallback",
+      "patterns": [],
+      "responses": [
+        {
+          "id": "fallback_0",
+          "text": "Maaf, saya tidak pasti apa yang anda maksudkan. Boleh anda nyatakan semula soalan anda?"
+        },
+        {
+          "id": "fallback_1",
+          "text": "Saya tidak mempunyai maklumat tentang topik itu. Boleh anda tanya soalan lain?"
+        },
+        {
+          "id": "fallback_2",
+          "text": "Itu bukan sesuatu yang saya biasa dengan. Bagaimana saya boleh membantu anda dengan cara lain?"
+        },
+        {
+          "id": "fallback_3",
+          "text": "Saya masih belajar tentang perkara itu. Adakah ada perkara lain yang boleh saya bantu?"
+        }
+      ],
+      "metadata": {
+        "category": "fallback",
+        "priority": 1,
+        "tags": ["fallback", "error"]
+      }
+    }
+  ]
+}

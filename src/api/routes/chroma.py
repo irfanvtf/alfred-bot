@@ -3,8 +3,9 @@ from pydantic import BaseModel
 from typing import List, Dict, Any, Optional
 import logging
 import chromadb
+from chromadb.config import Settings
 from src.services.chroma_service import ChromaService
-from src.services.knowledge_manager import KnowledgeManager
+from config.settings import settings
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -16,11 +17,18 @@ class ChromaQuery(BaseModel):
     where_filter: Optional[Dict[str, Any]] = None
 
 
-# Dependency to get the Chroma client
+# Global instance of ChromaService for direct access
+_chroma_service_instance: Optional[ChromaService] = None
+
+
 def get_chroma_client() -> chromadb.Client:
     try:
-        knowledge_manager = KnowledgeManager()
-        return knowledge_manager.chroma_client
+        # Create Chroma client with persistent storage
+        client = chromadb.PersistentClient(
+            path=settings.chroma_persist_directory,
+            settings=Settings(anonymized_telemetry=False, allow_reset=True)
+        )
+        return client
     except Exception as e:
         logger.error(f"Failed to get Chroma client: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="Could not connect to ChromaDB")
@@ -30,6 +38,15 @@ def get_chroma_service(
     client: chromadb.Client = Depends(get_chroma_client),
 ) -> ChromaService:
     return ChromaService(chroma_client=client)
+
+
+def get_chroma_service_no_deps() -> ChromaService:
+    """Get ChromaService instance without dependencies (for startup initialization)."""
+    global _chroma_service_instance
+    if _chroma_service_instance is None:
+        client = get_chroma_client()
+        _chroma_service_instance = ChromaService(chroma_client=client)
+    return _chroma_service_instance
 
 
 @router.get(

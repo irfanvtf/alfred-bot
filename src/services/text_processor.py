@@ -1,10 +1,13 @@
 # src/services/text_processor.py
 import re
+import logging
 from typing import List, Dict, Any, Tuple, Optional
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from config.settings import settings
 from src.utils.exceptions import TextProcessingError
+
+logger = logging.getLogger(__name__)
 
 
 class TextProcessor:
@@ -26,7 +29,7 @@ class TextProcessor:
         """Load sentence transformer models"""
         try:
             self.sentence_transformer = SentenceTransformer(self.bert_model_name)
-            print(f"Loaded sentence transformer: {self.bert_model_name}")
+            logger.info(f"Loaded sentence transformer: {self.bert_model_name}")
         except Exception as e:
             raise TextProcessingError(
                 f"Could not load sentence transformer model '{self.bert_model_name}'. "

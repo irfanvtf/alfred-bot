@@ -1,6 +1,7 @@
 import logging
 from typing import List, Dict, Any
 import chromadb
+from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
 
 logger = logging.getLogger(__name__)
 
@@ -15,6 +16,13 @@ class ChromaService:
             chroma_client: An instance of the ChromaDB client.
         """
         self.client = chroma_client
+
+    def initialize_embedding_function(self) -> None:
+        """
+        This method is kept for interface compatibility but doesn't need to do anything
+        since embeddings are handled per collection.
+        """
+        logger.info("ChromaService: Embedding function initialization skipped - handled per collection")
 
     def list_collections(self) -> List[Dict[str, Any]]:
         """
