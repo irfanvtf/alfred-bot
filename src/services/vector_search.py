@@ -392,8 +392,8 @@ class VectorSearchService:
         self, query: str, session_context: Optional[Dict[str, Any]]
     ) -> str:
         """Determine the appropriate collection name for a search query.
-        This is a placeholder implementation. It should be replaced with actual logic,
-        potentially involving language detection or session state.
+        This implementation checks session context for language preference,
+        with fallback to English collection.
         """
         # 1. Check session context for language preference
         if session_context:
@@ -402,24 +402,46 @@ class VectorSearchService:
             if preferred_lang:
                 # Map language code to the new, clearer collection name convention (e.g., 'en' -> 'intent_en')
                 # This mapping should be configurable or follow a known pattern.
-                return f"intent_{preferred_lang}"
+                collection_name = f"intent_{preferred_lang}"
+                logger.debug(f"Using collection '{collection_name}' based on session context language '{preferred_lang}'")
+                return collection_name
 
         # 2. Attempt language detection on the query (requires a language detection library)
-        # Example using a hypothetical 'langdetect' library (add to requirements.txt)
-        # try:
-        #     from langdetect import detect
-        #     detected_lang = detect(query)
-        #     logger.debug(f"Detected language for query '{query[:20]}...': {detected_lang}")
-        #     return f"intent_{detected_lang}"
-        # except Exception as e:
-        #     logger.warning(f"Language detection failed for query '{query[:20]}...': {e}. Using default.")
+        # For now, we'll use a simple heuristic based on common words in each language
+        # In a production environment, you'd want to use a proper language detection library
+        if query:
+            # Simple heuristic for Malay language detection
+            # Common Malay words/affixes
+            ms_indicators = ['ada', 'saya', 'anda', 'kami', 'dia', 'mereka', 'akan', 'sudah', 'belum', 'boleh', 'tidak', 'apa', 'bagaimana', 'mengapa', 'kenapa', 'siapa', 'bila', 'bila', 'macam', 'mana', 'sini', 'situ', 'sana', 'ini', 'itu', 'sini', 'itu', 'dengan', 'untuk', 'daripada', 'kepada', 'dalam', 'atas', 'bawah', 'sebelum', 'selepas', 'antara', 'melalui', 'sekitar', 'sepanjang', 'seluruh', 'sebahagian']
+            
+            # Convert query to lowercase for comparison
+            query_lower = query.lower()
+            
+            # Count Malay indicators in the query
+            ms_count = sum(1 for word in ms_indicators if word in query_lower)
+            
+            # If we find enough Malay indicators, assume it's Malay
+            if ms_count >= 2:  # Threshold for Malay detection
+                logger.debug(f"Detected Malay language based on heuristic. Using 'intent_ms' collection.")
+                return "intent_ms"
+            
+            # For English, we can use a similar approach or just default to English
+            # Common English words/affixes
+            en_indicators = ['the', 'is', 'are', 'was', 'were', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'can', 'what', 'where', 'when', 'why', 'how', 'who', 'whom', 'whose', 'which', 'this', 'that', 'these', 'those', 'here', 'there', 'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them', 'my', 'your', 'his', 'her', 'its', 'our', 'their', 'mine', 'yours', 'hers', 'ours', 'theirs']
+            
+            # Count English indicators in the query
+            en_count = sum(1 for word in en_indicators if word in query_lower)
+            
+            # If we find enough English indicators, assume it's English
+            if en_count >= 2:  # Threshold for English detection
+                logger.debug(f"Detected English language based on heuristic. Using 'intent_en' collection.")
+                return "intent_en"
 
         # 3. Default fallback collection
         # This should probably be configurable. For now, let's assume a default like 'en' or a generic one if it exists.
         # Or raise an error if no clear default can be determined and language is crucial.
-        # For demonstration, let's assume a default 'en' collection exists with the new naming.
-        logger.warning(
-            "Could not determine specific collection for search. Using default 'intent_en'. Implement language detection or use session context."
+        logger.info(
+            "Could not determine specific language for search. Using default 'intent_en'."
         )
         return "intent_en"  # Or raise ConfigurationError if strict language separation is required.
 

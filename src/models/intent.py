@@ -119,6 +119,9 @@ class ChatRequest(BaseModel):
     context: Dict[str, Any] = Field(
         default_factory=dict, description="Additional context"
     )
+    language: Optional[str] = Field(
+        None, description="Optional language code (en, ms, etc.)"
+    )
 
     @field_validator("message")
     @classmethod
