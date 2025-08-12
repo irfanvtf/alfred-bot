@@ -47,7 +47,12 @@ class VectorSearchService:
             # Initialize Chroma client (persistent storage)
             self.client = chromadb.PersistentClient(
                 path=self.persist_path,
-                settings=Settings(anonymized_telemetry=False, allow_reset=True),
+                settings=Settings(
+                    anonymized_telemetry=False,
+                    allow_reset=True,
+                    chroma_client_auth_provider="", # Explicitly disable auth provider
+                    chroma_server_host="",          # Explicitly clear server host
+                ),
             )
 
             logger.info(
@@ -106,6 +111,16 @@ class VectorSearchService:
     def _get_collection(self, collection_name: str) -> Collection:
         """Get an existing Chroma collection."""
         self._ensure_client()
+        
+        # Debugging: Log available collections
+        logger.info(f"[_get_collection] Attempting to get collection: {collection_name}")
+        try:
+            collections = self.client.list_collections()
+            collection_names = [c.name for c in collections]
+            logger.info(f"[_get_collection] Available collections: {collection_names}")
+        except Exception as e:
+            logger.error(f"[_get_collection] Error listing collections: {e}")
+        
         # Type hinting might be tricky without full import, but it's the correct type
         collection: Collection = self.client.get_collection(name=collection_name)
         return collection

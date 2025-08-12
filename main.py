@@ -28,6 +28,9 @@ from src.services.data_loader import (
     LANGUAGE_CONFIG,
 )
 
+# Import vector search service to configure it
+from src.services.vector_search import vector_search_service
+
 logger = logging.getLogger(__name__)
 
 # Load environment variables
@@ -38,16 +41,16 @@ log_level = os.getenv("LOG_LEVEL", "DEBUG")  # Changed to DEBUG for more detaile
 log_to_file = os.getenv("LOG_TO_FILE", "true").lower() == "true"
 setup_logging(log_level=log_level, log_to_file=log_to_file)
 
+# Configure the vector search service with the correct persist path
+vector_search_service.persist_path = settings.chroma_persist_directory
+
 # Initialize all knowledge collections at startup
 # This should be done before the FastAPI app is created to ensure all collections are ready.
-print("Initializing knowledge collections...")
-logger.info("Starting knowledge collection initialization...")
+logger.info("Initializing knowledge collections...")
 try:
     initialize_all_knowledge_collections(
-        persist_path=settings.chroma_persist_directory,  # Use setting from config
         languages=LANGUAGE_CONFIG,  # Use the config defined in data_loader.py
     )
-    print("Knowledge collections initialized successfully.")
     logger.info("Knowledge collections initialized successfully.")
 except Exception as e:
     print(f"Failed to initialize knowledge collections: {e}")
@@ -103,9 +106,11 @@ async def initialize_embedding_model():
 
         # Trigger model loading by calling the model with a dummy text
         text_processor.get_text_vector("preload")
-        print("Embedding model initialized successfully.")
+        logger.info("Embedding model initialized successfully.")
     except Exception as e:
-        print(f"Warning: Failed to initialize embedding model during startup: {e}")
+        logger.error(
+            f"Warning: Failed to initialize embedding model during startup: {e}"
+        )
         # This is not critical, as queries can still work, but they might trigger the download
 
 

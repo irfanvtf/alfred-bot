@@ -53,11 +53,6 @@ class ChatbotEngine:
             # Initialize the vector service client
             self.vector_service.initialize()
             
-            # Run a test query for debugging
-            if self.language == "en":
-                logger.info("Running test query for English engine...")
-                self.vector_service.test_query("why does time go forward?")
-            
             # Note: Indexing is now handled externally before ChatbotEngine instances are created.
             # This engine will use pre-existing collections named 'intent_{self.language}'.
             
@@ -498,10 +493,6 @@ class ChatbotEngine:
             "knowledge_base": kb_stats,
             "active_sessions": session_manager.get_active_session_count(),
         }
-
-
-# Create global instance
-chatbot_engine = ChatbotEngine("en")
 
 
 def get_chatbot_engine(language: str = "en") -> "ChatbotEngine":
