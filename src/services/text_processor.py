@@ -67,7 +67,6 @@ class TextProcessor:
         This method removes such punctuation from queries to ensure consistency while preserving
         semantically important punctuation like hyphens and apostrophes.
         """
-        logger.debug(f"Cleaning text: '{text}'")
         # Convert to lowercase
         text = text.lower()
 
@@ -82,30 +81,17 @@ class TextProcessor:
         # Strip leading/trailing whitespace
         text = text.strip()
 
-        logger.debug(f"Cleaned text: '{text}'")
         return text
 
     def get_text_vector(self, text: str) -> List[float]:
         """Get BERT vector representation of text"""
-        logger.debug(f"=== GET TEXT VECTOR ===")
-        logger.debug(f"Input text: '{text}'")
-        logger.debug(f"Text length: {len(text) if text else 0}")
-        logger.debug(f"Text repr: {repr(text)}")
-
         if not text or not text.strip():
             logger.warning("Empty text provided for vector generation")
             return [0.0] * self.sentence_transformer.get_sentence_embedding_dimension()
 
-        logger.debug(f"Generating vector for text: {text[:50]}...")
         # Disable progress bar by setting show_progress_bar=False
         embedding = self.sentence_transformer.encode(
             text, convert_to_tensor=False, show_progress_bar=False
-        )
-        logger.debug(
-            f"Generated embedding with dimension: {len(embedding) if embedding is not None else 0}"
-        )
-        logger.debug(
-            f"First 5 elements of embedding: {embedding[:5] if embedding is not None else []}"
         )
         return embedding.tolist()
 
@@ -280,14 +266,7 @@ class TextProcessor:
         self, query: str, context: Optional[Dict[str, Any]]
     ) -> str:
         """Enhance query with conversation context"""
-        logger.debug(f"=== ENHANCE QUERY WITH CONTEXT ===")
-        logger.debug(f"Original query: '{query}'")
-        logger.debug(f"Query length: {len(query) if query else 0}")
-        logger.debug(f"Query repr: {repr(query)}")
-        logger.debug(f"Context: {context}")
-
         if not context:
-            logger.debug("No context provided, returning original query")
             return query
 
         enhanced_query = query
@@ -302,7 +281,6 @@ class TextProcessor:
             if recent_messages:
                 context_text = " ".join(recent_messages[-2:])  # Last 2 user messages
                 enhanced_query = f"{context_text} {query}"
-                logger.debug(f"Added conversation context: {context_text[:50]}...")
 
         # Add context variables as keywords
         context_vars = context.get("context_variables", {})
@@ -314,11 +292,7 @@ class TextProcessor:
             if context_parts:
                 context_text = " ".join(context_parts)
                 enhanced_query = f"{enhanced_query} {context_text}"
-                logger.debug(f"Added context variables: {context_text[:50]}...")
 
-        logger.debug(f"Enhanced query: '{enhanced_query}'")
-        logger.debug(f"Enhanced query length: {len(enhanced_query)}")
-        logger.debug(f"Enhanced query repr: {repr(enhanced_query)}")
         return enhanced_query
 
 

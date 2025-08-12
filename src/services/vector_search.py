@@ -6,7 +6,7 @@ from typing import List, Dict, Any, Optional
 from datetime import datetime
 import logging
 from src.utils.exceptions import ConfigurationError
-from src.services.text_processor import TextProcessor
+from src.services.text_processor import TextProcessor, text_processor
 
 # Import for Chroma (add to requirements.txt: chromadb)
 try:
@@ -20,7 +20,6 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-
 class VectorSearchService:
     """Service for managing vector operations with session context across multiple collections"""
 
@@ -29,12 +28,11 @@ class VectorSearchService:
         # collection_name: str = "alfred_knowledge", # Removed: Single collection focus
         persist_path: str = "./data/chroma_db",
     ):
-        self.text_processor = TextProcessor()
+        # Use the singleton text_processor instance to avoid loading the model multiple times
+        self.text_processor = text_processor
         self.confidence_threshold = 0.6  # Standard confidence threshold
         # self.collection_name = collection_name # Removed: Single collection focus
         self.persist_path = persist_path
-        self.client: Optional[chromadb.Client] = None
-        # self.collection = None # Removed: Single collection focus
         self.client: Optional[chromadb.Client] = None
         # self.collection = None # Removed: Single collection focus
 
@@ -92,11 +90,9 @@ class VectorSearchService:
             SentenceTransformerEmbeddingFunction,
         )
 
-        logger.info(f"Creating embedding function with model: {self.text_processor.bert_model_name}")
         embedding_function = SentenceTransformerEmbeddingFunction(
             model_name=self.text_processor.bert_model_name
         )
-        logger.info(f"Embedding function created successfully")
 
         # Type hinting might be tricky without full import, but it's the correct type
         collection: Collection = self.client.get_or_create_collection(
@@ -104,26 +100,7 @@ class VectorSearchService:
             metadata=metadata,
             embedding_function=embedding_function,
         )
-        
-        # FOR DEBUGGING: Clear the collection to force reindexing
-        logger.info(f"=== CHECKING COLLECTION '{collection_name}' FOR CLEARING ===")
-        try:
-            count = collection.count()
-            logger.info(f"Collection '{collection_name}' has {count} existing vectors")
-            if count > 0:
-                logger.info(f"Clearing collection '{collection_name}' to force reindexing")
-                # Get all IDs and delete them
-                all_data = collection.get(include=["documents"])
-                if all_data and "ids" in all_data and all_data["ids"]:
-                    collection.delete(ids=all_data["ids"])
-                    logger.info(f"Deleted {len(all_data['ids'])} vectors from collection '{collection_name}'")
-                else:
-                    logger.info(f"No documents found in collection '{collection_name}' to delete")
-            else:
-                logger.info(f"Collection '{collection_name}' is already empty")
-        except Exception as e:
-            logger.error(f"Error clearing collection '{collection_name}': {e}", exc_info=True)
-        
+
         return collection
 
     def _get_collection(self, collection_name: str) -> Collection:
@@ -155,11 +132,17 @@ class VectorSearchService:
             embeddings = [v["vector"] for v in vectors]
             metadatas = [v["metadata"] for v in vectors]
             documents = [v["text"] for v in vectors]
-            
-            logger.info(f"Adding {len(vectors)} vectors to collection '{collection_name}'")
+
+            logger.info(
+                f"Adding {len(vectors)} vectors to collection '{collection_name}'"
+            )
             logger.debug(f"First vector ID: {ids[0] if ids else 'None'}")
-            logger.debug(f"First vector text: {documents[0][:50] if documents and documents[0] else 'None'}")
-            logger.debug(f"First vector dimension: {len(embeddings[0]) if embeddings and embeddings[0] else 'None'}")
+            logger.debug(
+                f"First vector text: {documents[0][:50] if documents and documents[0] else 'None'}"
+            )
+            logger.debug(
+                f"First vector dimension: {len(embeddings[0]) if embeddings and embeddings[0] else 'None'}"
+            )
 
             collection.add(
                 ids=ids, embeddings=embeddings, metadatas=metadatas, documents=documents
@@ -184,21 +167,7 @@ class VectorSearchService:
     ) -> List[Dict[str, Any]]:
         """Search a specific Chroma collection"""
         try:
-            logger.info(f"=== SEARCH METHOD CALLED ===")
-            logger.info(f"Collection: {collection_name}")
-            logger.info(f"Query vector dimension: {len(query_vector) if query_vector else 0}")
-            logger.info(f"Top K: {top_k}")
-            logger.info(f"Filters: {filters}")
-            logger.info(f"Language: {language}")
-            
             collection = self._get_collection(collection_name)
-            
-            # Log collection info
-            try:
-                count = collection.count()
-                logger.info(f"Collection '{collection_name}' has {count} vectors")
-            except Exception as e:
-                logger.error(f"Error getting collection count: {e}")
 
             # Build where clause for filtering
             where_clause = filters if filters else None
@@ -206,8 +175,6 @@ class VectorSearchService:
                 if where_clause is None:
                     where_clause = {}
                 where_clause["source_language"] = {"$eq": language}
-                    
-            logger.info(f"Final where clause: {where_clause}")
 
             results = collection.query(
                 query_embeddings=[query_vector],
@@ -216,31 +183,16 @@ class VectorSearchService:
                 include=["documents", "metadatas", "distances"],
             )
 
-            logger.info(f"Raw results structure: {list(results.keys()) if results else 'None'}")
-            if results and "ids" in results and results["ids"]:
-                logger.info(f"Number of result IDs: {len(results['ids'][0]) if results['ids'] and len(results['ids']) > 0 else 0}")
-                # Log some distance values to understand the scale
-                if "distances" in results and results["distances"] and len(results["distances"][0]) > 0:
-                    distances = results["distances"][0][:5]  # First 5 distances
-                    logger.info(f"First 5 distance values: {distances}")
-            
             # Format results
             formatted_results = []
             if results["ids"] and len(results["ids"][0]) > 0:
                 for i in range(len(results["ids"][0])):
                     distance = results["distances"][0][i]
-                    # Convert distance to similarity score (0-1 range)
-                    # ChromaDB with SentenceTransformer models typically uses cosine distance
-                    # For cosine distance, similarity = 1 - distance
-                    # But we need to handle cases where distance might be L2 distance
-                    # For L2 distance, we use an exponential decay function to convert to similarity
-                    logger.debug(f"Distance type: {type(distance)}, Distance value: {distance}")
-                    
+
                     # Convert distance to similarity score (0-1 range)
                     # For cosine distance, similarity = 1 - (distance / 2)
                     # This is the standard conversion for cosine distance which ranges from 0-2
                     similarity = max(0.0, 1.0 - (distance / 2.0))
-                    logger.info(f"Calculated similarity using cosine conversion: {similarity} from distance: {distance}")
 
                     formatted_results.append(
                         {
@@ -251,20 +203,13 @@ class VectorSearchService:
                             "distance": distance,
                         }
                     )
-                # Log details of the top result for debugging
-                if formatted_results:
-                    top_result = formatted_results[0]
-                    logger.info(f"Top result details:")
-                    logger.info(f"  ID: {top_result['id']}")
-                    logger.info(f"  Text: {top_result['text']}")
-                    logger.info(f"  Metadata: {top_result['metadata']}")
-                    logger.info(f"  Score: {top_result['score']}")
-                    logger.info(f"  Distance: {top_result['distance']}")
 
             return formatted_results
 
         except Exception as e:
-            logger.error(f"Error searching collection '{collection_name}': {e}", exc_info=True)
+            logger.error(
+                f"Error searching collection '{collection_name}': {e}", exc_info=True
+            )
             raise ConfigurationError(
                 f"Failed to search Chroma collection '{collection_name}': {e}"
             ) from e
@@ -345,7 +290,7 @@ class VectorSearchService:
         try:
             collections = self.client.list_collections()
             languages = set()
-            
+
             for collection in collections:
                 metadata = collection.metadata or {}
                 # Get language from metadata
@@ -360,7 +305,7 @@ class VectorSearchService:
                     parts = collection.name.split("_")
                     if len(parts) > 1:
                         languages.add(parts[-1])
-                        
+
             return list(languages)
         except Exception as e:
             logger.error(f"Error getting available languages: {e}")
@@ -369,25 +314,15 @@ class VectorSearchService:
     def test_query(self, query_text: str = "why does time go forward?") -> None:
         """Test method to manually query the collection for debugging"""
         try:
-            logger.info(f"=== MANUAL TEST QUERY ===")
-            logger.info(f"Query text: '{query_text}'")
-            logger.info(f"Query repr: {repr(query_text)}")
-            logger.info(f"Query length: {len(query_text)}")
-            
             # Test with English collection
             collection_name = "intent_en"
-            logger.info(f"Testing with collection: {collection_name}")
-            
+
             # Get query vector - THIS IS THE KEY DIFFERENCE
-            logger.info("=== GETTING QUERY VECTOR (DIRECT) ===")
             # Clean the query text to match how the vectors were indexed
             cleaned_query_text = self.text_processor._clean_text(query_text)
-            logger.info(f"Cleaned query text: '{cleaned_query_text}'")
             query_vector = self.text_processor.get_text_vector(cleaned_query_text)
-            logger.info(f"Query vector dimension: {len(query_vector)}")
-            
+
             # Query without filters
-            logger.info("Querying without filters...")
             results = self.search(
                 collection_name=collection_name,
                 query_vector=query_vector,
@@ -395,45 +330,24 @@ class VectorSearchService:
                 filters=None,
                 language=None,
             )
-            
+
             # Test direct similarity for debugging
             try:
                 pattern_to_test = "why does time go forward"
                 # Clean both texts for consistent comparison
                 cleaned_query = self.text_processor._clean_text(query_text)
                 cleaned_pattern = self.text_processor._clean_text(pattern_to_test)
-                direct_similarity = self.text_processor.get_similarity(cleaned_query, cleaned_pattern)
-                logger.info(f"Direct similarity between '{cleaned_query}' and '{cleaned_pattern}': {direct_similarity}")
+                direct_similarity = self.text_processor.get_similarity(
+                    cleaned_query, cleaned_pattern
+                )
+                logger.info(
+                    f"Direct similarity between '{cleaned_query}' and '{cleaned_pattern}': {direct_similarity}"
+                )
             except Exception as e:
                 logger.error(f"Error calculating direct similarity: {e}")
-            
+
             logger.info(f"Found {len(results)} results without filters")
-            
-            # Check if the specific intent pattern exists in the collection
-            try:
-                collection = self._get_collection(collection_name)
-                all_docs = collection.get(include=["documents", "metadatas"])
-                logger.info(f"Total documents in collection: {len(all_docs['ids']) if all_docs and 'ids' in all_docs else 0}")
-                
-                # Look for the specific pattern
-                pattern_to_find = "why does time go forward"
-                found_patterns = []
-                if all_docs and "documents" in all_docs:
-                    for i, doc in enumerate(all_docs["documents"]):
-                        if pattern_to_find in doc:
-                            found_patterns.append({
-                                "id": all_docs["ids"][i] if "ids" in all_docs and i < len(all_docs["ids"]) else "unknown",
-                                "document": doc,
-                                "metadata": all_docs["metadatas"][i] if "metadatas" in all_docs and i < len(all_docs["metadatas"]) else {}
-                            })
-                
-                logger.info(f"Found {len(found_patterns)} documents containing '{pattern_to_find}':")
-                for pattern in found_patterns:
-                    logger.info(f"  - ID: {pattern['id']}, Document: {pattern['document'][:50]}...")
-                    
-            except Exception as e:
-                logger.error(f"Error checking collection contents: {e}")
-            
+
         except Exception as e:
             logger.error(f"Error in test_query: {e}", exc_info=True)
 
@@ -446,10 +360,6 @@ class VectorSearchService:
         """Index all intents from knowledge base into a specific collection.
         source_metadata can include things like 'language', 'source_file', etc.
         """
-        logger.info(f"=== INDEXING KNOWLEDGE BASE ===")
-        logger.info(f"Collection name: {collection_name}")
-        logger.info(f"Source metadata: {source_metadata}")
-        
         vectors = []
         source_lang = (
             source_metadata.get("language", "unknown") if source_metadata else "unknown"
@@ -459,9 +369,6 @@ class VectorSearchService:
             if source_metadata
             else "Unknown Source"
         )
-        
-        intent_count = len(knowledge_base_data.get("intents", []))
-        logger.info(f"Processing {intent_count} intents for indexing")
 
         for intent in knowledge_base_data.get("intents", []):
             intent_id = intent["id"]
@@ -475,19 +382,6 @@ class VectorSearchService:
                     # Process text and get vector
                     processed = self.text_processor.preprocess_text(pattern)
                     vector = processed["vector"]
-                    
-                    # Log the pattern and processed text for debugging
-                    logger.debug(f"Indexing pattern: '{pattern}'")
-                    logger.debug(f"  Cleaned text: '{processed['cleaned']}'")
-                    logger.debug(f"  Vector dimension: {len(vector)}")
-                    logger.debug(f"  First 5 elements: {vector[:5]}")
-                    
-                    # Test the vector by generating similarity with itself
-                    try:
-                        self_vector_similarity = self.text_processor.get_similarity(pattern, pattern)
-                        logger.debug(f"  Self-similarity test: {self_vector_similarity}")
-                    except Exception as sim_e:
-                        logger.error(f"  Error in self-similarity test: {sim_e}")
 
                     # Prepare metadata for the vector, including source information
                     vector_metadata = {
@@ -513,10 +407,6 @@ class VectorSearchService:
                         "intent_tags": json.dumps(intent_metadata.get("tags", [])),
                         "intent_priority": intent_metadata.get("priority", 1),
                     }
-                    # Log the confidence threshold being set
-                    logger.debug(f"Setting confidence threshold for intent {intent_id}: {vector_metadata['confidence_threshold']}")
-                    # Filter out None values from metadata if necessary
-                    # vector_metadata = {k: v for k, v in vector_metadata.items() if v is not None}
 
                     # Create vector entry
                     vector_entry = {
@@ -561,7 +451,9 @@ class VectorSearchService:
                 # Map language code to the new, clearer collection name convention (e.g., 'en' -> 'intent_en')
                 # This mapping should be configurable or follow a known pattern.
                 collection_name = f"intent_{preferred_lang}"
-                logger.debug(f"Using collection '{collection_name}' based on session context language '{preferred_lang}'")
+                logger.debug(
+                    f"Using collection '{collection_name}' based on session context language '{preferred_lang}'"
+                )
                 return collection_name
 
         # 2. Attempt language detection on the query (requires a language detection library)
@@ -570,35 +462,145 @@ class VectorSearchService:
         if query:
             # Convert query to lowercase for comparison
             query_lower = query.lower()
-            
+
             # Simple heuristic for Malay language detection
             # Common Malay words/affixes
-            ms_indicators = ['ada', 'saya', 'anda', 'kami', 'dia', 'mereka', 'akan', 'sudah', 'belum', 'boleh', 'tidak', 'apa', 'bagaimana', 'mengapa', 'kenapa', 'siapa', 'bila', 'macam', 'mana', 'sini', 'situ', 'sana', 'ini', 'itu', 'dengan', 'untuk', 'daripada', 'kepada', 'dalam', 'atas', 'bawah', 'sebelum', 'selepas', 'antara', 'melalui', 'sekitar', 'sepanjang', 'seluruh', 'sebahagian']
-            
+            ms_indicators = [
+                "ada",
+                "saya",
+                "anda",
+                "kami",
+                "dia",
+                "mereka",
+                "akan",
+                "sudah",
+                "belum",
+                "boleh",
+                "tidak",
+                "apa",
+                "bagaimana",
+                "mengapa",
+                "kenapa",
+                "siapa",
+                "bila",
+                "macam",
+                "mana",
+                "sini",
+                "situ",
+                "sana",
+                "ini",
+                "itu",
+                "dengan",
+                "untuk",
+                "daripada",
+                "kepada",
+                "dalam",
+                "atas",
+                "bawah",
+                "sebelum",
+                "selepas",
+                "antara",
+                "melalui",
+                "sekitar",
+                "sepanjang",
+                "seluruh",
+                "sebahagian",
+            ]
+
             # Count Malay indicators in the query
-            ms_count = sum(1 for word in ms_indicators if f" {word} " in f" {query_lower} " or 
-                          query_lower.startswith(f"{word} ") or 
-                          query_lower.endswith(f" {word}") or
-                          query_lower == word)
-            
+            ms_count = sum(
+                1
+                for word in ms_indicators
+                if f" {word} " in f" {query_lower} "
+                or query_lower.startswith(f"{word} ")
+                or query_lower.endswith(f" {word}")
+                or query_lower == word
+            )
+
             # If we find enough Malay indicators, assume it's Malay
             if ms_count >= 1:  # Lowered threshold for Malay detection
-                logger.debug(f"Detected Malay language based on heuristic. Using 'intent_ms' collection.")
+                logger.debug(
+                    f"Detected Malay language based on heuristic. Using 'intent_ms' collection."
+                )
                 return "intent_ms"
-            
+
             # For English, we can use a similar approach or just default to English
             # Common English words/affixes
-            en_indicators = ['the', 'is', 'are', 'was', 'were', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'can', 'what', 'where', 'when', 'why', 'how', 'who', 'whom', 'whose', 'which', 'this', 'that', 'these', 'those', 'here', 'there', 'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them', 'my', 'your', 'his', 'her', 'its', 'our', 'their', 'mine', 'yours', 'hers', 'ours', 'theirs']
-            
+            en_indicators = [
+                "the",
+                "is",
+                "are",
+                "was",
+                "were",
+                "have",
+                "has",
+                "had",
+                "do",
+                "does",
+                "did",
+                "will",
+                "would",
+                "could",
+                "should",
+                "may",
+                "might",
+                "can",
+                "what",
+                "where",
+                "when",
+                "why",
+                "how",
+                "who",
+                "whom",
+                "whose",
+                "which",
+                "this",
+                "that",
+                "these",
+                "those",
+                "here",
+                "there",
+                "i",
+                "you",
+                "he",
+                "she",
+                "it",
+                "we",
+                "they",
+                "me",
+                "him",
+                "her",
+                "us",
+                "them",
+                "my",
+                "your",
+                "his",
+                "her",
+                "its",
+                "our",
+                "their",
+                "mine",
+                "yours",
+                "hers",
+                "ours",
+                "theirs",
+            ]
+
             # Count English indicators in the query
-            en_count = sum(1 for word in en_indicators if f" {word} " in f" {query_lower} " or 
-                          query_lower.startswith(f"{word} ") or 
-                          query_lower.endswith(f" {word}") or
-                          query_lower == word)
-            
+            en_count = sum(
+                1
+                for word in en_indicators
+                if f" {word} " in f" {query_lower} "
+                or query_lower.startswith(f"{word} ")
+                or query_lower.endswith(f" {word}")
+                or query_lower == word
+            )
+
             # If we find enough English indicators, assume it's English
             if en_count >= 1:  # Lowered threshold for English detection
-                logger.debug(f"Detected English language based on heuristic. Using 'intent_en' collection.")
+                logger.debug(
+                    f"Detected English language based on heuristic. Using 'intent_en' collection."
+                )
                 return "intent_en"
 
         # 3. Default fallback collection
@@ -618,16 +620,11 @@ class VectorSearchService:
     ) -> List[Dict[str, Any]]:
         """Search for matching intents with session context, determining the correct collection."""
         try:
-            logger.info(f"=== SEARCH_INTENTS CALLED ===")
-            logger.info(f"Original query: '{query}'")
-            logger.info(f"Query repr: {repr(query)}")
-            logger.info(f"Query length: {len(query)}")
-            logger.info(f"Session context: {session_context}")
-            logger.info(f"Current confidence threshold: {self.confidence_threshold}")
-            
             # Determine the collection to search based on query/session or use explicit collection
             if collection_name:
-                logger.debug(f"Using explicit collection '{collection_name}' for query: {query[:50]}...")
+                logger.debug(
+                    f"Using explicit collection '{collection_name}' for query: {query[:50]}..."
+                )
             else:
                 collection_name = self._determine_collection_for_search(
                     query, session_context
@@ -639,21 +636,16 @@ class VectorSearchService:
             # For intent matching, use the original query directly without context enhancement
             # Context enhancement can change the query meaning and hurt matching accuracy
             enhanced_query = query
-            logger.info(f"Using original query for intent matching (no context enhancement)")
-            
+
             # Clean the query text to match how the vectors were indexed
             cleaned_query = self.text_processor._clean_text(enhanced_query)
-            logger.info(f"Cleaned query: '{cleaned_query}'")
-            
+
             # Get query vector from the cleaned text
-            logger.info("=== GETTING QUERY VECTOR (CLEANED) ===")
             query_vector = self.text_processor.get_text_vector(cleaned_query)
-            logger.debug(f"Query vector dimension: {len(query_vector) if query_vector else 0}")
 
             # Build filters based on session context (potentially add language filter here too if not determined by collection)
             filters = self._build_context_filters(session_context)
-            logger.debug(f"Session context filters: {filters}")
-            
+
             # Example: Enforce language filter based on collection if needed (though collection separation often handles this)
             # if collection_name.endswith("_en"):
             #     filters = filters or {}
@@ -669,58 +661,36 @@ class VectorSearchService:
                 language=None,  # Language is already handled by collection separation
             )
 
-            logger.debug(f"Raw search results from '{collection_name}': {len(results)} results found")
-
             # Filter by confidence threshold and add context scoring
             filtered_results = []
             for result in results:
                 score = result.get("score", 0)
                 metadata = result.get("metadata", {})
                 # Use a default threshold if not specified in metadata
-                # FOR DEBUGGING: Use service threshold instead of intent-specific threshold
-                threshold = self.confidence_threshold  # Always use service threshold for debugging
-                # ORIGINAL CODE:
-                # threshold = metadata.get(
-                #     "confidence_threshold", self.confidence_threshold
-                # )
-
-                logger.info(f"Result ID: {result.get('id')}, Score: {score:.4f}, Threshold: {threshold:.4f}")
-                logger.info(f"Result metadata: {metadata}")
+                threshold = metadata.get(
+                    "confidence_threshold", self.confidence_threshold
+                )
 
                 # Add context-aware scoring
-                context_score = self._calculate_context_score(
-                    result, session_context
-                )
+                context_score = self._calculate_context_score(result, session_context)
                 final_score = (score * 0.7) + (context_score * 0.3)
                 result["final_score"] = final_score
                 result["context_score"] = context_score
                 result["original_score"] = score
                 result["threshold"] = threshold
-                
-                logger.info(f"Result ID: {result.get('id')}, Original Score: {score:.4f}, Context Score: {context_score:.4f}, Final Score: {final_score:.4f}, Threshold: {threshold:.4f}")
 
                 filtered_results.append(result)
 
             # Sort by final score
             filtered_results.sort(key=lambda x: x["final_score"], reverse=True)
-            
-            # Log all results before threshold filtering for debugging
-            logger.debug(f"Results before threshold filtering: {len(filtered_results)}")
-            for result in filtered_results[:5]:  # Log top 5 results
-                logger.debug(f"Pre-filter result - ID: {result.get('id')}, Final Score: {result.get('final_score'):.4f}, Original Score: {result.get('original_score'):.4f}, Context Score: {result.get('context_score'):.4f}, Intent: {result.get('metadata', {}).get('intent_id')}, Threshold: {result.get('threshold'):.4f}")
-            
+
             # Apply threshold filtering after sorting and scoring
             threshold_filtered_results = []
             for r in filtered_results:
                 final_score = r.get("final_score", 0)
                 threshold = r.get("threshold", self.confidence_threshold)
-                logger.info(f"Threshold filtering - Final Score: {final_score:.4f}, Threshold: {threshold:.4f}, Pass: {final_score >= threshold}")
                 if final_score >= threshold:
                     threshold_filtered_results.append(r)
-
-            logger.debug(f"Filtered results count: {len(threshold_filtered_results)}")
-            for result in threshold_filtered_results[:3]:  # Log top 3 results
-                logger.debug(f"Top result - ID: {result.get('id')}, Final Score: {result.get('final_score')}, Intent: {result.get('metadata', {}).get('intent_id')}")
 
             return threshold_filtered_results
 
@@ -793,17 +763,10 @@ class VectorSearchService:
 
         return min(score, 1.0)  # Cap at 1.0
 
-    def get_service_stats(self) -> Dict[str, Any]:
-        """Get comprehensive statistics for the service and its collections."""
-        # Get overall client stats (lists collections)
-        client_stats = self.get_stats()  # Calls get_stats() without collection name
-        processor_stats = self.text_processor.get_model_info()
-
-        # Get stats for specific known or all collections if needed
+    # Get stats for specific known or all collections if needed
         # For now, just return the client info and processor info
         collection_specific_stats = {}
         # Example of getting stats for a couple of collections if you know their names:
-        # for lang in ['en', 'ms']: # Assuming 'en' and 'ms' collections
         #     try:
         #         collection_specific_stats[f"alfred_knowledge_{lang}"] = self.get_stats(f"alfred_knowledge_{lang}")
         #     except Exception as e:
@@ -819,3 +782,7 @@ class VectorSearchService:
             },
             # "collections": collection_specific_stats, # Optional detailed stats per collection
         }
+
+
+# Create a global singleton instance (MUST be AFTER the class definition)
+vector_search_service = VectorSearchService()

@@ -2,7 +2,8 @@
 import logging
 from typing import Dict, Any, List
 from src.services.knowledge_manager import KnowledgeManager
-from src.services.vector_search import VectorSearchService
+from src.services.vector_search import vector_search_service
+from src.services.text_processor import text_processor
 # Import settings if you have them, otherwise define paths here or pass them as arguments
 # from config.settings import settings
 
@@ -40,7 +41,9 @@ def initialize_all_knowledge_collections(
     try:
         # Initialize managers
         knowledge_manager = KnowledgeManager()
-        vector_service = VectorSearchService(persist_path=persist_path)
+        # Use the singleton vector_search_service instance and initialize it
+        vector_service = vector_search_service
+        vector_service.persist_path = persist_path
         vector_service.initialize() # Initialize the Chroma client
 
         # Iterate through configured languages

@@ -4,7 +4,7 @@ import logging
 from typing import Dict, Any, Optional, List
 from datetime import datetime
 import json
-from src.services.vector_search import VectorSearchService
+from src.services.vector_search import vector_search_service
 from src.services.session_manager import session_manager
 # Import the refactored KnowledgeManager
 from src.services.knowledge_manager import KnowledgeManager
@@ -21,7 +21,7 @@ class ChatbotEngine:
     """Main chatbot engine with session-aware logic"""
 
     def __init__(self, language: str = "en"):
-        self.vector_service = VectorSearchService()
+        self.vector_service = vector_search_service
         self.language = language
         
         # Use a single KnowledgeManager instance for all sources
@@ -78,14 +78,10 @@ class ChatbotEngine:
         """
         try:
             logger.info(f"Processing message in {self.language} engine: {message[:50]}...")
-            logger.debug(f"Original message: '{message}'")
-            logger.debug(f"Message length: {len(message)}")
-            logger.debug(f"Message repr: {repr(message)}")
             
             # Store original message before lowercasing
             original_message = message
             message = message.lower()
-            logger.debug(f"Lowercased message: '{message}'")
 
             session = self._get_or_create_session(session_id, user_id)
             session_id = session.session_id
@@ -203,9 +199,6 @@ class ChatbotEngine:
                 intent_matches.append(intent_match)
             
             logger.info(f"Processed {len(intent_matches)} intent matches")
-            for match in intent_matches[:3]:
-                logger.info(f"Intent match - ID: {match['intent_id']}, Confidence: {match['confidence']:.4f}, Original: {match['original_score']:.4f}, Context: {match['context_score']:.4f}")
-
             return intent_matches
 
         except Exception as e:
@@ -228,16 +221,11 @@ class ChatbotEngine:
 
         best_match = intent_matches[0]
         logger.info(f"Best match intent: {best_match.get('intent_id')}, confidence: {best_match.get('confidence')}")
-        logger.info(f"Best match details - original_score: {best_match.get('original_score')}, context_score: {best_match.get('context_score')}")
 
         # Use intent-specific threshold if available, otherwise use engine's default
-        # FOR DEBUGGING: Use service threshold instead of intent-specific threshold
-        intent_threshold = self.confidence_threshold  # Always use service threshold for debugging
-        # ORIGINAL CODE:
-        # intent_threshold = best_match.get("metadata", {}).get(
-        #     "confidence_threshold", self.confidence_threshold
-        # )
-        logger.info(f"Intent threshold: {intent_threshold}")
+        intent_threshold = best_match.get("metadata", {}).get(
+            "confidence_threshold", self.confidence_threshold
+        )
 
         # Check if confidence meets the required threshold
         if best_match["confidence"] >= intent_threshold:
