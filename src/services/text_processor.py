@@ -47,8 +47,8 @@ class TextProcessor:
         # Basic cleaning
         cleaned_text = self._clean_text(text)
 
-        # Get BERT embedding
-        bert_embedding = self.get_text_vector(text)
+        # Get BERT embedding from the cleaned text
+        bert_embedding = self.get_text_vector(cleaned_text)
 
         # Extract features
         result = {
@@ -61,12 +61,20 @@ class TextProcessor:
         return result
 
     def _clean_text(self, text: str) -> str:
-        """Basic text cleaning"""
+        """Basic text cleaning - preserve semantic meaning while ensuring consistency with patterns
+        
+        Knowledge base patterns are stored without sentence-ending punctuation to allow flexible matching.
+        This method removes such punctuation from queries to ensure consistency while preserving
+        semantically important punctuation like hyphens and apostrophes.
+        """
+        logger.debug(f"Cleaning text: '{text}'")
         # Convert to lowercase
         text = text.lower()
 
-        # Remove special characters but keep basic punctuation
-        text = re.sub(r"[^\w\s\.\!\?\,\-']", "", text)
+        # Remove only punctuation that would prevent matching with patterns
+        # Keep hyphens (for compound words) and apostrophes (for contractions)
+        # Remove sentence-ending punctuation that's not in patterns
+        text = re.sub(r"[.!?,;:]", "", text)
 
         # Remove extra whitespace
         text = re.sub(r"\s+", " ", text)
@@ -74,14 +82,31 @@ class TextProcessor:
         # Strip leading/trailing whitespace
         text = text.strip()
 
+        logger.debug(f"Cleaned text: '{text}'")
         return text
 
     def get_text_vector(self, text: str) -> List[float]:
         """Get BERT vector representation of text"""
+        logger.debug(f"=== GET TEXT VECTOR ===")
+        logger.debug(f"Input text: '{text}'")
+        logger.debug(f"Text length: {len(text) if text else 0}")
+        logger.debug(f"Text repr: {repr(text)}")
+
         if not text or not text.strip():
+            logger.warning("Empty text provided for vector generation")
             return [0.0] * self.sentence_transformer.get_sentence_embedding_dimension()
 
-        embedding = self.sentence_transformer.encode(text, convert_to_tensor=False)
+        logger.debug(f"Generating vector for text: {text[:50]}...")
+        # Disable progress bar by setting show_progress_bar=False
+        embedding = self.sentence_transformer.encode(
+            text, convert_to_tensor=False, show_progress_bar=False
+        )
+        logger.debug(
+            f"Generated embedding with dimension: {len(embedding) if embedding is not None else 0}"
+        )
+        logger.debug(
+            f"First 5 elements of embedding: {embedding[:5] if embedding is not None else []}"
+        )
         return embedding.tolist()
 
     def get_similarity(self, text1: str, text2: str) -> float:
@@ -89,13 +114,23 @@ class TextProcessor:
         if not text1.strip() or not text2.strip():
             return 0.0
 
+        # Disable progress bar by setting show_progress_bar=False
         embeddings = self.sentence_transformer.encode(
-            [text1, text2], convert_to_tensor=False
+            [text1, text2], convert_to_tensor=False, show_progress_bar=False
         )
+
+        # Log the texts and embeddings for debugging
+        logger.debug(f"Calculating similarity between:")
+        logger.debug(f"  Text 1: '{text1}'")
+        logger.debug(f"  Text 2: '{text2}'")
+        logger.debug(f"  Embedding 1 (first 5 elements): {embeddings[0][:5]}")
+        logger.debug(f"  Embedding 2 (first 5 elements): {embeddings[1][:5]}")
 
         # Calculate cosine similarity
         similarity_matrix = cosine_similarity([embeddings[0]], [embeddings[1]])
-        return float(similarity_matrix[0][0])
+        similarity = float(similarity_matrix[0][0])
+        logger.debug(f"  Calculated similarity: {similarity}")
+        return similarity
 
     def get_batch_similarities(
         self, query_text: str, candidate_texts: List[str]
@@ -111,8 +146,9 @@ class TextProcessor:
         all_texts = [query_text] + valid_texts
 
         # Get embeddings for all texts at once (more efficient)
+        # Disable progress bar by setting show_progress_bar=False
         embeddings = self.sentence_transformer.encode(
-            all_texts, convert_to_tensor=False
+            all_texts, convert_to_tensor=False, show_progress_bar=False
         )
 
         query_embedding = embeddings[0:1]  # First embedding
@@ -168,10 +204,11 @@ class TextProcessor:
 
         if valid_texts:
             # Batch encode with BERT for efficiency
+            # Always disable progress bar here since it's already conditional on length > 100
             bert_embeddings = self.sentence_transformer.encode(
                 valid_texts,
                 convert_to_tensor=False,
-                show_progress_bar=len(valid_texts) > 100,
+                show_progress_bar=False,  # Changed from len(valid_texts) > 100 to False
             )
 
             # Process each valid text
@@ -243,7 +280,14 @@ class TextProcessor:
         self, query: str, context: Optional[Dict[str, Any]]
     ) -> str:
         """Enhance query with conversation context"""
+        logger.debug(f"=== ENHANCE QUERY WITH CONTEXT ===")
+        logger.debug(f"Original query: '{query}'")
+        logger.debug(f"Query length: {len(query) if query else 0}")
+        logger.debug(f"Query repr: {repr(query)}")
+        logger.debug(f"Context: {context}")
+
         if not context:
+            logger.debug("No context provided, returning original query")
             return query
 
         enhanced_query = query
@@ -258,14 +302,23 @@ class TextProcessor:
             if recent_messages:
                 context_text = " ".join(recent_messages[-2:])  # Last 2 user messages
                 enhanced_query = f"{context_text} {query}"
+                logger.debug(f"Added conversation context: {context_text[:50]}...")
 
         # Add context variables as keywords
         context_vars = context.get("context_variables", {})
         if context_vars:
+            context_parts = []
             for key, value in context_vars.items():
                 if isinstance(value, str) and len(value) < 50:
-                    enhanced_query = f"{enhanced_query} {value}"
+                    context_parts.append(value)
+            if context_parts:
+                context_text = " ".join(context_parts)
+                enhanced_query = f"{enhanced_query} {context_text}"
+                logger.debug(f"Added context variables: {context_text[:50]}...")
 
+        logger.debug(f"Enhanced query: '{enhanced_query}'")
+        logger.debug(f"Enhanced query length: {len(enhanced_query)}")
+        logger.debug(f"Enhanced query repr: {repr(enhanced_query)}")
         return enhanced_query
 
 

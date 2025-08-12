@@ -359,9 +359,9 @@ class TestVectorSearch:
                     assert len(results) > 0, f"Query '{query}' should have results above 0.6 threshold but got none"
                     
                     # Check that all returned results meet the threshold
-                    for result in results:
-                        score = result.get("final_score", result.get("score", 0))
-                        assert score >= 0.6, f"Result score {score} is below 0.6 threshold for query '{query}'"
+        for result in results:
+            score = result.get("final_score", result.get("score", 0))
+            assert score >= 0.6, f"Result score {score} is below 0.6 threshold for query '{query}'"
                         
                         # If we expect a specific intent, check it's found
                         if expected_intent:
@@ -375,8 +375,8 @@ class TestVectorSearch:
                             print(f"⚠️  Query '{query}' expected intent '{expected_intent}' but found: {found_intents}")
                 else:
                     # Should have no results or very low confidence results
-                    low_confidence_results = [r for r in results if r.get("final_score", r.get("score", 0)) < 0.6]
-                    high_confidence_results = [r for r in results if r.get("final_score", r.get("score", 0)) >= 0.6]
+        low_confidence_results = [r for r in results if r.get("final_score", r.get("score", 0)) < 0.6]
+        high_confidence_results = [r for r in results if r.get("final_score", r.get("score", 0)) >= 0.6]
                     
                     assert len(high_confidence_results) == 0, f"Query '{query}' should not have results above 0.6 threshold but got {len(high_confidence_results)}"
                     print(f"✅ Query '{query}' correctly filtered out - no results above 0.6 threshold")

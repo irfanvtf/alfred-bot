@@ -34,10 +34,12 @@ class ChatbotEngine:
             self.knowledge_manager.register_knowledge_source("main", "data/sources/en/dialog-en.json")
             self.knowledge_manager.register_knowledge_source("fallback", "data/fallback/en/fallback-responses.json")
         
-        self.confidence_threshold = 0.6
-        self.fallback_threshold = 0.1
+        # Set appropriate confidence thresholds
+        self.confidence_threshold = 0.6  # Standard threshold for high confidence matches
+        self.fallback_threshold = 0.3   # Lower threshold for fallback responses
 
         self._initialize_services()
+        logger.info(f"ChatbotEngine initialized for language: {language}")
 
     def _initialize_services(self):
         """Initialize vector service client. Indexing is handled separately."""
@@ -50,6 +52,11 @@ class ChatbotEngine:
 
             # Initialize the vector service client
             self.vector_service.initialize()
+            
+            # Run a test query for debugging
+            if self.language == "en":
+                logger.info("Running test query for English engine...")
+                self.vector_service.test_query("why does time go forward?")
             
             # Note: Indexing is now handled externally before ChatbotEngine instances are created.
             # This engine will use pre-existing collections named 'intent_{self.language}'.
@@ -70,12 +77,20 @@ class ChatbotEngine:
         Process a user message and generate a response
         """
         try:
+            logger.info(f"Processing message in {self.language} engine: {message[:50]}...")
+            logger.debug(f"Original message: '{message}'")
+            logger.debug(f"Message length: {len(message)}")
+            logger.debug(f"Message repr: {repr(message)}")
+            
+            # Store original message before lowercasing
+            original_message = message
             message = message.lower()
+            logger.debug(f"Lowercased message: '{message}'")
 
             session = self._get_or_create_session(session_id, user_id)
             session_id = session.session_id
 
-            user_message = create_user_message(message)
+            user_message = create_user_message(original_message)  # Use original for session
             session_manager.add_message(session_id, user_message)
 
             # IMPORTANT: Pass session context to search_intents so it can determine the collection
@@ -86,10 +101,11 @@ class ChatbotEngine:
             # Example of potentially adding language to session context if needed by downstream logic
             # session_context.setdefault("context_variables", {})["preferred_language"] = self.language
 
-            intent_matches = self._classify_intent(message, session_context)
+            intent_matches = self._classify_intent(message, session_context)  # Use lowercased for search
+            logger.info(f"Found {len(intent_matches)} intent matches")
 
             response_data = self._select_response(
-                intent_matches, session_context, message
+                intent_matches, session_context, original_message  # Use original for response
             )
 
             self._update_conversation_state(session_id, response_data)
@@ -155,10 +171,20 @@ class ChatbotEngine:
     ) -> List[Dict[str, Any]]:
         """Classify intent with session context"""
         try:
+            # Explicitly specify the collection name based on the engine's language
+            collection_name = f"intent_{self.language}"
+            
+            # Build session context with preferred language to help downstream processing
+            enhanced_session_context = session_context.copy() if session_context else {}
+            enhanced_session_context.setdefault("context_variables", {})["preferred_language"] = self.language
+            
             # The vector_service.search_intents now handles collection determination
             # based on the message and session_context (including potential language info)
             results = self.vector_service.search_intents(
-                query=message, session_context=session_context, top_k=5
+                query=message, 
+                session_context=enhanced_session_context, 
+                top_k=5,
+                collection_name=collection_name  # Explicitly specify collection
             )
 
             # Process and rank results
@@ -175,6 +201,10 @@ class ChatbotEngine:
                     "metadata": result["metadata"],
                 }
                 intent_matches.append(intent_match)
+            
+            logger.info(f"Processed {len(intent_matches)} intent matches")
+            for match in intent_matches[:3]:
+                logger.info(f"Intent match - ID: {match['intent_id']}, Confidence: {match['confidence']:.4f}, Original: {match['original_score']:.4f}, Context: {match['context_score']:.4f}")
 
             return intent_matches
 
@@ -190,27 +220,40 @@ class ChatbotEngine:
     ) -> Dict[str, Any]:
         """Select best response with session awareness"""
 
+        logger.info(f"Selecting response from {len(intent_matches)} intent matches")
+        
         if not intent_matches:
+            logger.info("No intent matches found, using fallback response")
             return self._get_fallback_response(original_message, session_context)
 
         best_match = intent_matches[0]
+        logger.info(f"Best match intent: {best_match.get('intent_id')}, confidence: {best_match.get('confidence')}")
+        logger.info(f"Best match details - original_score: {best_match.get('original_score')}, context_score: {best_match.get('context_score')}")
 
         # Use intent-specific threshold if available, otherwise use engine's default
-        intent_threshold = best_match.get("metadata", {}).get(
-            "confidence_threshold", self.confidence_threshold
-        )
+        # FOR DEBUGGING: Use service threshold instead of intent-specific threshold
+        intent_threshold = self.confidence_threshold  # Always use service threshold for debugging
+        # ORIGINAL CODE:
+        # intent_threshold = best_match.get("metadata", {}).get(
+        #     "confidence_threshold", self.confidence_threshold
+        # )
+        logger.info(f"Intent threshold: {intent_threshold}")
 
         # Check if confidence meets the required threshold
         if best_match["confidence"] >= intent_threshold:
+            logger.info("Confidence meets threshold, using intent response")
             # High confidence - use this intent
             return self._prepare_intent_response(best_match, session_context)
 
         elif best_match["confidence"] >= self.fallback_threshold:
+            logger.info("Confidence meets fallback threshold, checking flow appropriateness")
             # Medium confidence - check conversation flow
             if self._is_flow_appropriate(best_match, session_context):
+                logger.info("Flow is appropriate, using intent response")
                 return self._prepare_intent_response(best_match, session_context)
 
         # Low confidence or no matches - use fallback
+        logger.info("Low confidence or no appropriate flow, using fallback response")
         return self._get_fallback_response(original_message, session_context)
 
     def _prepare_intent_response(
@@ -346,6 +389,8 @@ class ChatbotEngine:
         self, message: str, session_context: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Generate fallback response with context awareness"""
+        logger.info(f"Generating fallback response for message: {message[:50]}...")
+        
         # Load the fallback knowledge base for this language using the identifier "fallback"
         try:
             # Ensure the fallback knowledge base is loaded
@@ -353,6 +398,8 @@ class ChatbotEngine:
             # Get the specific intent from the loaded fallback knowledge base
             fallback_intent = self.knowledge_manager.get_intent("fallback", "fallback") # identifier, intent_id
             if fallback_intent and fallback_intent.responses:
+                logger.info(f"Found fallback intent with {len(fallback_intent.responses)} responses")
+                
                 # Select a random response object first
                 selected_response = random.choice(fallback_intent.responses)
 

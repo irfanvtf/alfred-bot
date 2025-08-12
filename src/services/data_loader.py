@@ -34,6 +34,8 @@ def initialize_all_knowledge_collections(
     This function should be called once during application startup.
     """
     logger.info("Starting initialization of all knowledge collections...")
+    logger.info(f"Persist path: {persist_path}")
+    logger.info(f"Languages to process: {list(languages.keys())}")
     
     try:
         # Initialize managers
@@ -65,6 +67,10 @@ def initialize_all_knowledge_collections(
                 if not kb_data:
                     logger.error(f"Failed to load or get data for main knowledge base of language '{lang_code}'. Skipping.")
                     continue
+                
+                # Log some info about the knowledge base
+                intent_count = len(kb_data.get("intents", []))
+                logger.info(f"Loaded knowledge base for '{lang_code}' with {intent_count} intents")
                 
                 # 3. Determine the collection name using the new convention
                 collection_name = f"intent_{lang_code}"

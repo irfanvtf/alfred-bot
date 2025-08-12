@@ -12,7 +12,7 @@
   "intents": [
     {
       "id": "fallback",
-      "patterns": [],
+      "patterns": ["*"],
       "responses": [
         {
           "id": "fallback_0",
@@ -33,8 +33,10 @@
       ],
       "metadata": {
         "category": "fallback",
-        "priority": 1,
-        "tags": ["fallback", "error"]
+        "confidence_threshold": 0.0,
+        "priority": 10,
+        "tags": ["fallback", "unknown"],
+        "keywords": []
       }
     }
   ]
