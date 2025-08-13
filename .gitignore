@@ -51,6 +51,8 @@ Thumbs.db
 
 # Chroma / Vector DB
 data/chroma_db/
+data/chroma_db_fallback/
+chroma/chroma.sqlite3
 
 # Cache / temp
 __pypackages__/

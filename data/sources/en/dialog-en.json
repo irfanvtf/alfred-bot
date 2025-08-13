@@ -6,8 +6,7 @@
     "description": "Alfred Bot Knowledge Base - Restructured with one answer per question",
     "language": "en",
     "search_config": {
-      "default_confidence_threshold": 0.6,
-      "note": "The vector search service uses a default confidence threshold of 0.6. Individual intents can override this with their own confidence_threshold value. Queries scoring below the threshold are filtered out."
+      "default_confidence_threshold": 0.6
     }
   },
   "intents": [
@@ -63,9 +62,6 @@
       ],
       "metadata": {
         "category": "physics",
-        "subcategory": "time",
-        "audience": "kids",
-        "related_topics": [],
         "priority": 3,
         "tags": ["time_travel", "physics", "kids", "science"]
       }

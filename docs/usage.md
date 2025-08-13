@@ -80,14 +80,14 @@ If you prefer to run the application locally without Docker, you will need to ha
         pip install -r requirements.txt
         ```
 
-    
-
-    5.  **Set up the environment variables:**
+    4.  **Set up the environment variables:**
 
         Create a `.env` file by copying the example file. This is recommended to ensure all required environment variables are present.
+
         ```bash
         cp .env.example .env
         ```
+
         After copying, open the `.env` file and ensure the variables match your local setup, especially `REDIS_HOST` and `REDIS_PORT` for your Redis server.
 
 3.  **Running the Application:**

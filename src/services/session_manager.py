@@ -1,8 +1,7 @@
-import json
 import uuid
 import time
-from datetime import datetime, timedelta
-from typing import Optional, List, Dict, Any
+from datetime import datetime
+from typing import Optional, Dict, Any
 from collections import defaultdict
 from config.redis_client import redis_client
 from config.settings import settings
@@ -12,6 +11,7 @@ from src.models.session import (
     SessionUpdate,
     ConversationMessage,
 )
+from src.models.conversation_state import ConversationState
 import logging
 
 
@@ -159,6 +159,43 @@ class SessionManager:
                 context_parts.append(f"{role_prefix}: {msg.message}")
 
         return "\n".join(context_parts)
+
+    def build_session_context(self, session_id: str) -> Dict[str, Any]:
+        """Build comprehensive session context"""
+
+        session = self.get_session(session_id)
+        if not session:
+            return {}
+
+        conversation_history = []
+        for msg in session.conversation_history[-5:]:
+            if isinstance(msg, dict):
+                conversation_history.append(msg)
+            else:
+                conversation_history.append(
+                    {
+                        "role": msg.role,
+                        "message": msg.message,
+                        "timestamp": msg.timestamp.isoformat()
+                        if msg.timestamp
+                        else None,
+                    }
+                )
+
+        context = {
+            "session_id": session_id,
+            "user_id": session.user_id,
+            "conversation_history": conversation_history,
+            "context_variables": session.context_variables.copy(),
+            "conversation_state": session.context_variables.get(
+                "conversation_state", ConversationState.GREETING
+            ),
+            "last_intent": session.context_variables.get("last_intent"),
+            "last_category": session.context_variables.get("last_category"),
+            "message_count": len(session.conversation_history),
+        }
+
+        return context
 
     def extend_session_ttl(self, session_id: str) -> bool:
         """Extend session TTL"""

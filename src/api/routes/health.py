@@ -3,11 +3,14 @@ from fastapi import APIRouter, HTTPException
 from typing import Optional
 import logging
 from src.services.session_manager import session_manager
-from src.services.chatbot_engine import chatbot_engine
+from src.services.chatbot_engine import get_chatbot_engine
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/health", tags=["health"])
+
+# Get the default English chatbot engine
+chatbot_engine = get_chatbot_engine("en")
 
 
 @router.get("/")

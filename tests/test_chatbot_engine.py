@@ -5,7 +5,7 @@ import os
 # Add the project root to Python path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.services.chatbot_engine import chatbot_engine, ConversationState
+from src.services.chatbot_engine import get_chatbot_engine, ConversationState
 
 
 class TestChatbotEngine:
@@ -13,7 +13,7 @@ class TestChatbotEngine:
 
     def setup_method(self):
         """Setup method with initial configurations"""
-        self.engine = chatbot_engine
+        self.engine = get_chatbot_engine("en")
 
     def test_initialization(self):
         """Test engine initialization"""

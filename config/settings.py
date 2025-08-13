@@ -28,6 +28,9 @@ class Settings:
     session_ttl: int = os.getenv("SESSION_TTL", 3600)
     max_conversation_history: int = os.getenv("MAX_CONVERSATION_HISTORY", 50)
 
+    # Chroma configuration
+    chroma_persist_directory: str = os.getenv("CHROMA_PERSIST_DIRECTORY", "./data/chroma_db")
+
     # Logging
     log_level: str = os.getenv("LOG_LEVEL", "INFO")
 

@@ -1,27 +1,35 @@
 # src/services/text_processor.py
 import re
-from typing import List, Dict, Any, Tuple
+import logging
+from typing import List, Dict, Any, Tuple, Optional
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from config.settings import settings
 from src.utils.exceptions import TextProcessingError
 
+logger = logging.getLogger(__name__)
+
 
 class TextProcessor:
     """Handles all text processing operations using BERT sentence transformers"""
 
-    def __init__(self, bert_model_name: str = None):
+    def __init__(
+        self,
+        bert_model_name: str = None,
+        sentence_transformer: "SentenceTransformer" = None,
+    ):
         self.bert_model_name = bert_model_name or getattr(
-            settings, "bert_model", "all-MiniLM-L6-v2"
+            settings, "bert_model", "paraphrase-multilingual-MiniLM-L12-v2"
         )
-        self.sentence_transformer = None
-        self._load_models()
+        self.sentence_transformer = sentence_transformer
+        if not self.sentence_transformer:
+            self._load_models()
 
     def _load_models(self):
         """Load sentence transformer models"""
         try:
             self.sentence_transformer = SentenceTransformer(self.bert_model_name)
-            print(f"Loaded sentence transformer: {self.bert_model_name}")
+            logger.info(f"Loaded sentence transformer: {self.bert_model_name}")
         except Exception as e:
             raise TextProcessingError(
                 f"Could not load sentence transformer model '{self.bert_model_name}'. "
@@ -36,13 +44,9 @@ class TextProcessor:
         if not text or not text.strip():
             raise TextProcessingError("Input text cannot be empty")
 
-        # Basic cleaning
         cleaned_text = self._clean_text(text)
+        bert_embedding = self.get_text_vector(cleaned_text)
 
-        # Get BERT embedding
-        bert_embedding = self.get_text_vector(text)
-
-        # Extract features
         result = {
             "original": text,
             "cleaned": cleaned_text,
@@ -53,17 +57,10 @@ class TextProcessor:
         return result
 
     def _clean_text(self, text: str) -> str:
-        """Basic text cleaning"""
-        # Convert to lowercase
+        """Basic text cleaning - preserve semantic meaning while ensuring consistency with patterns"""
         text = text.lower()
-
-        # Remove special characters but keep basic punctuation
-        text = re.sub(r"[^\w\s\.\!\?\,\-']", "", text)
-
-        # Remove extra whitespace
+        text = re.sub(r"[.!?,;:]", "", text)
         text = re.sub(r"\s+", " ", text)
-
-        # Strip leading/trailing whitespace
         text = text.strip()
 
         return text
@@ -71,9 +68,12 @@ class TextProcessor:
     def get_text_vector(self, text: str) -> List[float]:
         """Get BERT vector representation of text"""
         if not text or not text.strip():
+            logger.warning("Empty text provided for vector generation")
             return [0.0] * self.sentence_transformer.get_sentence_embedding_dimension()
 
-        embedding = self.sentence_transformer.encode(text, convert_to_tensor=False)
+        embedding = self.sentence_transformer.encode(
+            text, convert_to_tensor=False, show_progress_bar=False
+        )
         return embedding.tolist()
 
     def get_similarity(self, text1: str, text2: str) -> float:
@@ -82,12 +82,12 @@ class TextProcessor:
             return 0.0
 
         embeddings = self.sentence_transformer.encode(
-            [text1, text2], convert_to_tensor=False
+            [text1, text2], convert_to_tensor=False, show_progress_bar=False
         )
 
-        # Calculate cosine similarity
         similarity_matrix = cosine_similarity([embeddings[0]], [embeddings[1]])
-        return float(similarity_matrix[0][0])
+        similarity = float(similarity_matrix[0][0])
+        return similarity
 
     def get_batch_similarities(
         self, query_text: str, candidate_texts: List[str]
@@ -96,30 +96,25 @@ class TextProcessor:
         if not query_text.strip() or not candidate_texts:
             return [0.0] * len(candidate_texts)
 
-        # Filter out empty texts
         valid_texts = [
             text if text and text.strip() else " " for text in candidate_texts
         ]
         all_texts = [query_text] + valid_texts
 
-        # Get embeddings for all texts at once (more efficient)
         embeddings = self.sentence_transformer.encode(
-            all_texts, convert_to_tensor=False
+            all_texts, convert_to_tensor=False, show_progress_bar=False
         )
 
-        query_embedding = embeddings[0:1]  # First embedding
-        candidate_embeddings = embeddings[1:]  # Rest of embeddings
+        query_embedding = embeddings[0:1]
+        candidate_embeddings = embeddings[1:]
 
-        # Calculate similarities
         similarities = cosine_similarity(query_embedding, candidate_embeddings)[0]
         return similarities.tolist()
 
     def extract_keywords(self, text: str, n_keywords: int = 5) -> List[str]:
         """Extract important keywords from text using regex"""
-        # Simple regex to find words, excluding very short words
         words = re.findall(r"\b\w{3,}\b", text.lower())
 
-        # A simple stopword list
         stopwords = set(
             [
                 "the",
@@ -139,8 +134,6 @@ class TextProcessor:
         )
 
         keywords = [word for word in words if word not in stopwords]
-
-        # For simplicity, returning the first n keywords found
         return keywords[:n_keywords]
 
     def batch_process_texts(self, texts: List[str]) -> List[Dict[str, Any]]:
@@ -148,7 +141,6 @@ class TextProcessor:
         if not texts:
             return []
 
-        # Filter and prepare texts
         valid_texts = []
         text_indices = []
         for i, text in enumerate(texts):
@@ -159,20 +151,15 @@ class TextProcessor:
         results = [None] * len(texts)
 
         if valid_texts:
-            # Batch encode with BERT for efficiency
             bert_embeddings = self.sentence_transformer.encode(
                 valid_texts,
                 convert_to_tensor=False,
-                show_progress_bar=len(valid_texts) > 100,
+                show_progress_bar=False,
             )
 
-            # Process each valid text
             for idx, (text_idx, text) in enumerate(zip(text_indices, valid_texts)):
                 try:
-                    # Basic cleaning
                     cleaned_text = self._clean_text(text)
-
-                    # Use pre-computed BERT embedding
                     bert_embedding = bert_embeddings[idx].tolist()
 
                     result = {
@@ -195,7 +182,6 @@ class TextProcessor:
                         "vector_dim": self.sentence_transformer.get_sentence_embedding_dimension(),
                     }
 
-        # Fill in results for invalid texts
         for i, result in enumerate(results):
             if result is None:
                 results[i] = {
@@ -225,12 +211,40 @@ class TextProcessor:
 
         similarities = self.get_batch_similarities(query, candidates)
 
-        # Create (text, similarity) pairs and sort by similarity
         text_sim_pairs = list(zip(candidates, similarities))
         text_sim_pairs.sort(key=lambda x: x[1], reverse=True)
 
         return text_sim_pairs[:top_k]
 
+    def enhance_query_with_context(
+        self, query: str, context: Optional[Dict[str, Any]]
+    ) -> str:
+        """Enhance query with conversation context"""
+        if not context:
+            return query
 
-# Create singleton instance
+        enhanced_query = query
+
+        history = context.get("conversation_history", [])
+        if history:
+            recent_messages = [
+                msg["message"] for msg in history[-3:] if msg.get("role") == "user"
+            ]
+            if recent_messages:
+                context_text = " ".join(recent_messages[-2:])
+                enhanced_query = f"{context_text} {query}"
+
+        context_vars = context.get("context_variables", {})
+        if context_vars:
+            context_parts = []
+            for key, value in context_vars.items():
+                if isinstance(value, str) and len(value) < 50:
+                    context_parts.append(value)
+            if context_parts:
+                context_text = " ".join(context_parts)
+                enhanced_query = f"{enhanced_query} {context_text}"
+
+        return enhanced_query
+
+
 text_processor = TextProcessor()
