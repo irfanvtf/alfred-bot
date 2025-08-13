@@ -1,8 +1,7 @@
-import json
 import uuid
 import time
-from datetime import datetime, timedelta
-from typing import Optional, List, Dict, Any
+from datetime import datetime
+from typing import Optional, Dict, Any
 from collections import defaultdict
 from config.redis_client import redis_client
 from config.settings import settings
@@ -163,14 +162,13 @@ class SessionManager:
 
     def build_session_context(self, session_id: str) -> Dict[str, Any]:
         """Build comprehensive session context"""
-        
+
         session = self.get_session(session_id)
         if not session:
             return {}
 
-        # Get conversation history
         conversation_history = []
-        for msg in session.conversation_history[-5:]:  # Last 5 messages
+        for msg in session.conversation_history[-5:]:
             if isinstance(msg, dict):
                 conversation_history.append(msg)
             else:
@@ -184,7 +182,6 @@ class SessionManager:
                     }
                 )
 
-        # Build context
         context = {
             "session_id": session_id,
             "user_id": session.user_id,

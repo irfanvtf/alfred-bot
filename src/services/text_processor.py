@@ -44,13 +44,9 @@ class TextProcessor:
         if not text or not text.strip():
             raise TextProcessingError("Input text cannot be empty")
 
-        # Basic cleaning
         cleaned_text = self._clean_text(text)
-
-        # Get BERT embedding from the cleaned text
         bert_embedding = self.get_text_vector(cleaned_text)
 
-        # Extract features
         result = {
             "original": text,
             "cleaned": cleaned_text,
@@ -61,24 +57,10 @@ class TextProcessor:
         return result
 
     def _clean_text(self, text: str) -> str:
-        """Basic text cleaning - preserve semantic meaning while ensuring consistency with patterns
-        
-        Knowledge base patterns are stored without sentence-ending punctuation to allow flexible matching.
-        This method removes such punctuation from queries to ensure consistency while preserving
-        semantically important punctuation like hyphens and apostrophes.
-        """
-        # Convert to lowercase
+        """Basic text cleaning - preserve semantic meaning while ensuring consistency with patterns"""
         text = text.lower()
-
-        # Remove only punctuation that would prevent matching with patterns
-        # Keep hyphens (for compound words) and apostrophes (for contractions)
-        # Remove sentence-ending punctuation that's not in patterns
         text = re.sub(r"[.!?,;:]", "", text)
-
-        # Remove extra whitespace
         text = re.sub(r"\s+", " ", text)
-
-        # Strip leading/trailing whitespace
         text = text.strip()
 
         return text
@@ -89,7 +71,6 @@ class TextProcessor:
             logger.warning("Empty text provided for vector generation")
             return [0.0] * self.sentence_transformer.get_sentence_embedding_dimension()
 
-        # Disable progress bar by setting show_progress_bar=False
         embedding = self.sentence_transformer.encode(
             text, convert_to_tensor=False, show_progress_bar=False
         )
@@ -100,22 +81,12 @@ class TextProcessor:
         if not text1.strip() or not text2.strip():
             return 0.0
 
-        # Disable progress bar by setting show_progress_bar=False
         embeddings = self.sentence_transformer.encode(
             [text1, text2], convert_to_tensor=False, show_progress_bar=False
         )
 
-        # Log the texts and embeddings for debugging
-        logger.debug(f"Calculating similarity between:")
-        logger.debug(f"  Text 1: '{text1}'")
-        logger.debug(f"  Text 2: '{text2}'")
-        logger.debug(f"  Embedding 1 (first 5 elements): {embeddings[0][:5]}")
-        logger.debug(f"  Embedding 2 (first 5 elements): {embeddings[1][:5]}")
-
-        # Calculate cosine similarity
         similarity_matrix = cosine_similarity([embeddings[0]], [embeddings[1]])
         similarity = float(similarity_matrix[0][0])
-        logger.debug(f"  Calculated similarity: {similarity}")
         return similarity
 
     def get_batch_similarities(
@@ -125,31 +96,25 @@ class TextProcessor:
         if not query_text.strip() or not candidate_texts:
             return [0.0] * len(candidate_texts)
 
-        # Filter out empty texts
         valid_texts = [
             text if text and text.strip() else " " for text in candidate_texts
         ]
         all_texts = [query_text] + valid_texts
 
-        # Get embeddings for all texts at once (more efficient)
-        # Disable progress bar by setting show_progress_bar=False
         embeddings = self.sentence_transformer.encode(
             all_texts, convert_to_tensor=False, show_progress_bar=False
         )
 
-        query_embedding = embeddings[0:1]  # First embedding
-        candidate_embeddings = embeddings[1:]  # Rest of embeddings
+        query_embedding = embeddings[0:1]
+        candidate_embeddings = embeddings[1:]
 
-        # Calculate similarities
         similarities = cosine_similarity(query_embedding, candidate_embeddings)[0]
         return similarities.tolist()
 
     def extract_keywords(self, text: str, n_keywords: int = 5) -> List[str]:
         """Extract important keywords from text using regex"""
-        # Simple regex to find words, excluding very short words
         words = re.findall(r"\b\w{3,}\b", text.lower())
 
-        # A simple stopword list
         stopwords = set(
             [
                 "the",
@@ -169,8 +134,6 @@ class TextProcessor:
         )
 
         keywords = [word for word in words if word not in stopwords]
-
-        # For simplicity, returning the first n keywords found
         return keywords[:n_keywords]
 
     def batch_process_texts(self, texts: List[str]) -> List[Dict[str, Any]]:
@@ -178,7 +141,6 @@ class TextProcessor:
         if not texts:
             return []
 
-        # Filter and prepare texts
         valid_texts = []
         text_indices = []
         for i, text in enumerate(texts):
@@ -189,21 +151,15 @@ class TextProcessor:
         results = [None] * len(texts)
 
         if valid_texts:
-            # Batch encode with BERT for efficiency
-            # Always disable progress bar here since it's already conditional on length > 100
             bert_embeddings = self.sentence_transformer.encode(
                 valid_texts,
                 convert_to_tensor=False,
-                show_progress_bar=False,  # Changed from len(valid_texts) > 100 to False
+                show_progress_bar=False,
             )
 
-            # Process each valid text
             for idx, (text_idx, text) in enumerate(zip(text_indices, valid_texts)):
                 try:
-                    # Basic cleaning
                     cleaned_text = self._clean_text(text)
-
-                    # Use pre-computed BERT embedding
                     bert_embedding = bert_embeddings[idx].tolist()
 
                     result = {
@@ -226,7 +182,6 @@ class TextProcessor:
                         "vector_dim": self.sentence_transformer.get_sentence_embedding_dimension(),
                     }
 
-        # Fill in results for invalid texts
         for i, result in enumerate(results):
             if result is None:
                 results[i] = {
@@ -256,7 +211,6 @@ class TextProcessor:
 
         similarities = self.get_batch_similarities(query, candidates)
 
-        # Create (text, similarity) pairs and sort by similarity
         text_sim_pairs = list(zip(candidates, similarities))
         text_sim_pairs.sort(key=lambda x: x[1], reverse=True)
 
@@ -271,18 +225,15 @@ class TextProcessor:
 
         enhanced_query = query
 
-        # Add recent conversation context
         history = context.get("conversation_history", [])
         if history:
-            # Get last few user messages for context
             recent_messages = [
                 msg["message"] for msg in history[-3:] if msg.get("role") == "user"
             ]
             if recent_messages:
-                context_text = " ".join(recent_messages[-2:])  # Last 2 user messages
+                context_text = " ".join(recent_messages[-2:])
                 enhanced_query = f"{context_text} {query}"
 
-        # Add context variables as keywords
         context_vars = context.get("context_variables", {})
         if context_vars:
             context_parts = []
@@ -296,5 +247,4 @@ class TextProcessor:
         return enhanced_query
 
 
-# Create singleton instance
 text_processor = TextProcessor()
