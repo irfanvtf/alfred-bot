@@ -80,6 +80,24 @@ This document provides a summary of the API endpoints for the Alfred Bot.
 
 ---
 
+### CMS Endpoints
+
+| Method   | Endpoint                                              | Description                                        | Status Codes                      | Authentication | Parameters                                              |
+| -------- | ----------------------------------------------------- | -------------------------------------------------- | --------------------------------- | -------------- | ------------------------------------------------------- |
+| `GET`    | `/cms/intents/{language}`                             | Get all intents for a language                     | `200 OK`, `404 Not Found`         | None           | `language` (required)                                   |
+| `PUT`    | `/cms/intents/{language}`                             | Update all intents for a language                  | `200 OK`, `500 Server Error`      | None           | `language` (required), `intents` (required in body)     |
+| `GET`    | `/cms/intents/{language}/{intent_id}`                 | Get a specific intent                              | `200 OK`, `404 Not Found`         | None           | `language` (required), `intent_id` (required)           |
+| `POST`   | `/cms/intents/{language}`                             | Create a new intent                                | `200 OK`, `400 Bad Request`       | None           | `language` (required), `intent` (required in body)      |
+| `PUT`    | `/cms/intents/{language}/{intent_id}`                 | Update a specific intent                           | `200 OK`, `404 Not Found`         | None           | `language` (required), `intent_id` (required), `intent` (required in body) |
+| `DELETE` | `/cms/intents/{language}/{intent_id}`                 | Delete a specific intent                           | `200 OK`, `404 Not Found`         | None           | `language` (required), `intent_id` (required)           |
+| `POST`   | `/cms/audio/{language}/{response_id}`                 | Upload an audio file for a response                | `200 OK`, `400 Bad Request`       | None           | `language` (required), `response_id` (required), `file` (required) |
+| `GET`    | `/cms/audio/{language}/{response_id}`                 | Get an audio file for a response                   | `200 OK`, `404 Not Found`         | None           | `language` (required), `response_id` (required)         |
+| `DELETE` | `/cms/audio/{language}/{response_id}`                 | Delete an audio file for a response                | `200 OK`, `404 Not Found`         | None           | `language` (required), `response_id` (required)         |
+| `GET`    | `/cms/backups/{language}`                             | List all backups for a language                    | `200 OK`, `500 Server Error`      | None           | `language` (required)                                   |
+| `POST`   | `/cms/backups/{language}/{backup_filename}/restore`   | Restore a specific backup                          | `200 OK`, `404 Not Found`         | None           | `language` (required), `backup_filename` (required)     |
+
+---
+
 ### Health Check Endpoints
 
 | Method | Endpoint               | Description                                       | Status Codes | Authentication | Parameters |
@@ -89,6 +107,15 @@ This document provides a summary of the API endpoints for the Alfred Bot.
 | `GET`  | `/health/chroma`       | Checks the health of the ChromaDB vector store.   | `200 OK`     | None           | None       |
 | `GET`  | `/health/dependencies` | Runs a health check on all external dependencies. | `200 OK`     | None           | None       |
 | `GET`  | `/health/stats`        | Retrieves comprehensive system statistics.        | `200 OK`     | Admin Token    | None       |
+
+---
+
+### Chroma Endpoints
+
+| Method | Endpoint                                          | Description                           | Status Codes                | Authentication | Parameters                                                  |
+| ------ | ------------------------------------------------- | ------------------------------------- | --------------------------- | -------------- | ----------------------------------------------------------- |
+| `GET`  | `/chroma/collections`                             | Lists all collections in ChromaDB.    | `200 OK`, `500 Server Error`| None           | None                                                        |
+| `POST` | `/chroma/collections/{collection_name}/query`     | Queries a specific collection.        | `200 OK`, `500 Server Error`| None           | `query_texts` (required), `n_results` (optional), `where_filter` (optional) |
 
 ---
 
