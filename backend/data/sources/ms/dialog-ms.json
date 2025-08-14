@@ -1,0 +1,748 @@
+{
+  "version": "0.2.0",
+  "metadata": {
+    "created_at": "2024-01-01T00:00:00",
+    "updated_at": "2025-07-07T00:00:00",
+    "description": "Pangkalan Pengetahuan Alfred Bot - Disusun semula dengan satu jawapan untuk setiap soalan",
+    "language": "ms",
+    "search_config": {
+      "default_confidence_threshold": 0.6
+    }
+  },
+  "intents": [
+    {
+      "id": "greeting",
+      "patterns": [
+        "hello",
+        "hai",
+        "hai sana",
+        "hey",
+        "selamat pagi",
+        "selamat petang",
+        "selamat malam",
+        "salam",
+        "apa khabar",
+        "helo",
+        "yo",
+        "apa cerita"
+      ],
+      "responses": [
+        {
+          "id": "greeting_0",
+          "text": "Hai! Apa yang boleh saya bantu hari ini?"
+        },
+        {
+          "id": "greeting_1",
+          "text": "Helo! Apa yang boleh saya buat untuk awak?"
+        },
+        {
+          "id": "greeting_2",
+          "text": "Hey! Bagaimana saya boleh membantu awak?"
+        },
+        {
+          "id": "greeting_3",
+          "text": "Salam! Apa yang awak ingin tahu?"
+        }
+      ],
+      "metadata": {
+        "category": "salam",
+        "priority": 1,
+        "tags": ["salam", "pembuka_perbualan"]
+      }
+    },
+    {
+      "id": "time_forward_kids",
+      "patterns": ["kenapa masa bergerak ke hadapan"],
+      "responses": [
+        {
+          "id": "time_forward_kids_0",
+          "text": "Sebab segala sesuatu berubah! Seperti siang bertukar malam, dan ais cair jadi air—itulah masa bergerak ke hadapan."
+        }
+      ],
+      "metadata": {
+        "category": "fizik",
+        "priority": 3,
+        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"]
+      }
+    },
+    {
+      "id": "move_fast_kids",
+      "patterns": ["apa jadi kalau saya bergerak super laju"],
+      "responses": [
+        {
+          "id": "move_fast_kids_0",
+          "text": "Masa bergerak lebih lambat untuk awak! Kalau awak terbang sangat laju, awak akan menua sikit lebih lambat daripada kawan-kawan awak."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"]
+      }
+    },
+    {
+      "id": "what_second_kids",
+      "patterns": ["apa itu saat"],
+      "responses": [
+        {
+          "id": "what_second_kids_0",
+          "text": "Saat ialah masa yang sangat kecil—ada 60 saat dalam satu minit. Saintis guna untuk mengira berapa laju sesuatu berlaku."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"]
+      }
+    },
+    {
+      "id": "time_stop_kids",
+      "patterns": ["bolehkah masa berhenti"],
+      "responses": [
+        {
+          "id": "time_stop_kids_0",
+          "text": "Tak boleh sebenarnya, tapi masa boleh jadi lambat di angkasa atau dekat lohong hitam! Masa tak pernah benar-benar berhenti."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"]
+      }
+    },
+    {
+      "id": "why_clocks_kids",
+      "patterns": ["kenapa kita ada jam"],
+      "responses": [
+        {
+          "id": "why_clocks_kids_0",
+          "text": "Jam bantu kita tahu bila sesuatu berlaku—seperti bila nak bangun, makan, atau bermain! Jam jaga masa untuk kita."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"]
+      }
+    },
+    {
+      "id": "time_travel_real_kids",
+      "patterns": ["bolehkah kita benar-benar mengembara masa"],
+      "responses": [
+        {
+          "id": "time_travel_real_kids_0",
+          "text": "Tak macam dalam filem, tapi masa boleh jadi lambat untuk orang yang bergerak super laju—seperti angkasawan! Tu macam perjalanan masa jugak."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"]
+      }
+    },
+    {
+      "id": "what_time_kids",
+      "patterns": ["apa itu masa"],
+      "responses": [
+        {
+          "id": "what_time_kids_0",
+          "text": "Masa ialah cara kita tahu bila sesuatu berlaku—seperti pagi, waktu makan tengahari, atau waktu tidur. Ia bantu kita cerita tentang hari tu."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"]
+      }
+    },
+    {
+      "id": "clock_tick_kids",
+      "patterns": ["kenapa jam berbunyi tick"],
+      "responses": [
+        {
+          "id": "clock_tick_kids_0",
+          "text": "Jam berbunyi tick sebab dia tengah kira saat—macam gendang kecil bunyi \"tick-tock\" untuk jaga masa bergerak!"
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"]
+      }
+    },
+    {
+      "id": "dinosaurs_kids",
+      "patterns": ["boleh saya balik tengok dinosaur"],
+      "responses": [
+        {
+          "id": "dinosaurs_kids_0",
+          "text": "Tu mesti best! Tapi sekarang ni, kita tak boleh balik masa lalu. Saintis masih cuba fikir macam mana nak buat."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"]
+      }
+    },
+    {
+      "id": "astronauts_age_kids",
+      "patterns": ["angkasawan menua lebih lambat ke"],
+      "responses": [
+        {
+          "id": "astronauts_age_kids_0",
+          "text": "Ya! Bila mereka zoom super laju di angkasa, masa jadi lambat sikit untuk mereka. Tu sains betul!"
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"]
+      }
+    },
+    {
+      "id": "time_gravity_adult",
+      "patterns": ["kenapa masa jadi lambat dekat graviti"],
+      "responses": [
+        {
+          "id": "time_gravity_adult_0",
+          "text": "Objek besar seperti planet dan lohong hitam bengkokkan ruang-masa, yang mempengaruhi berapa laju masa mengalir. Makin kuat graviti, makin lambat masa berlalu."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"]
+      }
+    },
+    {
+      "id": "time_dilation_proven_adult",
+      "patterns": ["adakah pelecehan masa telah dibuktikan"],
+      "responses": [
+        {
+          "id": "time_dilation_proven_adult_0",
+          "text": "Ya. Eksperimen dengan jam atom pada kapal terbang laju dan satelit tunjukkan perbezaan masa yang boleh diukur—macam yang Einstein ramalkan."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"]
+      }
+    },
+    {
+      "id": "time_travel_past_adult",
+      "patterns": ["mungkinkah perjalanan masa ke masa lalu"],
+      "responses": [
+        {
+          "id": "time_travel_past_adult_0",
+          "text": "Secara teori, beberapa model seperti lohong cacing membenarkan perjalanan ke belakang, tapi mereka perlukan bahan eksotik dan masih tak terbukti."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"]
+      }
+    },
+    {
+      "id": "spacetime_adult",
+      "patterns": ["apa itu ruang-masa"],
+      "responses": [
+        {
+          "id": "spacetime_adult_0",
+          "text": "Ruang-masa gabungkan ruang dan masa jadi satu fabrik. Objek bermas bengkokkan fabrik ni, dan bengkokan tu yang kita alami sebagai graviti."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"]
+      }
+    },
+    {
+      "id": "twin_paradox_adult",
+      "patterns": ["apa itu paradoks kembar"],
+      "responses": [
+        {
+          "id": "twin_paradox_adult_0",
+          "text": "Kalau satu kembar mengembara di angkasa dekat kelajuan cahaya dan balik, mereka akan menua kurang daripada kembar yang tinggal di Bumi. Itu kesan sebenar relativiti."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"]
+      }
+    },
+    {
+      "id": "time_travel_possible_adult",
+      "patterns": ["mungkinkah perjalanan masa"],
+      "responses": [
+        {
+          "id": "time_travel_possible_adult_0",
+          "text": "Menurut teori relativiti Einstein, perjalanan masa ke masa depan secara teorinya mungkin melalui perjalanan berkelajuan tinggi atau graviti kuat. Perjalanan masa ke masa lalu masih spekulatif."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"]
+      }
+    },
+    {
+      "id": "time_dilation_adult",
+      "patterns": ["apa itu pelecehan masa"],
+      "responses": [
+        {
+          "id": "time_dilation_adult_0",
+          "text": "Pelecehan masa berlaku bila masa jadi lambat untuk objek yang bergerak sangat laju atau dekat objek besar seperti lohong hitam. Itu kesan sebenar yang boleh diukur dengan jam atom."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"]
+      }
+    },
+    {
+      "id": "time_machine_adult",
+      "patterns": ["bolehkah kita bina mesin masa"],
+      "responses": [
+        {
+          "id": "time_machine_adult_0",
+          "text": "Sekarang ni, tak boleh. Beberapa teori cadangkan kemungkinan—seperti lohong cacing atau tali kosmik—tapi tak terbukti dan perlukan fizik eksotik."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"]
+      }
+    },
+    {
+      "id": "einstein_theory_adult",
+      "patterns": ["macam mana teori Einstein berkaitan dengan masa"],
+      "responses": [
+        {
+          "id": "einstein_theory_adult_0",
+          "text": "Einstein tunjukkan yang masa tak mutlak. Ia bahagian fabrik fleksibel yang dipanggil ruang-masa yang bengkok dengan graviti dan kelajuan."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"]
+      }
+    },
+    {
+      "id": "arrow_time_adult",
+      "patterns": ["apa yang sebabkan anak panah masa"],
+      "responses": [
+        {
+          "id": "arrow_time_adult_0",
+          "text": "Anak panah masa bergerak ke hadapan sebab entropi—atau kekacauan—cenderung meningkat. Sebab tu benda rosak atau tua tapi tak reverse secara semula jadi."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"]
+      }
+    },
+    {
+      "id": "travel_future_adult",
+      "patterns": ["macam mana saya mengembara ke masa depan"],
+      "responses": [
+        {
+          "id": "travel_future_adult_0",
+          "text": "Awak dah pun tengah buat! Tapi nak cepatkan, awak kena travel dekat kelajuan cahaya atau duduk dekat benda yang ada graviti kuat—seperti lohong hitam. Masa bergerak lambat situ."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"]
+      }
+    },
+    {
+      "id": "special_relativity_adult",
+      "patterns": ["apa itu relativiti khas"],
+      "responses": [
+        {
+          "id": "special_relativity_adult_0",
+          "text": "Itu teori yang saya bangunkan pada 1905. Ia kata undang-undang fizik sama untuk semua orang, dan ruang dan masa bersambung—dan boleh reggang atau mengecut bergantung pada kelajuan."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"]
+      }
+    },
+    {
+      "id": "black_holes_black_kids",
+      "patterns": ["kenapa lohong hitam hitam"],
+      "responses": [
+        {
+          "id": "black_holes_black_kids_0",
+          "text": "Sebab cahaya tak boleh keluar! Mereka tarik cahaya masuk jadi tak ada yang boleh bersinar balik pada kita."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"]
+      }
+    },
+    {
+      "id": "too_close_black_hole_kids",
+      "patterns": ["apa jadi kalau saya terlalu dekat dengan lohong hitam"],
+      "responses": [
+        {
+          "id": "too_close_black_hole_kids_0",
+          "text": "Awak akan ditarik jadi sangat nipis dan masuk—macam spaghetti! Sebab tu dipanggil spaghetifikasi!"
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"]
+      }
+    },
+    {
+      "id": "black_holes_move_kids",
+      "patterns": ["lohong hitam bergerak ke"],
+      "responses": [
+        {
+          "id": "black_holes_move_kids_0",
+          "text": "Ya! Mereka boleh bergerak dalam angkasa, dan kadang-kadang mereka langgar lohong hitam lain!"
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"]
+      }
+    },
+    {
+      "id": "robot_black_hole_kids",
+      "patterns": ["bolehkah kita hantar robot masuk lohong hitam"],
+      "responses": [
+        {
+          "id": "robot_black_hole_kids_0",
+          "text": "Boleh cuba, tapi ia akan kena tarik masuk dan hancur sebelum boleh hantar banyak maklumat balik."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"]
+      }
+    },
+    {
+      "id": "inside_black_hole_kids",
+      "patterns": ["apa ada dalam lohong hitam"],
+      "responses": [
+        {
+          "id": "inside_black_hole_kids_0",
+          "text": "Kita tak pasti! Semua benda kena tekan jadi sangat kecil, ia misteri besar untuk saintis."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"]
+      }
+    },
+    {
+      "id": "what_black_hole_kids",
+      "patterns": ["apa itu lohong hitam"],
+      "responses": [
+        {
+          "id": "what_black_hole_kids_0",
+          "text": "Macam penyedut debu gergasi angkasa yang tarik semua masuk—termasuk cahaya! Ia tak nampak tapi sangat kuat."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"]
+      }
+    },
+    {
+      "id": "see_black_holes_kids",
+      "patterns": ["bolehkah kita tengok lohong hitam"],
+      "responses": [
+        {
+          "id": "see_black_holes_kids_0",
+          "text": "Kita tak boleh tengok terus, tapi kita tengok apa yang mereka buat pada bintang dan cahaya dekat-dekat—macam detektif angkasa!"
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"]
+      }
+    },
+    {
+      "id": "black_hole_earth_kids",
+      "patterns": ["lohong hitam akan makan Bumi ke"],
+      "responses": [
+        {
+          "id": "black_hole_earth_kids_0",
+          "text": "Tak! Yang kita tahu sangat, sangat jauh dan tak akan datang dekat kita."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"]
+      }
+    },
+    {
+      "id": "black_holes_happen_kids",
+      "patterns": ["macam mana lohong hitam berlaku"],
+      "responses": [
+        {
+          "id": "black_holes_happen_kids_0",
+          "text": "Bila bintang super besar kehabisan tenaga, ia kena tekan jadi sesuatu yang super kecil—tu lohong hitam!"
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"]
+      }
+    },
+    {
+      "id": "fall_black_hole_kids",
+      "patterns": ["boleh saya jatuh dalam lohong hitam"],
+      "responses": [
+        {
+          "id": "fall_black_hole_kids_0",
+          "text": "Tak boleh kecuali awak dalam kapal angkasa pergi jauh ke angkasa. Tapi kalau jadi, awak akan diregangkan macam spaghetti! (Kita panggil tu \"spaghetifikasi\"!)"
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"]
+      }
+    },
+    {
+      "id": "cant_see_black_holes_kids",
+      "patterns": ["kenapa kita tak boleh tengok lohong hitam"],
+      "responses": [
+        {
+          "id": "cant_see_black_holes_kids_0",
+          "text": "Sebab mereka tak bersinar! Tapi kita tahu mereka ada sebab cara mereka gerakkan bintang dan cahaya sekeliling mereka."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"]
+      }
+    },
+    {
+      "id": "event_horizon_adult",
+      "patterns": ["apa itu ufuk peristiwa"],
+      "responses": [
+        {
+          "id": "event_horizon_adult_0",
+          "text": "Itu sempadan sekeliling lohong hitam. Bila sesuatu melintas, ia tak boleh lari—termasuk cahaya."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"]
+      }
+    },
+    {
+      "id": "see_inside_black_hole_adult",
+      "patterns": ["bolehkah kita tengok apa dalam lohong hitam"],
+      "responses": [
+        {
+          "id": "see_inside_black_hole_adult_0",
+          "text": "Tak boleh. Kita tak boleh tengok dalam ufuk peristiwa. Undang-undang fizik yang kita tahu rosak melepasi titik tu."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"]
+      }
+    },
+    {
+      "id": "hawking_radiation_adult",
+      "patterns": ["apa itu radiasi Hawking"],
+      "responses": [
+        {
+          "id": "hawking_radiation_adult_0",
+          "text": "Teori oleh Stephen Hawking yang lohong hitam keluarkan sedikit radiasi dan akhirnya boleh mengecil dan hilang dengan masa."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"]
+      }
+    },
+    {
+      "id": "black_holes_merge_adult",
+      "patterns": ["bolehkah lohong hitam bergabung"],
+      "responses": [
+        {
+          "id": "black_holes_merge_adult_0",
+          "text": "Ya. Bila dua lohong hitam bertembung, mereka bentuk yang lebih besar dan keluarkan gelombang graviti yang boleh kita kesan dari Bumi."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"]
+      }
+    },
+    {
+      "id": "black_holes_important_adult",
+      "patterns": ["lohong hitam penting untuk sains ke"],
+      "responses": [
+        {
+          "id": "black_holes_important_adult_0",
+          "text": "Sangat. Mereka bantu kita uji teori graviti, angkasa, dan fizik kuantum—tolak sempadan apa yang kita tahu."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"]
+      }
+    },
+    {
+      "id": "black_holes_formed_adult",
+      "patterns": ["macam mana lohong hitam terbentuk"],
+      "responses": [
+        {
+          "id": "black_holes_formed_adult_0",
+          "text": "Kebanyakan lohong hitam terbentuk bila bintang besar runtuh selepas supernova, dimampatkan jadi titik sangat tumpat dipanggil singulariti."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"]
+      }
+    },
+    {
+      "id": "fall_into_black_hole_adult",
+      "patterns": ["apa jadi kalau awak jatuh dalam lohong hitam"],
+      "responses": [
+        {
+          "id": "fall_into_black_hole_adult_0",
+          "text": "Awak akan lepas ufuk peristiwa—yang mana tiada maklumat boleh lepas. Daya tidal akan regang badan awak dalam proses yang digelar \"spaghetifikasi.\""
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"]
+      }
+    },
+    {
+      "id": "black_holes_destroy_info_adult",
+      "patterns": ["bolehkah lohong hitam musnah maklumat"],
+      "responses": [
+        {
+          "id": "black_holes_destroy_info_adult_0",
+          "text": "Tu perdebatan berterusan. Beberapa teori cadang maklumat hilang, yang lain kata ia dikod dalam radiasi Hawking. Ini dikenali sebagai paradoks maklumat lohong hitam."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"]
+      }
+    },
+    {
+      "id": "spacetime_warping_adult",
+      "patterns": ["apa itu pembengkokan ruang-masa"],
+      "responses": [
+        {
+          "id": "spacetime_warping_adult_0",
+          "text": "Jisim lengkungkan ruang dan masa sekelilingnya. lohong hitam, yang sangat tumpat, bengkokkan ruang-masa secara dramatik—bengkokkan laluan cahaya dan jirim berdekatan."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"]
+      }
+    },
+    {
+      "id": "black_holes_real_adult",
+      "patterns": ["lohong hitam betul ke"],
+      "responses": [
+        {
+          "id": "black_holes_real_adult_0",
+          "text": "Memang! Kita dah perhatikan bintang mengorbit objek tak nampak, dan tangkap gambar bayang lohong hitam dengan Event Horizon Telescope pada 2019."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"]
+      }
+    },
+    {
+      "id": "inside_black_hole_adult",
+      "patterns": ["apa jadi dalam lohong hitam"],
+      "responses": [
+        {
+          "id": "inside_black_hole_adult_0",
+          "text": "Kita tak tahu pasti. Di tengah ada singulariti—di mana graviti sangat kuat, fizik rosak. Itu salah satu misteri terbesar sains."
+        }
+      ],
+      "metadata": {
+        "category": "sains",
+        "priority": 3,
+        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"]
+      }
+    },
+    {
+      "id": "no_thanks",
+      "patterns": [
+        "tak terima kasih",
+        "tak payah terima kasih",
+        "tak berminat",
+        "tak perlu",
+        "saya okay",
+        "tidak"
+      ],
+      "responses": [
+        {
+          "id": "no_thanks_0",
+          "text": "Tak apa! Saya sentiasa di sini kalau rasa ingin tahu lagi."
+        },
+        {
+          "id": "no_thanks_1",
+          "text": "Okay! Tapi bila awak ingin tahu lagi, tanya saya je!"
+        },
+        {
+          "id": "no_thanks_2",
+          "text": "Baiklah. Tapi alam semesta sentiasa tunggu soalan awak yang seterusnya!"
+        },
+        {
+          "id": "no_thanks_3",
+          "text": "Baik! Datang balik bila-bila masa awak rasa ingin tahu!"
+        }
+      ],
+      "metadata": {
+        "category": "tolak",
+        "priority": 2,
+        "tags": ["tolak", "penolakan_sopan"]
+      }
+    }
+  ]
+}
