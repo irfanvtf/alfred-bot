@@ -1,279 +1,410 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react";
+import { Plus, X, Save, ArrowLeft, AlertCircle } from "lucide-react";
 
 const IntentEditor = ({ intent, onSave, onCancel, language }) => {
-  const [formData, setFormData] = useState({ ...intent })
-  const [errors, setErrors] = useState({})
+  const [formData, setFormData] = useState({ ...intent });
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    setFormData({ ...intent })
-  }, [intent])
+    setFormData({ ...intent });
+  }, [intent]);
 
   const validate = () => {
-    const newErrors = {}
+    const newErrors = {};
 
     if (!formData.id?.trim()) {
-      newErrors.id = 'Intent ID is required'
+      newErrors.id = "Intent ID is required";
     }
 
-    if (!formData.patterns || formData.patterns.length === 0 || formData.patterns.every(p => !p.trim())) {
-      newErrors.patterns = 'At least one pattern is required'
+    if (
+      !formData.patterns ||
+      formData.patterns.length === 0 ||
+      formData.patterns.every((p) => !p.trim())
+    ) {
+      newErrors.patterns = "At least one pattern is required";
     }
 
-    if (!formData.responses || formData.responses.length === 0 || formData.responses.every(r => !r.text?.trim())) {
-      newErrors.responses = 'At least one response is required'
+    if (
+      !formData.responses ||
+      formData.responses.length === 0 ||
+      formData.responses.every((r) => !r.text?.trim())
+    ) {
+      newErrors.responses = "At least one response is required";
+    }
+
+    if (!formData.metadata?.name?.trim()) {
+      newErrors.name = "Name is required";
     }
 
     if (!formData.metadata?.category?.trim()) {
-      newErrors.category = 'Category is required'
+      newErrors.category = "Category is required";
     }
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+    if (!formData.metadata?.audience?.trim()) {
+      newErrors.audience = "Audience is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleChange = (field, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
-    }))
-  }
+      [field]: value,
+    }));
+  };
 
   const handleMetadataChange = (field, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       metadata: {
         ...prev.metadata,
-        [field]: value
-      }
-    }))
-  }
+        [field]: value,
+      },
+    }));
+  };
 
   const handlePatternChange = (index, value) => {
-    const newPatterns = [...formData.patterns]
-    newPatterns[index] = value
-    handleChange('patterns', newPatterns)
-  }
+    const newPatterns = [...formData.patterns];
+    newPatterns[index] = value;
+    handleChange("patterns", newPatterns);
+  };
 
   const handleResponseChange = (index, field, value) => {
-    const newResponses = [...formData.responses]
+    const newResponses = [...formData.responses];
     newResponses[index] = {
       ...newResponses[index],
-      [field]: value
-    }
-    handleChange('responses', newResponses)
-  }
+      [field]: value,
+    };
+    handleChange("responses", newResponses);
+  };
 
   const addPattern = () => {
-    handleChange('patterns', [...formData.patterns, ''])
-  }
+    handleChange("patterns", [...formData.patterns, ""]);
+  };
 
   const removePattern = (index) => {
-    const newPatterns = [...formData.patterns]
-    newPatterns.splice(index, 1)
-    handleChange('patterns', newPatterns)
-  }
+    const newPatterns = [...formData.patterns];
+    newPatterns.splice(index, 1);
+    handleChange("patterns", newPatterns);
+  };
 
   const addResponse = () => {
-    handleChange('responses', [...formData.responses, { id: '', text: '' }])
-  }
+    handleChange("responses", [...formData.responses, { id: "", text: "" }]);
+  };
 
   const removeResponse = (index) => {
-    const newResponses = [...formData.responses]
-    newResponses.splice(index, 1)
-    handleChange('responses', newResponses)
-  }
+    const newResponses = [...formData.responses];
+    newResponses.splice(index, 1);
+    handleChange("responses", newResponses);
+  };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (validate()) {
-      // Generate response IDs if they don't exist
       const updatedIntent = {
         ...formData,
         responses: formData.responses.map((response, index) => ({
           ...response,
-          id: response.id || `${formData.id}_${index}`
-        }))
-      }
-      onSave(updatedIntent)
+          id: response.id || `${formData.id}_${index}`,
+        })),
+      };
+      onSave(updatedIntent);
     }
-  }
+  };
 
   return (
-    <div className="bg-white shadow sm:rounded-lg">
-      <div className="px-4 py-5 sm:px-6 border-b border-gray-200">
-        <h2 className="text-lg leading-6 font-medium text-gray-900">
-          {intent.id ? 'Edit Intent' : 'Create New Intent'}
-        </h2>
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+      {/* Header */}
+      <div className="px-6 py-4 border-b border-gray-200">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={onCancel}
+              className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </button>
+            <h2 className="text-xl font-semibold text-gray-900">
+              {intent.id ? "Edit Intent" : "Create New Intent"}
+            </h2>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={onCancel}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSubmit}
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+              <Save className="h-4 w-4" />
+              Save Intent
+            </button>
+          </div>
+        </div>
       </div>
-      <form onSubmit={handleSubmit} className="px-4 py-5 sm:p-6">
-        <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-          <div className="sm:col-span-3">
-            <label htmlFor="intent-id" className="block text-sm font-medium text-gray-700">
-              Intent ID
-            </label>
-            <div className="mt-1">
-              <input
-                type="text"
-                id="intent-id"
-                value={formData.id}
-                onChange={(e) => handleChange('id', e.target.value)}
-                className={`block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${errors.id ? 'border-red-300' : ''}`}
-              />
-              {errors.id && <p className="mt-2 text-sm text-red-600">{errors.id}</p>}
+
+      <div className="p-6">
+        <div className="space-y-8">
+          {/* Basic Information */}
+          <div className="space-y-6">
+            <h3 className="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">
+              Basic Information
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label
+                  htmlFor="intent-id"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Intent ID
+                </label>
+                <input
+                  type="text"
+                  id="intent-id"
+                  value={formData.id || ""}
+                  onChange={(e) => handleChange("id", e.target.value)}
+                  className={`block w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors ${
+                    errors.id
+                      ? "border-red-300 bg-red-50"
+                      : "border-gray-300 focus:border-indigo-500"
+                  }`}
+                  placeholder="e.g., greeting_hello"
+                />
+                {errors.id && (
+                  <div className="flex items-center gap-1 mt-1 text-sm text-red-600">
+                    <AlertCircle className="h-4 w-4" />
+                    {errors.id}
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  value={formData.metadata?.name || ""}
+                  onChange={(e) => handleMetadataChange("name", e.target.value)}
+                  className={`block w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors ${
+                    errors.name
+                      ? "border-red-300 bg-red-50"
+                      : "border-gray-300 focus:border-indigo-500"
+                  }`}
+                  placeholder="e.g., Hello Greeting"
+                />
+                {errors.name && (
+                  <div className="flex items-center gap-1 mt-1 text-sm text-red-600">
+                    <AlertCircle className="h-4 w-4" />
+                    {errors.name}
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label
+                  htmlFor="category"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Category
+                </label>
+                <input
+                  type="text"
+                  id="category"
+                  value={formData.metadata?.category || ""}
+                  onChange={(e) =>
+                    handleMetadataChange("category", e.target.value)
+                  }
+                  className={`block w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors ${
+                    errors.category
+                      ? "border-red-300 bg-red-50"
+                      : "border-gray-300 focus:border-indigo-500"
+                  }`}
+                  placeholder="e.g., Greeting"
+                />
+                {errors.category && (
+                  <div className="flex items-center gap-1 mt-1 text-sm text-red-600">
+                    <AlertCircle className="h-4 w-4" />
+                    {errors.category}
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label
+                  htmlFor="audience"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Audience
+                </label>
+                <input
+                  type="text"
+                  id="audience"
+                  value={formData.metadata?.audience || ""}
+                  onChange={(e) =>
+                    handleMetadataChange("audience", e.target.value)
+                  }
+                  className={`block w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors ${
+                    errors.audience
+                      ? "border-red-300 bg-red-50"
+                      : "border-gray-300 focus:border-indigo-500"
+                  }`}
+                  placeholder="e.g., general"
+                />
+                {errors.audience && (
+                  <div className="flex items-center gap-1 mt-1 text-sm text-red-600">
+                    <AlertCircle className="h-4 w-4" />
+                    {errors.audience}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
-          <div className="sm:col-span-3">
-            <label htmlFor="category" className="block text-sm font-medium text-gray-700">
-              Category
-            </label>
-            <div className="mt-1">
-              <input
-                type="text"
-                id="category"
-                value={formData.metadata?.category || ''}
-                onChange={(e) => handleMetadataChange('category', e.target.value)}
-                className={`block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${errors.category ? 'border-red-300' : ''}`}
-              />
-              {errors.category && <p className="mt-2 text-sm text-red-600">{errors.category}</p>}
-            </div>
-          </div>
+          {/* Patterns */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">
+              User Patterns
+            </h3>
+            <p className="text-sm text-gray-600">
+              Add different ways users might express this intent. These are the
+              phrases or questions users will ask.
+            </p>
 
-          <div className="sm:col-span-3">
-            <label htmlFor="priority" className="block text-sm font-medium text-gray-700">
-              Priority
-            </label>
-            <div className="mt-1">
-              <select
-                id="priority"
-                value={formData.metadata?.priority || 1}
-                onChange={(e) => handleMetadataChange('priority', parseInt(e.target.value))}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              >
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
-                  <option key={num} value={num}>{num}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className="sm:col-span-6">
-            <label className="block text-sm font-medium text-gray-700">
-              Patterns
-            </label>
-            <div className="mt-1 space-y-2">
+            <div className="space-y-3">
               {formData.patterns?.map((pattern, index) => (
-                <div key={index} className="flex">
+                <div key={index} className="flex gap-3">
                   <input
                     type="text"
                     value={pattern}
                     onChange={(e) => handlePatternChange(index, e.target.value)}
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                    placeholder={`Pattern ${
+                      index + 1
+                    } (e.g., "Hello", "Hi there")`}
                   />
                   <button
                     type="button"
                     onClick={() => removePattern(index)}
-                    className="ml-2 inline-flex items-center p-2 border border-transparent rounded-full shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                    className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                   >
-                    <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
+                    <X className="h-4 w-4" />
                   </button>
                 </div>
               ))}
+
               <button
                 type="button"
                 onClick={addPattern}
-                className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
-                <svg className="-ml-0.5 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-                </svg>
+                <Plus className="h-4 w-4" />
                 Add Pattern
               </button>
-              {errors.patterns && <p className="mt-2 text-sm text-red-600">{errors.patterns}</p>}
+
+              {errors.patterns && (
+                <div className="flex items-center gap-1 text-sm text-red-600">
+                  <AlertCircle className="h-4 w-4" />
+                  {errors.patterns}
+                </div>
+              )}
             </div>
           </div>
 
-          <div className="sm:col-span-6">
-            <label className="block text-sm font-medium text-gray-700">
-              Responses
-            </label>
-            <div className="mt-1 space-y-4">
+          {/* Responses */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">
+              Bot Responses
+            </h3>
+            <p className="text-sm text-gray-600">
+              Define how the bot should respond when this intent is detected.
+              You can add multiple response variations.
+            </p>
+
+            <div className="space-y-4">
               {formData.responses?.map((response, index) => (
-                <div key={index} className="border border-gray-200 rounded-md p-4">
-                  <div className="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-6">
-                    <div className="sm:col-span-3">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Response ID
+                <div
+                  key={index}
+                  className="bg-gray-50 rounded-lg p-4 border border-gray-200"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-sm font-medium text-gray-900">
+                      Response {index + 1}
+                    </h4>
+                    <button
+                      type="button"
+                      onClick={() => removeResponse(index)}
+                      className="text-red-600 hover:text-red-800 hover:bg-red-100 p-1 rounded transition-colors"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Response ID (optional)
                       </label>
-                      <div className="mt-1">
-                        <input
-                          type="text"
-                          value={response.id}
-                          onChange={(e) => handleResponseChange(index, 'id', e.target.value)}
-                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                        />
-                      </div>
+                      <input
+                        type="text"
+                        value={response.id || ""}
+                        onChange={(e) =>
+                          handleResponseChange(index, "id", e.target.value)
+                        }
+                        className="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                        placeholder="Auto-generated if left empty"
+                      />
                     </div>
-                    <div className="sm:col-span-6">
-                      <label className="block text-sm font-medium text-gray-700">
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
                         Response Text
                       </label>
-                      <div className="mt-1">
-                        <textarea
-                          rows={3}
-                          value={response.text}
-                          onChange={(e) => handleResponseChange(index, 'text', e.target.value)}
-                          className={`block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${errors.responses ? 'border-red-300' : ''}`}
-                        />
-                      </div>
-                    </div>
-                    <div className="sm:col-span-6 flex justify-end">
-                      <button
-                        type="button"
-                        onClick={() => removeResponse(index)}
-                        className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                      >
-                        Remove Response
-                      </button>
+                      <textarea
+                        rows={3}
+                        value={response.text || ""}
+                        onChange={(e) =>
+                          handleResponseChange(index, "text", e.target.value)
+                        }
+                        className="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors resize-none"
+                        placeholder="Enter the bot's response text..."
+                      />
                     </div>
                   </div>
                 </div>
               ))}
+
               <button
                 type="button"
                 onClick={addResponse}
-                className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
-                <svg className="-ml-0.5 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-                </svg>
+                <Plus className="h-4 w-4" />
                 Add Response
               </button>
-              {errors.responses && <p className="mt-2 text-sm text-red-600">{errors.responses}</p>}
+
+              {errors.responses && (
+                <div className="flex items-center gap-1 text-sm text-red-600">
+                  <AlertCircle className="h-4 w-4" />
+                  {errors.responses}
+                </div>
+              )}
             </div>
           </div>
         </div>
-
-        <div className="mt-8 flex justify-end space-x-3">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            Save
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default IntentEditor
+export default IntentEditor;

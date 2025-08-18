@@ -7,12 +7,11 @@ from datetime import datetime
 class IntentMetadata(BaseModel):
     """Metadata for an intent"""
 
+    name: str = Field("", description="Descriptive name for the intent")
     category: str = Field(..., description="Category of the intent")
+    audience: str = Field("general", description="Target audience (e.g., kids, adult, general)")
     confidence_threshold: float = Field(
         0.7, ge=0.0, le=1.0, description="Minimum confidence threshold"
-    )
-    priority: int = Field(
-        1, ge=1, le=10, description="Priority level (1=highest, 10=lowest)"
     )
     tags: List[str] = Field(default_factory=list, description="Tags for categorization")
     created_at: Optional[datetime] = Field(None, description="Creation timestamp")

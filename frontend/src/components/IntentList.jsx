@@ -1,99 +1,236 @@
-import React from 'react'
+import React, { useState, useMemo } from "react";
+import {
+  Search,
+  MessagesSquare,
+  UsersRound,
+  Plus,
+  Filter,
+  X,
+} from "lucide-react";
 
 const IntentList = ({ intents, loading, onEdit, onDelete, onCreate }) => {
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [audienceFilter, setAudienceFilter] = useState("");
+
+  // Extract unique categories and audiences from intents
+  const { categories, audiences } = useMemo(() => {
+    if (!intents || intents.length === 0)
+      return { categories: [], audiences: [] };
+
+    const categories = [
+      ...new Set(
+        intents.map((intent) => intent.metadata?.category || "Uncategorized")
+      ),
+    ].sort();
+    const audiences = [
+      ...new Set(
+        intents.map((intent) => intent.metadata?.audience || "general")
+      ),
+    ].sort();
+
+    return { categories, audiences };
+  }, [intents]);
+
+  // Filter intents based on selected filters
+  const filteredIntents = useMemo(() => {
+    if (!intents) return [];
+
+    return intents.filter((intent) => {
+      const categoryMatch =
+        !categoryFilter ||
+        (intent.metadata?.category || "Uncategorized") === categoryFilter;
+      const audienceMatch =
+        !audienceFilter ||
+        (intent.metadata?.audience || "general") === audienceFilter;
+      return categoryMatch && audienceMatch;
+    });
+  }, [intents, categoryFilter, audienceFilter]);
+
+  const clearFilters = () => {
+    setCategoryFilter("");
+    setAudienceFilter("");
+  };
+
+  const hasActiveFilters = categoryFilter || audienceFilter;
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-gray-300 border-t-indigo-600"></div>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="bg-white shadow overflow-hidden sm:rounded-md">
-      <div className="px-4 py-5 border-b border-gray-200 sm:px-6 flex justify-between items-center">
-        <h2 className="text-lg leading-6 font-medium text-gray-900">Intents</h2>
-        <button
-          onClick={onCreate}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          Add Intent
-        </button>
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+      {/* Header */}
+      <div className="px-6 py-4 border-b border-gray-200">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold text-gray-900">Intents</h2>
+          <button
+            onClick={onCreate}
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          >
+            <Plus className="h-4 w-4" />
+            Add Intent
+          </button>
+        </div>
+
+        {/* Filters */}
+        {(categories.length > 1 || audiences.length > 1) && (
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <Filter className="h-4 w-4" />
+              <span>Filter by:</span>
+            </div>
+
+            {categories.length > 1 && (
+              <select
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+                className="text-sm border border-gray-300 rounded-md px-3 py-1 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              >
+                <option value="">All categories</option>
+                {categories.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+            )}
+
+            {audiences.length > 1 && (
+              <select
+                value={audienceFilter}
+                onChange={(e) => setAudienceFilter(e.target.value)}
+                className="text-sm border border-gray-300 rounded-md px-3 py-1 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              >
+                <option value="">All audiences</option>
+                {audiences.map((audience) => (
+                  <option key={audience} value={audience}>
+                    {audience}
+                  </option>
+                ))}
+              </select>
+            )}
+
+            {hasActiveFilters && (
+              <button
+                onClick={clearFilters}
+                className="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+              >
+                <X className="h-3 w-3" />
+                Clear filters
+              </button>
+            )}
+
+            <span className="text-sm text-gray-500">
+              {filteredIntents.length} of {intents?.length || 0} intents
+            </span>
+          </div>
+        )}
       </div>
-      <ul className="divide-y divide-gray-200">
-        {intents && intents.length > 0 ? (
-          intents.map((intent) => (
-            <li key={intent.id}>
-              <div className="px-4 py-4 sm:px-6">
-                <div className="flex items-center justify-between">
-                  <div className="text-sm font-medium text-indigo-600 truncate">
+
+      {/* Content */}
+      {filteredIntents && filteredIntents.length > 0 ? (
+        <div className="divide-y divide-gray-100">
+          {filteredIntents.map((intent) => (
+            <div
+              key={intent.id}
+              className="px-6 py-4 hover:bg-gray-50 transition-colors"
+            >
+              {/* Intent header */}
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-lg font-medium text-gray-900 truncate">
+                  {intent.patterns && intent.patterns.length > 0
+                    ? intent.patterns[0]
+                    : intent.metadata.name}
+                </h3>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  {intent.metadata?.category || "Uncategorized"}
+                </span>
+              </div>
+
+              {/* Intent details */}
+              <div className="flex items-center gap-6 mb-3">
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <Search className="h-4 w-4" />
+                  <span className="font-mono text-xs bg-gray-100 px-2 py-1 rounded">
                     {intent.id}
-                  </div>
-                  <div className="ml-2 flex-shrink-0 flex">
-                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                      {intent.metadata?.category || 'Uncategorized'}
-                    </span>
-                  </div>
+                  </span>
                 </div>
-                <div className="mt-2 sm:flex sm:justify-between">
-                  <div className="sm:flex">
-                    <div className="mr-6 flex items-center text-sm text-gray-500">
-                      <svg className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                      </svg>
-                      Priority: {intent.metadata?.priority || 1}
-                    </div>
-                    <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                      <svg className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z" />
-                        <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z" />
-                      </svg>
-                      {intent.patterns?.length || 0} patterns
-                    </div>
-                  </div>
-                  <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                    <button
-                      onClick={() => onEdit(intent)}
-                      className="text-indigo-600 hover:text-indigo-900 mr-4"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => onDelete(intent.id)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      Delete
-                    </button>
-                  </div>
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <MessagesSquare className="h-4 w-4" />
+                  <span>{intent.patterns?.length || 0} patterns</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <UsersRound className="h-4 w-4" />
+                  <span>{intent.metadata?.audience || "general"}</span>
                 </div>
               </div>
-            </li>
-          ))
-        ) : (
-          <li>
-            <div className="px-4 py-8 text-center">
-              <svg className="mx-auto h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-              </svg>
-              <h3 className="mt-2 text-sm font-medium text-gray-900">No intents</h3>
-              <p className="mt-1 text-sm text-gray-500">Get started by creating a new intent.</p>
-              <div className="mt-6">
+
+              {/* Actions */}
+              <div className="flex items-center gap-3">
                 <button
-                  onClick={onCreate}
-                  className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  onClick={() => onEdit(intent)}
+                  className="text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors"
                 >
-                  <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-                  </svg>
-                  New Intent
+                  Edit
+                </button>
+                <button
+                  onClick={() => onDelete(intent.id)}
+                  className="text-sm font-medium text-red-600 hover:text-red-800 transition-colors"
+                >
+                  Delete
                 </button>
               </div>
             </div>
-          </li>
-        )}
-      </ul>
+          ))}
+        </div>
+      ) : (
+        /* Empty state */
+        <div className="px-6 py-12 text-center">
+          <div className="mx-auto h-16 w-16 text-gray-400 mb-4">
+            <MessagesSquare className="h-16 w-16" />
+          </div>
+          {hasActiveFilters ? (
+            <>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No intents match your filters
+              </h3>
+              <p className="text-sm text-gray-500 mb-6 max-w-sm mx-auto">
+                Try adjusting your filters or clear them to see all intents.
+              </p>
+              <button
+                onClick={clearFilters}
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-indigo-600 hover:text-indigo-700 border border-indigo-300 hover:border-indigo-400 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              >
+                <X className="h-4 w-4" />
+                Clear filters
+              </button>
+            </>
+          ) : (
+            <>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No intents yet
+              </h3>
+              <p className="text-sm text-gray-500 mb-6 max-w-sm mx-auto">
+                Get started by creating your first intent. Intents help define
+                what users are trying to accomplish.
+              </p>
+              <button
+                onClick={onCreate}
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              >
+                <Plus className="h-4 w-4" />
+                Create Intent
+              </button>
+            </>
+          )}
+        </div>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default IntentList
+export default IntentList;

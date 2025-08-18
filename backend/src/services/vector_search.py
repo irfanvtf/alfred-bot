@@ -307,7 +307,6 @@ class VectorSearchService:
                         "source_language": source_lang,
                         "source_collection": collection_name,
                         "intent_tags": json.dumps(intent_metadata.get("tags", [])),
-                        "intent_priority": intent_metadata.get("priority", 1),
                     }
 
                     vector_entry = {
