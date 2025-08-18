@@ -141,8 +141,7 @@ async def root():
             "Structured logging",
             "Health monitoring",
             "Error handling middleware",
-        "CMS for intent management",
-    ],
+            "CMS for intent management",
         ],
         "endpoints": {
             "chat": "/api/v1/chat",

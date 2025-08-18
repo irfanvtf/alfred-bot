@@ -17,5 +17,13 @@ export default defineConfig({
   build: {
     outDir: '../backend/static',  // Build to backend static folder
     emptyOutDir: true,
-  }
+    rollupOptions: {
+      output: {
+        assetFileNames: 'assets/[name]-[hash][extname]',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js',
+      },
+    },
+  },
+  base: './',  // Use relative paths for assets
 })

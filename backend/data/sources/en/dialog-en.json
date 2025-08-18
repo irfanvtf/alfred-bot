@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "metadata": {
     "created_at": "2024-01-01T00:00:00",
-    "updated_at": "2025-07-07T00:00:00",
+    "updated_at": "2025-08-18T03:42:07.501299",
     "description": "Alfred Bot Knowledge Base - Restructured with one answer per question",
     "language": "en",
     "search_config": {
@@ -46,14 +46,18 @@
       ],
       "metadata": {
         "category": "greeting",
-
         "priority": 1,
-        "tags": ["greeting", "conversation_starter"]
+        "tags": [
+          "greeting",
+          "conversation_starter"
+        ]
       }
     },
     {
       "id": "time_forward_kids",
-      "patterns": ["why does time go forward"],
+      "patterns": [
+        "why does time go forward"
+      ],
       "responses": [
         {
           "id": "time_forward_kids_0",
@@ -62,13 +66,23 @@
       ],
       "metadata": {
         "category": "physics",
+        "confidence_threshold": 0.7,
         "priority": 3,
-        "tags": ["time_travel", "physics", "kids", "science"]
+        "tags": [
+          "time_travel",
+          "physics",
+          "kids",
+          "science"
+        ],
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
       "id": "move_fast_kids",
-      "patterns": ["what happens if I move super fast"],
+      "patterns": [
+        "what happens if I move super fast"
+      ],
       "responses": [
         {
           "id": "move_fast_kids_0",
@@ -77,14 +91,20 @@
       ],
       "metadata": {
         "category": "science",
-
         "priority": 3,
-        "tags": ["time_travel", "physics", "kids", "science"]
+        "tags": [
+          "time_travel",
+          "physics",
+          "kids",
+          "science"
+        ]
       }
     },
     {
       "id": "what_second_kids",
-      "patterns": ["what is a second"],
+      "patterns": [
+        "what is a second"
+      ],
       "responses": [
         {
           "id": "what_second_kids_0",
@@ -93,14 +113,20 @@
       ],
       "metadata": {
         "category": "science",
-
         "priority": 3,
-        "tags": ["time_travel", "physics", "kids", "science"]
+        "tags": [
+          "time_travel",
+          "physics",
+          "kids",
+          "science"
+        ]
       }
     },
     {
       "id": "time_stop_kids",
-      "patterns": ["can time stop"],
+      "patterns": [
+        "can time stop"
+      ],
       "responses": [
         {
           "id": "time_stop_kids_0",
@@ -109,14 +135,20 @@
       ],
       "metadata": {
         "category": "science",
-
         "priority": 3,
-        "tags": ["time_travel", "physics", "kids", "science"]
+        "tags": [
+          "time_travel",
+          "physics",
+          "kids",
+          "science"
+        ]
       }
     },
     {
       "id": "why_clocks_kids",
-      "patterns": ["why do we have clocks"],
+      "patterns": [
+        "why do we have clocks"
+      ],
       "responses": [
         {
           "id": "why_clocks_kids_0",
@@ -125,14 +157,20 @@
       ],
       "metadata": {
         "category": "science",
-
         "priority": 3,
-        "tags": ["time_travel", "physics", "kids", "science"]
+        "tags": [
+          "time_travel",
+          "physics",
+          "kids",
+          "science"
+        ]
       }
     },
     {
       "id": "time_travel_real_kids",
-      "patterns": ["can we really travel through time"],
+      "patterns": [
+        "can we really travel through time"
+      ],
       "responses": [
         {
           "id": "time_travel_real_kids_0",
@@ -141,14 +179,20 @@
       ],
       "metadata": {
         "category": "science",
-
         "priority": 3,
-        "tags": ["time_travel", "physics", "kids", "science"]
+        "tags": [
+          "time_travel",
+          "physics",
+          "kids",
+          "science"
+        ]
       }
     },
     {
       "id": "what_time_kids",
-      "patterns": ["what is time"],
+      "patterns": [
+        "what is time"
+      ],
       "responses": [
         {
           "id": "what_time_kids_0",
@@ -157,14 +201,20 @@
       ],
       "metadata": {
         "category": "science",
-
         "priority": 3,
-        "tags": ["time_travel", "physics", "kids", "science"]
+        "tags": [
+          "time_travel",
+          "physics",
+          "kids",
+          "science"
+        ]
       }
     },
     {
       "id": "clock_tick_kids",
-      "patterns": ["why do clocks tick"],
+      "patterns": [
+        "why do clocks tick"
+      ],
       "responses": [
         {
           "id": "clock_tick_kids_0",
@@ -173,14 +223,20 @@
       ],
       "metadata": {
         "category": "science",
-
         "priority": 3,
-        "tags": ["time_travel", "physics", "kids", "science"]
+        "tags": [
+          "time_travel",
+          "physics",
+          "kids",
+          "science"
+        ]
       }
     },
     {
       "id": "dinosaurs_kids",
-      "patterns": ["can I go back to see dinosaurs"],
+      "patterns": [
+        "can I go back to see dinosaurs"
+      ],
       "responses": [
         {
           "id": "dinosaurs_kids_0",
@@ -189,14 +245,20 @@
       ],
       "metadata": {
         "category": "science",
-
         "priority": 3,
-        "tags": ["time_travel", "physics", "kids", "science"]
+        "tags": [
+          "time_travel",
+          "physics",
+          "kids",
+          "science"
+        ]
       }
     },
     {
       "id": "astronauts_age_kids",
-      "patterns": ["do astronauts age slower"],
+      "patterns": [
+        "do astronauts age slower"
+      ],
       "responses": [
         {
           "id": "astronauts_age_kids_0",
@@ -205,14 +267,20 @@
       ],
       "metadata": {
         "category": "science",
-
         "priority": 3,
-        "tags": ["time_travel", "physics", "kids", "science"]
+        "tags": [
+          "time_travel",
+          "physics",
+          "kids",
+          "science"
+        ]
       }
     },
     {
       "id": "time_gravity_adult",
-      "patterns": ["why does time slow down near gravity"],
+      "patterns": [
+        "why does time slow down near gravity"
+      ],
       "responses": [
         {
           "id": "time_gravity_adult_0",
@@ -221,14 +289,21 @@
       ],
       "metadata": {
         "category": "science",
-
         "priority": 3,
-        "tags": ["time_travel", "physics", "adult", "relativity", "science"]
+        "tags": [
+          "time_travel",
+          "physics",
+          "adult",
+          "relativity",
+          "science"
+        ]
       }
     },
     {
       "id": "time_dilation_proven_adult",
-      "patterns": ["has time dilation been proven"],
+      "patterns": [
+        "has time dilation been proven"
+      ],
       "responses": [
         {
           "id": "time_dilation_proven_adult_0",
@@ -237,14 +312,21 @@
       ],
       "metadata": {
         "category": "science",
-
         "priority": 3,
-        "tags": ["time_travel", "physics", "adult", "relativity", "science"]
+        "tags": [
+          "time_travel",
+          "physics",
+          "adult",
+          "relativity",
+          "science"
+        ]
       }
     },
     {
       "id": "time_travel_past_adult",
-      "patterns": ["is time travel to the past possible"],
+      "patterns": [
+        "is time travel to the past possible"
+      ],
       "responses": [
         {
           "id": "time_travel_past_adult_0",
@@ -253,14 +335,21 @@
       ],
       "metadata": {
         "category": "science",
-
         "priority": 3,
-        "tags": ["time_travel", "physics", "adult", "relativity", "science"]
+        "tags": [
+          "time_travel",
+          "physics",
+          "adult",
+          "relativity",
+          "science"
+        ]
       }
     },
     {
       "id": "spacetime_adult",
-      "patterns": ["what is spacetime"],
+      "patterns": [
+        "what is spacetime"
+      ],
       "responses": [
         {
           "id": "spacetime_adult_0",
@@ -269,14 +358,21 @@
       ],
       "metadata": {
         "category": "science",
-
         "priority": 3,
-        "tags": ["time_travel", "physics", "adult", "relativity", "science"]
+        "tags": [
+          "time_travel",
+          "physics",
+          "adult",
+          "relativity",
+          "science"
+        ]
       }
     },
     {
       "id": "twin_paradox_adult",
-      "patterns": ["what's the twin paradox"],
+      "patterns": [
+        "what's the twin paradox"
+      ],
       "responses": [
         {
           "id": "twin_paradox_adult_0",
@@ -285,14 +381,21 @@
       ],
       "metadata": {
         "category": "science",
-
         "priority": 3,
-        "tags": ["time_travel", "physics", "adult", "relativity", "science"]
+        "tags": [
+          "time_travel",
+          "physics",
+          "adult",
+          "relativity",
+          "science"
+        ]
       }
     },
     {
       "id": "time_travel_possible_adult",
-      "patterns": ["is time travel possible"],
+      "patterns": [
+        "is time travel possible"
+      ],
       "responses": [
         {
           "id": "time_travel_possible_adult_0",
@@ -302,12 +405,20 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["time_travel", "physics", "adult", "relativity", "science"]
+        "tags": [
+          "time_travel",
+          "physics",
+          "adult",
+          "relativity",
+          "science"
+        ]
       }
     },
     {
       "id": "time_dilation_adult",
-      "patterns": ["what is time dilation"],
+      "patterns": [
+        "what is time dilation"
+      ],
       "responses": [
         {
           "id": "time_dilation_adult_0",
@@ -317,12 +428,20 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["time_travel", "physics", "adult", "relativity", "science"]
+        "tags": [
+          "time_travel",
+          "physics",
+          "adult",
+          "relativity",
+          "science"
+        ]
       }
     },
     {
       "id": "time_machine_adult",
-      "patterns": ["can we build a time machine"],
+      "patterns": [
+        "can we build a time machine"
+      ],
       "responses": [
         {
           "id": "time_machine_adult_0",
@@ -332,12 +451,20 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["time_travel", "physics", "adult", "relativity", "science"]
+        "tags": [
+          "time_travel",
+          "physics",
+          "adult",
+          "relativity",
+          "science"
+        ]
       }
     },
     {
       "id": "einstein_theory_adult",
-      "patterns": ["how does Einstein's theory relate to time"],
+      "patterns": [
+        "how does Einstein's theory relate to time"
+      ],
       "responses": [
         {
           "id": "einstein_theory_adult_0",
@@ -347,12 +474,20 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["time_travel", "physics", "adult", "relativity", "science"]
+        "tags": [
+          "time_travel",
+          "physics",
+          "adult",
+          "relativity",
+          "science"
+        ]
       }
     },
     {
       "id": "arrow_time_adult",
-      "patterns": ["what causes the arrow of time"],
+      "patterns": [
+        "what causes the arrow of time"
+      ],
       "responses": [
         {
           "id": "arrow_time_adult_0",
@@ -362,12 +497,20 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["time_travel", "physics", "adult", "relativity", "science"]
+        "tags": [
+          "time_travel",
+          "physics",
+          "adult",
+          "relativity",
+          "science"
+        ]
       }
     },
     {
       "id": "travel_future_adult",
-      "patterns": ["how do I travel to the future"],
+      "patterns": [
+        "how do I travel to the future"
+      ],
       "responses": [
         {
           "id": "travel_future_adult_0",
@@ -377,12 +520,20 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["time_travel", "physics", "adult", "relativity", "science"]
+        "tags": [
+          "time_travel",
+          "physics",
+          "adult",
+          "relativity",
+          "science"
+        ]
       }
     },
     {
       "id": "special_relativity_adult",
-      "patterns": ["what is special relativity"],
+      "patterns": [
+        "what is special relativity"
+      ],
       "responses": [
         {
           "id": "special_relativity_adult_0",
@@ -392,12 +543,20 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["time_travel", "physics", "adult", "relativity", "science"]
+        "tags": [
+          "time_travel",
+          "physics",
+          "adult",
+          "relativity",
+          "science"
+        ]
       }
     },
     {
       "id": "black_holes_black_kids",
-      "patterns": ["why are black holes black"],
+      "patterns": [
+        "why are black holes black"
+      ],
       "responses": [
         {
           "id": "black_holes_black_kids_0",
@@ -407,12 +566,19 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["black_holes", "space", "kids", "science"]
+        "tags": [
+          "black_holes",
+          "space",
+          "kids",
+          "science"
+        ]
       }
     },
     {
       "id": "too_close_black_hole_kids",
-      "patterns": ["what would happen if I got too close to the black holes"],
+      "patterns": [
+        "what would happen if I got too close to the black holes"
+      ],
       "responses": [
         {
           "id": "too_close_black_hole_kids_0",
@@ -422,12 +588,19 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["black_holes", "space", "kids", "science"]
+        "tags": [
+          "black_holes",
+          "space",
+          "kids",
+          "science"
+        ]
       }
     },
     {
       "id": "black_holes_move_kids",
-      "patterns": ["do black holes move"],
+      "patterns": [
+        "do black holes move"
+      ],
       "responses": [
         {
           "id": "black_holes_move_kids_0",
@@ -437,12 +610,19 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["black_holes", "space", "kids", "science"]
+        "tags": [
+          "black_holes",
+          "space",
+          "kids",
+          "science"
+        ]
       }
     },
     {
       "id": "robot_black_hole_kids",
-      "patterns": ["can we send a robot into a black hole"],
+      "patterns": [
+        "can we send a robot into a black hole"
+      ],
       "responses": [
         {
           "id": "robot_black_hole_kids_0",
@@ -452,12 +632,19 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["black_holes", "space", "kids", "science"]
+        "tags": [
+          "black_holes",
+          "space",
+          "kids",
+          "science"
+        ]
       }
     },
     {
       "id": "inside_black_hole_kids",
-      "patterns": ["what's inside a black hole"],
+      "patterns": [
+        "what's inside a black hole"
+      ],
       "responses": [
         {
           "id": "inside_black_hole_kids_0",
@@ -467,12 +654,19 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["black_holes", "space", "kids", "science"]
+        "tags": [
+          "black_holes",
+          "space",
+          "kids",
+          "science"
+        ]
       }
     },
     {
       "id": "what_black_hole_kids",
-      "patterns": ["what is a black hole"],
+      "patterns": [
+        "what is a black hole"
+      ],
       "responses": [
         {
           "id": "what_black_hole_kids_0",
@@ -482,12 +676,19 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["black_holes", "space", "kids", "science"]
+        "tags": [
+          "black_holes",
+          "space",
+          "kids",
+          "science"
+        ]
       }
     },
     {
       "id": "see_black_holes_kids",
-      "patterns": ["can we see black holes"],
+      "patterns": [
+        "can we see black holes"
+      ],
       "responses": [
         {
           "id": "see_black_holes_kids_0",
@@ -497,12 +698,19 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["black_holes", "space", "kids", "science"]
+        "tags": [
+          "black_holes",
+          "space",
+          "kids",
+          "science"
+        ]
       }
     },
     {
       "id": "black_hole_earth_kids",
-      "patterns": ["will a black hole eat the Earth"],
+      "patterns": [
+        "will a black hole eat the Earth"
+      ],
       "responses": [
         {
           "id": "black_hole_earth_kids_0",
@@ -512,12 +720,19 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["black_holes", "space", "kids", "science"]
+        "tags": [
+          "black_holes",
+          "space",
+          "kids",
+          "science"
+        ]
       }
     },
     {
       "id": "black_holes_happen_kids",
-      "patterns": ["how do black holes happen"],
+      "patterns": [
+        "how do black holes happen"
+      ],
       "responses": [
         {
           "id": "black_holes_happen_kids_0",
@@ -527,12 +742,19 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["black_holes", "space", "kids", "science"]
+        "tags": [
+          "black_holes",
+          "space",
+          "kids",
+          "science"
+        ]
       }
     },
     {
       "id": "fall_black_hole_kids",
-      "patterns": ["can I fall into a black hole"],
+      "patterns": [
+        "can I fall into a black hole"
+      ],
       "responses": [
         {
           "id": "fall_black_hole_kids_0",
@@ -542,12 +764,19 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["black_holes", "space", "kids", "science"]
+        "tags": [
+          "black_holes",
+          "space",
+          "kids",
+          "science"
+        ]
       }
     },
     {
       "id": "cant_see_black_holes_kids",
-      "patterns": ["why can't we see the black holes"],
+      "patterns": [
+        "why can't we see the black holes"
+      ],
       "responses": [
         {
           "id": "cant_see_black_holes_kids_0",
@@ -557,12 +786,19 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["black_holes", "space", "kids", "science"]
+        "tags": [
+          "black_holes",
+          "space",
+          "kids",
+          "science"
+        ]
       }
     },
     {
       "id": "event_horizon_adult",
-      "patterns": ["what is an event horizon"],
+      "patterns": [
+        "what is an event horizon"
+      ],
       "responses": [
         {
           "id": "event_horizon_adult_0",
@@ -572,12 +808,20 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["black_holes", "space", "adult", "astrophysics", "science"]
+        "tags": [
+          "black_holes",
+          "space",
+          "adult",
+          "astrophysics",
+          "science"
+        ]
       }
     },
     {
       "id": "see_inside_black_hole_adult",
-      "patterns": ["can we see what's inside a black hole"],
+      "patterns": [
+        "can we see what's inside a black hole"
+      ],
       "responses": [
         {
           "id": "see_inside_black_hole_adult_0",
@@ -587,12 +831,20 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["black_holes", "space", "adult", "astrophysics", "science"]
+        "tags": [
+          "black_holes",
+          "space",
+          "adult",
+          "astrophysics",
+          "science"
+        ]
       }
     },
     {
       "id": "hawking_radiation_adult",
-      "patterns": ["what's Hawking radiation"],
+      "patterns": [
+        "what's Hawking radiation"
+      ],
       "responses": [
         {
           "id": "hawking_radiation_adult_0",
@@ -602,12 +854,20 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["black_holes", "space", "adult", "astrophysics", "science"]
+        "tags": [
+          "black_holes",
+          "space",
+          "adult",
+          "astrophysics",
+          "science"
+        ]
       }
     },
     {
       "id": "black_holes_merge_adult",
-      "patterns": ["can black holes merge"],
+      "patterns": [
+        "can black holes merge"
+      ],
       "responses": [
         {
           "id": "black_holes_merge_adult_0",
@@ -617,12 +877,20 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["black_holes", "space", "adult", "astrophysics", "science"]
+        "tags": [
+          "black_holes",
+          "space",
+          "adult",
+          "astrophysics",
+          "science"
+        ]
       }
     },
     {
       "id": "black_holes_important_adult",
-      "patterns": ["are black holes important for science"],
+      "patterns": [
+        "are black holes important for science"
+      ],
       "responses": [
         {
           "id": "black_holes_important_adult_0",
@@ -632,12 +900,20 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["black_holes", "space", "adult", "astrophysics", "science"]
+        "tags": [
+          "black_holes",
+          "space",
+          "adult",
+          "astrophysics",
+          "science"
+        ]
       }
     },
     {
       "id": "black_holes_formed_adult",
-      "patterns": ["how are black holes formed"],
+      "patterns": [
+        "how are black holes formed"
+      ],
       "responses": [
         {
           "id": "black_holes_formed_adult_0",
@@ -647,12 +923,20 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["black_holes", "space", "adult", "astrophysics", "science"]
+        "tags": [
+          "black_holes",
+          "space",
+          "adult",
+          "astrophysics",
+          "science"
+        ]
       }
     },
     {
       "id": "fall_into_black_hole_adult",
-      "patterns": ["what happens if you fall into a black hole"],
+      "patterns": [
+        "what happens if you fall into a black hole"
+      ],
       "responses": [
         {
           "id": "fall_into_black_hole_adult_0",
@@ -662,12 +946,20 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["black_holes", "space", "adult", "astrophysics", "science"]
+        "tags": [
+          "black_holes",
+          "space",
+          "adult",
+          "astrophysics",
+          "science"
+        ]
       }
     },
     {
       "id": "black_holes_destroy_info_adult",
-      "patterns": ["can black holes destroy information"],
+      "patterns": [
+        "can black holes destroy information"
+      ],
       "responses": [
         {
           "id": "black_holes_destroy_info_adult_0",
@@ -677,12 +969,20 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["black_holes", "space", "adult", "astrophysics", "science"]
+        "tags": [
+          "black_holes",
+          "space",
+          "adult",
+          "astrophysics",
+          "science"
+        ]
       }
     },
     {
       "id": "spacetime_warping_adult",
-      "patterns": ["what is spacetime warping"],
+      "patterns": [
+        "what is spacetime warping"
+      ],
       "responses": [
         {
           "id": "spacetime_warping_adult_0",
@@ -692,12 +992,20 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["black_holes", "space", "adult", "astrophysics", "science"]
+        "tags": [
+          "black_holes",
+          "space",
+          "adult",
+          "astrophysics",
+          "science"
+        ]
       }
     },
     {
       "id": "black_holes_real_adult",
-      "patterns": ["are black holes real"],
+      "patterns": [
+        "are black holes real"
+      ],
       "responses": [
         {
           "id": "black_holes_real_adult_0",
@@ -707,12 +1015,20 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["black_holes", "space", "adult", "astrophysics", "science"]
+        "tags": [
+          "black_holes",
+          "space",
+          "adult",
+          "astrophysics",
+          "science"
+        ]
       }
     },
     {
       "id": "inside_black_hole_adult",
-      "patterns": ["what happens inside a black hole"],
+      "patterns": [
+        "what happens inside a black hole"
+      ],
       "responses": [
         {
           "id": "inside_black_hole_adult_0",
@@ -722,7 +1038,13 @@
       "metadata": {
         "category": "science",
         "priority": 3,
-        "tags": ["black_holes", "space", "adult", "astrophysics", "science"]
+        "tags": [
+          "black_holes",
+          "space",
+          "adult",
+          "astrophysics",
+          "science"
+        ]
       }
     },
     {
@@ -756,7 +1078,10 @@
       "metadata": {
         "category": "decline",
         "priority": 2,
-        "tags": ["decline", "polite_refusal"]
+        "tags": [
+          "decline",
+          "polite_refusal"
+        ]
       }
     }
   ]

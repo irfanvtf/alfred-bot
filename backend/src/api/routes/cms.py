@@ -20,6 +20,25 @@ AUDIO_BASE_PATH = "data/audio"
 BACKUP_BASE_PATH = "data/sources"
 
 
+def create_backup(file_path: str, language: str) -> str:
+    """
+    Create a backup of the knowledge base file
+    Returns the backup filename
+    """
+    backup_path = os.path.join(BACKUP_BASE_PATH, language, "history")
+    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    backup_file_name = f"dialog-{language}-{timestamp}.json"
+    backup_file_path = os.path.join(backup_path, backup_file_name)
+    
+    # Ensure backup directory exists
+    os.makedirs(backup_path, exist_ok=True)
+    
+    # Copy current file to backup
+    shutil.copy2(file_path, backup_file_path)
+    
+    return backup_file_name
+
+
 @router.get("/intents/{language}")
 async def get_intents(language: str):
     """
@@ -44,21 +63,12 @@ async def update_intents(language: str, intents: List[Intent]):
     """
     try:
         file_path = os.path.join(DATA_BASE_PATH, language, f"dialog-{language}.json")
-        backup_path = os.path.join(BACKUP_BASE_PATH, language, "history")
         
         if not os.path.exists(file_path):
             raise HTTPException(status_code=404, detail="Knowledge base not found")
         
         # Create backup before updating
-        timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-        backup_file_name = f"dialog-{language}-{timestamp}.json"
-        backup_file_path = os.path.join(backup_path, backup_file_name)
-        
-        # Ensure backup directory exists
-        os.makedirs(backup_path, exist_ok=True)
-        
-        # Copy current file to backup
-        shutil.copy2(file_path, backup_file_path)
+        backup_file_name = create_backup(file_path, language)
         
         # Load existing data to preserve metadata
         existing_data = load_json_file(file_path)
@@ -109,6 +119,9 @@ async def create_intent(language: str, intent: Intent):
         if not os.path.exists(file_path):
             raise HTTPException(status_code=404, detail="Knowledge base not found")
         
+        # Create backup before updating
+        backup_file_name = create_backup(file_path, language)
+        
         # Load existing data
         data = load_json_file(file_path)
         
@@ -124,7 +137,7 @@ async def create_intent(language: str, intent: Intent):
         # Save updated data
         save_json_file(data, file_path)
         
-        return {"message": "Intent created successfully", "intent_id": intent.id}
+        return {"message": "Intent created successfully", "intent_id": intent.id, "backup_created": backup_file_name}
     except HTTPException:
         raise
     except Exception as e:
@@ -141,6 +154,9 @@ async def update_intent(language: str, intent_id: str, intent: Intent):
         file_path = os.path.join(DATA_BASE_PATH, language, f"dialog-{language}.json")
         if not os.path.exists(file_path):
             raise HTTPException(status_code=404, detail="Knowledge base not found")
+        
+        # Create backup before updating
+        backup_file_name = create_backup(file_path, language)
         
         # Load existing data
         data = load_json_file(file_path)
@@ -162,7 +178,7 @@ async def update_intent(language: str, intent_id: str, intent: Intent):
         # Save updated data
         save_json_file(data, file_path)
         
-        return {"message": "Intent updated successfully", "intent_id": intent_id}
+        return {"message": "Intent updated successfully", "intent_id": intent_id, "backup_created": backup_file_name}
     except HTTPException:
         raise
     except Exception as e:
@@ -179,6 +195,9 @@ async def delete_intent(language: str, intent_id: str):
         file_path = os.path.join(DATA_BASE_PATH, language, f"dialog-{language}.json")
         if not os.path.exists(file_path):
             raise HTTPException(status_code=404, detail="Knowledge base not found")
+        
+        # Create backup before updating
+        backup_file_name = create_backup(file_path, language)
         
         # Load existing data
         data = load_json_file(file_path)
@@ -200,7 +219,7 @@ async def delete_intent(language: str, intent_id: str):
         # Save updated data
         save_json_file(data, file_path)
         
-        return {"message": "Intent deleted successfully", "intent_id": intent_id}
+        return {"message": "Intent deleted successfully", "intent_id": intent_id, "backup_created": backup_file_name}
     except HTTPException:
         raise
     except Exception as e:
@@ -336,15 +355,12 @@ async def restore_backup(language: str, backup_filename: str):
             raise HTTPException(status_code=404, detail="Backup file not found")
         
         # Create a backup of current file before restoring
-        timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-        current_backup = os.path.join(BACKUP_BASE_PATH, language, "history", f"dialog-{language}-{timestamp}-before-restore.json")
-        os.makedirs(os.path.dirname(current_backup), exist_ok=True)
-        shutil.copy2(target_path, current_backup)
+        current_backup_name = create_backup(target_path, language)
         
         # Restore the backup
         shutil.copy2(backup_path, target_path)
         
-        return {"message": "Backup restored successfully", "backup_used": backup_filename}
+        return {"message": "Backup restored successfully", "backup_used": backup_filename, "current_backup": current_backup_name}
     except HTTPException:
         raise
     except Exception as e:
