@@ -1,0 +1,66 @@
+# Core FastAPI and server
+fastapi==0.115.14
+uvicorn==0.35.0
+starlette==0.46.2
+pydantic==2.11.7
+pydantic_core==2.33.2
+python-dotenv==1.1.1
+
+# Redis client 
+redis>=4.5.0
+
+# Chroma DB
+chromadb==1.0.13
+
+# HTTP client
+httpx==0.28.1
+httpcore==1.0.9
+requests==2.32.3
+
+# NLP and ML - Core sentence-transformers stack
+sentence-transformers==5.0.0
+torch==2.7.1
+transformers==4.52.4
+tokenizers==0.21.1
+scikit-learn==1.7.0
+numpy==2.2.6
+scipy==1.16.0
+
+# Hugging Face ecosystem
+huggingface-hub==0.32.4
+safetensors==0.5.3
+accelerate==1.8.1
+
+# Utilities
+click==8.2.1
+tqdm==4.67.1
+filelock==3.18.0
+fsspec==2025.5.1
+joblib==1.5.1
+packaging==25.0
+setuptools==80.9.0
+typing_extensions==4.14.0
+PyYAML==6.0.2
+
+# Network and security
+certifi==2025.4.26
+charset-normalizer==3.4.2
+urllib3==2.4.0
+idna==3.10
+
+# System utilities
+psutil==7.0.0
+colorama==0.4.6
+
+# Development and testing
+pytest==8.4.1
+pytest-asyncio==1.0.0
+
+# File upload support
+python-multipart==0.0.17
+
+# Optional: Remove if not using
+# pillow==11.3.0  # Only if you process images
+# networkx==3.5   # Only if you use graph operations
+# sympy==1.14.0   # Only if you use symbolic math
+# mpmath==1.3.0   # Only if you use arbitrary precision math

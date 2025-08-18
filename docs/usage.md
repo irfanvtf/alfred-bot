@@ -100,4 +100,60 @@ If you prefer to run the application locally without Docker, you will need to ha
 
         The API will be available at `http://localhost:8000`.
 
-    No newline at end of file
+## Monorepo Development Setup
+
+This project uses a monorepo structure with separate backend and frontend directories.
+
+### Backend Development
+
+1. Navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+
+2. Install Python dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Start the backend server:
+   ```bash
+   python main.py
+   ```
+
+   The backend will be available at http://localhost:8000
+
+### Frontend Development
+
+1. Navigate to the frontend directory:
+   ```bash
+   cd frontend
+   ```
+
+2. Install frontend dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+   The frontend will be available at http://localhost:3000
+
+### Building the Frontend
+
+To build the frontend for production:
+
+```bash
+npm run build
+```
+
+This will build the frontend files to `backend/static/` which will be served by the backend.
+
+### CMS Access
+
+Once both backend and frontend are running:
+- Development: http://localhost:3000
+- Production: http://localhost:8000/static/index.html

@@ -2,6 +2,7 @@
 import os
 import logging
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from config.settings import settings
@@ -11,6 +12,7 @@ from src.api.routes.chat import router as chat_router
 from src.api.routes.session import router as session_router
 from src.api.routes.health import router as health_router
 from src.api.routes.chroma import router as chroma_router, get_chroma_service
+from src.api.routes.cms import router as cms_router
 
 # Import middleware and error handling
 from src.api.middleware import (
@@ -119,6 +121,10 @@ app.include_router(chat_router, prefix="/api/v1")
 app.include_router(session_router, prefix="/api/v1")
 app.include_router(health_router, prefix="/api/v1")
 app.include_router(chroma_router, prefix="/api/v1")
+app.include_router(cms_router, prefix="/api/v1")
+
+# Serve static files (for the CMS frontend)
+app.mount("/static", StaticFiles(directory="static", html=True), name="static")
 
 
 @app.get("/")
@@ -135,13 +141,16 @@ async def root():
             "Structured logging",
             "Health monitoring",
             "Error handling middleware",
+            "CMS for intent management",
         ],
         "endpoints": {
             "chat": "/api/v1/chat",
             "sessions": "/api/v1/session",
             "health": "/api/v1/health",
+            "cms": "/api/v1/cms",
             "docs": "/docs",
         },
+        "cms": "/static/index.html",
     }
 
 

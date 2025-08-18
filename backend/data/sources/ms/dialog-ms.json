@@ -45,9 +45,13 @@
         }
       ],
       "metadata": {
+        "name": "Salam Am",
         "category": "salam",
-        "priority": 1,
-        "tags": ["salam", "pembuka_perbualan"]
+        "audience": "umum",
+        "tags": ["salam", "pembuka_perbualan"],
+        "shorcut": "greeting",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -60,9 +64,13 @@
         }
       ],
       "metadata": {
+        "name": "Arah masa",
         "category": "fizik",
-        "priority": 3,
-        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"]
+        "audience": "kanak-kanak",
+        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"],
+        "shorcut": "time forward kids",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -75,9 +83,13 @@
         }
       ],
       "metadata": {
+        "name": "Bergerak dengan kelajuan tinggi",
         "category": "sains",
-        "priority": 3,
-        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"]
+        "audience": "kanak-kanak",
+        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"],
+        "shorcut": "move fast kids",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -90,9 +102,13 @@
         }
       ],
       "metadata": {
+        "name": "Apa itu saat",
         "category": "sains",
-        "priority": 3,
-        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"]
+        "audience": "kanak-kanak",
+        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"],
+        "shorcut": "what second kids",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -105,9 +121,13 @@
         }
       ],
       "metadata": {
+        "name": "Bolehkah masa berhenti",
         "category": "sains",
-        "priority": 3,
-        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"]
+        "audience": "kanak-kanak",
+        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"],
+        "shorcut": "time stop kids",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -120,9 +140,13 @@
         }
       ],
       "metadata": {
+        "name": "Kenapa kita ada jam",
         "category": "sains",
-        "priority": 3,
-        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"]
+        "audience": "kanak-kanak",
+        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"],
+        "shorcut": "why clocks kids",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -135,9 +159,13 @@
         }
       ],
       "metadata": {
+        "name": "Adakah perjalanan masa benar",
         "category": "sains",
-        "priority": 3,
-        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"]
+        "audience": "kanak-kanak",
+        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"],
+        "shorcut": "time travel real kids",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -150,9 +178,13 @@
         }
       ],
       "metadata": {
+        "name": "Apa itu masa",
         "category": "sains",
-        "priority": 3,
-        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"]
+        "audience": "kanak-kanak",
+        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"],
+        "shorcut": "what time kids",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -165,9 +197,13 @@
         }
       ],
       "metadata": {
+        "name": "Kenapa jam berbunyi tick",
         "category": "sains",
-        "priority": 3,
-        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"]
+        "audience": "kanak-kanak",
+        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"],
+        "shorcut": "clock tick kids",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -180,9 +216,13 @@
         }
       ],
       "metadata": {
+        "name": "Balik tengok dinosaur",
         "category": "sains",
-        "priority": 3,
-        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"]
+        "audience": "kanak-kanak",
+        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"],
+        "shorcut": "dinosaurs kids",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -195,9 +235,13 @@
         }
       ],
       "metadata": {
+        "name": "Angkasawan menua lebih lambat ke",
         "category": "sains",
-        "priority": 3,
-        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"]
+        "audience": "kanak-kanak",
+        "tags": ["perjalanan_masa", "fizik", "kanak-kanak", "sains"],
+        "shorcut": "astronauts age kids",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -210,9 +254,13 @@
         }
       ],
       "metadata": {
+        "name": "Masa dan graviti",
         "category": "sains",
-        "priority": 3,
-        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"]
+        "audience": "dewasa",
+        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"],
+        "shorcut": "time gravity adult",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -225,9 +273,13 @@
         }
       ],
       "metadata": {
+        "name": "Bukti pelecehan masa",
         "category": "sains",
-        "priority": 3,
-        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"]
+        "audience": "dewasa",
+        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"],
+        "shorcut": "time dilation proven adult",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -240,9 +292,13 @@
         }
       ],
       "metadata": {
+        "name": "Perjalanan masa ke masa lalu",
         "category": "sains",
-        "priority": 3,
-        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"]
+        "audience": "dewasa",
+        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"],
+        "shorcut": "time travel past adult",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -255,9 +311,13 @@
         }
       ],
       "metadata": {
+        "name": "Apa itu ruang-masa",
         "category": "sains",
-        "priority": 3,
-        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"]
+        "audience": "dewasa",
+        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"],
+        "shorcut": "spacetime adult",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -270,9 +330,13 @@
         }
       ],
       "metadata": {
+        "name": "Paradoks kembar",
         "category": "sains",
-        "priority": 3,
-        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"]
+        "audience": "dewasa",
+        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"],
+        "shorcut": "twin paradox adult",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -285,9 +349,13 @@
         }
       ],
       "metadata": {
+        "name": "Mungkinkah perjalanan masa",
         "category": "sains",
-        "priority": 3,
-        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"]
+        "audience": "dewasa",
+        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"],
+        "shorcut": "time travel possible adult",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -300,9 +368,13 @@
         }
       ],
       "metadata": {
+        "name": "Apa itu pelecehan masa",
         "category": "sains",
-        "priority": 3,
-        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"]
+        "audience": "dewasa",
+        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"],
+        "shorcut": "time dilation adult",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -315,9 +387,13 @@
         }
       ],
       "metadata": {
+        "name": "Membina mesin masa",
         "category": "sains",
-        "priority": 3,
-        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"]
+        "audience": "dewasa",
+        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"],
+        "shorcut": "time machine adult",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -330,9 +406,13 @@
         }
       ],
       "metadata": {
+        "name": "Teori Einstein dan masa",
         "category": "sains",
-        "priority": 3,
-        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"]
+        "audience": "dewasa",
+        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"],
+        "shorcut": "einstein theory adult",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -345,9 +425,13 @@
         }
       ],
       "metadata": {
+        "name": "Anak panah masa",
         "category": "sains",
-        "priority": 3,
-        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"]
+        "audience": "dewasa",
+        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"],
+        "shorcut": "arrow time adult",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -360,9 +444,13 @@
         }
       ],
       "metadata": {
+        "name": "Mengembara ke masa depan",
         "category": "sains",
-        "priority": 3,
-        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"]
+        "audience": "dewasa",
+        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"],
+        "shorcut": "travel future adult",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -375,9 +463,13 @@
         }
       ],
       "metadata": {
+        "name": "Relativiti khas",
         "category": "sains",
-        "priority": 3,
-        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"]
+        "audience": "dewasa",
+        "tags": ["perjalanan_masa", "fizik", "dewasa", "relativiti", "sains"],
+        "shorcut": "special relativity adult",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -390,9 +482,13 @@
         }
       ],
       "metadata": {
+        "name": "Kenapa lohong hitam hitam",
         "category": "sains",
-        "priority": 3,
-        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"]
+        "audience": "kanak-kanak",
+        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"],
+        "shorcut": "black holes black kids",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -405,9 +501,13 @@
         }
       ],
       "metadata": {
+        "name": "Terlalu dekat dengan lohong hitam",
         "category": "sains",
-        "priority": 3,
-        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"]
+        "audience": "kanak-kanak",
+        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"],
+        "shorcut": "too close black hole kids",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -420,9 +520,13 @@
         }
       ],
       "metadata": {
+        "name": "Lohong hitam bergerak ke",
         "category": "sains",
-        "priority": 3,
-        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"]
+        "audience": "kanak-kanak",
+        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"],
+        "shorcut": "black holes move kids",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -435,9 +539,13 @@
         }
       ],
       "metadata": {
+        "name": "Hantar robot masuk lohong hitam",
         "category": "sains",
-        "priority": 3,
-        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"]
+        "audience": "kanak-kanak",
+        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"],
+        "shorcut": "robot black hole kids",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -450,9 +558,13 @@
         }
       ],
       "metadata": {
+        "name": "Apa ada dalam lohong hitam",
         "category": "sains",
-        "priority": 3,
-        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"]
+        "audience": "kanak-kanak",
+        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"],
+        "shorcut": "inside black hole kids",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -465,9 +577,13 @@
         }
       ],
       "metadata": {
+        "name": "Apa itu lohong hitam",
         "category": "sains",
-        "priority": 3,
-        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"]
+        "audience": "kanak-kanak",
+        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"],
+        "shorcut": "what black hole kids",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -480,9 +596,13 @@
         }
       ],
       "metadata": {
+        "name": "Bolehkah kita tengok lohong hitam",
         "category": "sains",
-        "priority": 3,
-        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"]
+        "audience": "kanak-kanak",
+        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"],
+        "shorcut": "see black holes kids",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -495,9 +615,13 @@
         }
       ],
       "metadata": {
+        "name": "Lohong hitam akan makan Bumi ke",
         "category": "sains",
-        "priority": 3,
-        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"]
+        "audience": "kanak-kanak",
+        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"],
+        "shorcut": "black hole earth kids",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -510,9 +634,13 @@
         }
       ],
       "metadata": {
+        "name": "Macam mana lohong hitam berlaku",
         "category": "sains",
-        "priority": 3,
-        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"]
+        "audience": "kanak-kanak",
+        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"],
+        "shorcut": "black holes happen kids",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -525,9 +653,13 @@
         }
       ],
       "metadata": {
+        "name": "Boleh saya jatuh dalam lohong hitam",
         "category": "sains",
-        "priority": 3,
-        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"]
+        "audience": "kanak-kanak",
+        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"],
+        "shorcut": "fall black hole kids",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -540,9 +672,13 @@
         }
       ],
       "metadata": {
+        "name": "Kenapa kita tak boleh tengok lohong hitam",
         "category": "sains",
-        "priority": 3,
-        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"]
+        "audience": "kanak-kanak",
+        "tags": ["lohong_hitam", "angkasa", "kanak-kanak", "sains"],
+        "shorcut": "cant see black holes kids",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -555,9 +691,13 @@
         }
       ],
       "metadata": {
+        "name": "Apa itu ufuk peristiwa",
         "category": "sains",
-        "priority": 3,
-        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"]
+        "audience": "dewasa",
+        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"],
+        "shorcut": "event horizon adult",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -570,9 +710,13 @@
         }
       ],
       "metadata": {
+        "name": "Bolehkah kita tengok dalam lohong hitam",
         "category": "sains",
-        "priority": 3,
-        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"]
+        "audience": "dewasa",
+        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"],
+        "shorcut": "see inside black hole adult",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -585,9 +729,13 @@
         }
       ],
       "metadata": {
+        "name": "Radiasi Hawking",
         "category": "sains",
-        "priority": 3,
-        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"]
+        "audience": "dewasa",
+        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"],
+        "shorcut": "hawking radiation adult",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -600,9 +748,13 @@
         }
       ],
       "metadata": {
+        "name": "Bolehkah lohong hitam bergabung",
         "category": "sains",
-        "priority": 3,
-        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"]
+        "audience": "dewasa",
+        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"],
+        "shorcut": "black holes merge adult",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -615,9 +767,13 @@
         }
       ],
       "metadata": {
+        "name": "Lohong hitam penting untuk sains ke",
         "category": "sains",
-        "priority": 3,
-        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"]
+        "audience": "dewasa",
+        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"],
+        "shorcut": "black holes important adult",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -630,9 +786,13 @@
         }
       ],
       "metadata": {
+        "name": "Macam mana lohong hitam terbentuk",
         "category": "sains",
-        "priority": 3,
-        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"]
+        "audience": "dewasa",
+        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"],
+        "shorcut": "black holes formed adult",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -645,9 +805,13 @@
         }
       ],
       "metadata": {
+        "name": "Apa jadi kalau awak jatuh dalam lohong hitam",
         "category": "sains",
-        "priority": 3,
-        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"]
+        "audience": "dewasa",
+        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"],
+        "shorcut": "fall into black hole adult",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -660,9 +824,13 @@
         }
       ],
       "metadata": {
+        "name": "Bolehkah lohong hitam musnah maklumat",
         "category": "sains",
-        "priority": 3,
-        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"]
+        "audience": "dewasa",
+        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"],
+        "shorcut": "black holes destroy info adult",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -675,9 +843,13 @@
         }
       ],
       "metadata": {
+        "name": "Apa itu pembengkokan ruang-masa",
         "category": "sains",
-        "priority": 3,
-        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"]
+        "audience": "dewasa",
+        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"],
+        "shorcut": "spacetime warping adult",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -690,9 +862,13 @@
         }
       ],
       "metadata": {
+        "name": "Lohong hitam betul ke",
         "category": "sains",
-        "priority": 3,
-        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"]
+        "audience": "dewasa",
+        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"],
+        "shorcut": "black holes real adult",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -705,9 +881,13 @@
         }
       ],
       "metadata": {
+        "name": "Apa jadi dalam lohong hitam",
         "category": "sains",
-        "priority": 3,
-        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"]
+        "audience": "dewasa",
+        "tags": ["lohong_hitam", "angkasa", "dewasa", "astrofizik", "sains"],
+        "shorcut": "inside black hole adult",
+        "created_at": null,
+        "updated_at": null
       }
     },
     {
@@ -739,9 +919,13 @@
         }
       ],
       "metadata": {
+        "name": "Penolakan sopan",
         "category": "tolak",
-        "priority": 2,
-        "tags": ["tolak", "penolakan_sopan"]
+        "audience": "umum",
+        "tags": ["tolak", "penolakan_sopan"],
+        "shorcut": "no thanks",
+        "created_at": null,
+        "updated_at": null
       }
     }
   ]
