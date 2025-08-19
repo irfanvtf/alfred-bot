@@ -7,10 +7,6 @@ services:
       dockerfile: docker/Dockerfile
     command:
       [
-        "wait-for-it.sh",
-        "redis",
-        "6379",
-        "--",
         "python",
         "-m",
         "uvicorn",
@@ -24,7 +20,8 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
     restart: always
     env_file:
       - ../.env
