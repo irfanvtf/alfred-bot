@@ -51,9 +51,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
-# Copy wait-for-it script BEFORE creating user (as root)
-COPY docker/wait-for-it.sh /usr/local/bin/wait-for-it.sh
-RUN chmod +x /usr/local/bin/wait-for-it.sh
+
 
 # Create non-root user for security
 RUN groupadd -r alfred && useradd -r -g alfred alfred
@@ -96,4 +94,4 @@ USER alfred
 EXPOSE 8000
 
 # Start command
-CMD ["wait-for-it.sh", "redis:6379", "--", "python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--no-access-log"]
+CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--no-access-log"]
